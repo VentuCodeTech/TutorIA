@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { stripe } from '@/lib/stripe'
-import { createClient } from '@supabase/supabase-js'
 import Stripe from 'stripe'
+import { createClient } from '@/lib/supabase/server'
 
-export const config = { api: { bodyParser: false } }
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: '2024-04-10',
+})
 
 export async function POST(request: NextRequest) {
   const body = await request.text()
-  const signature = request.headers.get('stripe-signature')
-  if (!signature) return NextResponse.json({ error: 'No signature' }, { status: 400 })
+  const signature = request.headers.get('stripe-signature')!
 
   let event: Stripe.Event
   try {
@@ -17,66 +17,52 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid signature' }, { status: 400 })
   }
 
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  )
-
-  const planMap: Record<string, string> = {
-    standard: 'basico',
-    student: 'intermediario',
-    advanced: 'premium',
-  }
+  const supabase = createClient()
 
   switch (event.type) {
     case 'checkout.session.completed': {
       const session = event.data.object as Stripe.Checkout.Session
-      const userId = session.metadata?.user_id
-      const plan = session.metadata?.plan || 'standard'
+      const userId = session.metadata?.userId
+      const priceId = session.metadata?.priceId
+
       if (userId && session.subscription) {
-        const sub = await stripe.subscriptions.retrieve(session.subscription as string)
-        await supabase.from('subscriptions').update({
+        const subscription = await stripe.subscriptions.retrieve(session.subscription as string)
+        
+        await supabase.from('subscriptions').upsert({
+          user_id: userId,
+          stripe_customer_id: session.customer as string,
           stripe_subscription_id: session.subscription as string,
-          plan: planMap[plan] || 'basico',
-          status: 'active',
-          current_period_start: new Date(sub.current_period_start * 1000).toISOString(),
-          current_period_end: new Date(sub.current_period_end * 1000).toISOString(),
-        }).eq('user_id', userId)
+          stripe_price_id: priceId,
+          status: subscription.status,
+          current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
+          current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
+          updated_at: new Date().toISOString(),
+        }, { onConflict: 'user_id' })
       }
       break
     }
-    case 'customer.subscription.updated': {
-      const sub = event.data.object as Stripe.Subscription
-      const userId = sub.metadata?.user_id
-      if (userId) {
-        await supabase.from('subscriptions').update({
-          status: sub.status as any,
-          current_period_start: new Date(sub.current_period_start * 1000).toISOString(),
-          current_period_end: new Date(sub.current_period_end * 1000).toISOString(),
-        }).eq('user_id', userId)
-      }
-      break
-    }
+
+    case 'customer.subscription.updated':
     case 'customer.subscription.deleted': {
-      const sub = event.data.object as Stripe.Subscription
-      const userId = sub.metadata?.user_id
-      if (userId) {
-        await supabase.from('subscriptions').update({
-          plan: 'gratuito',
-          status: 'canceled',
-          stripe_subscription_id: null,
-        }).eq('user_id', userId)
-      }
+      const subscription = event.data.object as Stripe.Subscription
+      
+      await supabase.from('subscriptions').update({
+        status: subscription.status,
+        stripe_price_id: subscription.items.data[0]?.price.id,
+        current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
+        current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
+        updated_at: new Date().toISOString(),
+      }).eq('stripe_subscription_id', subscription.id)
       break
     }
+
     case 'invoice.payment_failed': {
       const invoice = event.data.object as Stripe.Invoice
       if (invoice.subscription) {
-        const sub = await stripe.subscriptions.retrieve(invoice.subscription as string)
-        const userId = sub.metadata?.user_id
-        if (userId) {
-          await supabase.from('subscriptions').update({ status: 'past_due' }).eq('user_id', userId)
-        }
+        await supabase.from('subscriptions').update({
+          status: 'past_due',
+          updated_at: new Date().toISOString(),
+        }).eq('stripe_subscription_id', invoice.subscription as string)
       }
       break
     }
