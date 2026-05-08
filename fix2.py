@@ -1,11 +1,21 @@
-'use client'
+import os
+
+# Fix pricing page with hardcoded price IDs (since STRIPE_PRICE_ vars are not NEXT_PUBLIC_)
+pricing_page = """'use client'
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
+const PRICE_IDS = {
+  standard: 'price_1TUZ11FPyDxwG3POShBnmqB0',
+  student: 'price_1TUZ1rFPyDxwG3POwi0qzpJb',
+  advancedPro: 'price_1TUZ2GFPyDxwG3PORJBla5oC',
+}
+
 const plans = [
   {
+    id: 'free',
     name: 'Gratis',
     price: 0,
     priceId: null,
@@ -21,9 +31,10 @@ const plans = [
     free: true,
   },
   {
+    id: 'standard',
     name: 'Standard',
-    price: 1990,
-    priceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_STANDARD,
+    price: 19.90,
+    priceId: PRICE_IDS.standard,
     description: 'Para estudantes que querem evoluir',
     features: [
       'Questoes ilimitadas',
@@ -37,9 +48,10 @@ const plans = [
     free: false,
   },
   {
+    id: 'student',
     name: 'Student',
-    price: 4990,
-    priceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_STUDENT,
+    price: 49.90,
+    priceId: PRICE_IDS.student,
     description: 'Para quem leva os estudos a serio',
     features: [
       'Tudo do Standard',
@@ -53,9 +65,10 @@ const plans = [
     free: false,
   },
   {
+    id: 'advanced',
     name: 'Advanced Pro',
-    price: 9990,
-    priceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_ADVANCED_PRO,
+    price: 99.90,
+    priceId: PRICE_IDS.advancedPro,
     description: 'Experiencia completa de preparacao',
     features: [
       'Tudo do Student',
@@ -69,10 +82,6 @@ const plans = [
   },
 ]
 
-function formatPrice(price: number) {
-  return (price / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2 })
-}
-
 export default function PricingPage() {
   const router = useRouter()
   const [loading, setLoading] = useState<string | null>(null)
@@ -84,12 +93,7 @@ export default function PricingPage() {
       return
     }
 
-    if (!plan.priceId) {
-      setError('Plano nao disponivel no momento.')
-      return
-    }
-
-    setLoading(plan.name)
+    setLoading(plan.id)
     setError(null)
 
     try {
@@ -124,10 +128,9 @@ export default function PricingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-16 px-4">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
         <div className="text-center mb-12">
           <Link href="/" className="text-indigo-600 hover:text-indigo-800 text-sm font-medium mb-4 inline-block">
-            ← Voltar ao inicio
+            &larr; Voltar ao inicio
           </Link>
           <h1 className="text-4xl font-bold text-gray-900 mb-4">Planos e Precos</h1>
           <p className="text-xl text-gray-600">Escolha o plano ideal para sua preparacao</p>
@@ -136,18 +139,16 @@ export default function PricingPage() {
           </div>
         </div>
 
-        {/* Error message */}
         {error && (
           <div className="max-w-md mx-auto mb-8 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-center">
             {error}
           </div>
         )}
 
-        {/* Plans grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {plans.map((plan) => (
             <div
-              key={plan.name}
+              key={plan.id}
               className={`relative bg-white rounded-2xl shadow-lg p-6 flex flex-col ${
                 plan.popular ? 'ring-2 ring-indigo-600 scale-105' : ''
               }`}
@@ -169,7 +170,9 @@ export default function PricingPage() {
                   ) : (
                     <>
                       <span className="text-sm text-gray-500">R$</span>
-                      <span className="text-3xl font-bold text-indigo-600">{formatPrice(plan.price)}</span>
+                      <span className="text-3xl font-bold text-indigo-600">
+                        {plan.price.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                      </span>
                       <span className="text-gray-500 text-sm">/mes</span>
                     </>
                   )}
@@ -179,7 +182,7 @@ export default function PricingPage() {
               <ul className="space-y-3 flex-1 mb-6">
                 {plan.features.map((feature, i) => (
                   <li key={i} className="flex items-start gap-2">
-                    <span className="text-green-500 font-bold mt-0.5 flex-shrink-0">v</span>
+                    <span className="text-green-500 font-bold mt-0.5 flex-shrink-0">&#10003;</span>
                     <span className="text-gray-700 text-sm">{feature}</span>
                   </li>
                 ))}
@@ -187,7 +190,7 @@ export default function PricingPage() {
 
               <button
                 onClick={() => handleSubscribe(plan)}
-                disabled={loading === plan.name}
+                disabled={loading === plan.id}
                 className={`w-full py-3 px-4 rounded-xl font-semibold transition-all ${
                   plan.popular
                     ? 'bg-indigo-600 hover:bg-indigo-700 text-white'
@@ -196,7 +199,7 @@ export default function PricingPage() {
                     : 'border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-50'
                 } disabled:opacity-50 disabled:cursor-not-allowed`}
               >
-                {loading === plan.name ? (
+                {loading === plan.id ? (
                   <span className="flex items-center justify-center gap-2">
                     <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
@@ -218,3 +221,39 @@ export default function PricingPage() {
     </div>
   )
 }
+"""
+
+# Fix layout.tsx to add Chatbot
+layout_tsx = """import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
+import './globals.css'
+import Chatbot from '@/components/Chatbot'
+
+const inter = Inter({ subsets: ['latin'] })
+
+export const metadata: Metadata = {
+  title: 'TutorIA - Plataforma de Estudos com IA',
+  description: 'Prepare-se para ENEM, OAB, Concursos Publicos e CPA-20 com inteligencia artificial adaptativa',
+}
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="pt-BR">
+      <body className={inter.className}>
+        {children}
+        <Chatbot />
+      </body>
+    </html>
+  )
+}
+"""
+
+with open('app/pricing/page.tsx', 'w') as f:
+    f.write(pricing_page.strip())
+print("Written: app/pricing/page.tsx")
+
+with open('app/layout.tsx', 'w') as f:
+    f.write(layout_tsx.strip())
+print("Written: app/layout.tsx")
+
+print("Done!")
