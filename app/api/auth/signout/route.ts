@@ -1,10 +1,9 @@
-import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
-import { NextResponse } from 'next/server';
+import { NextResponse } from 'next/server'
+import { createServerClient } from '@supabase/ssr'
+import { cookies } from 'next/headers'
 
 export async function POST(request: Request) {
-  const origin = new URL(request.url).origin;
-  const cookieStore = await cookies();
+  const cookieStore = await cookies()
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -12,17 +11,23 @@ export async function POST(request: Request) {
     {
       cookies: {
         getAll() {
-          return cookieStore.getAll();
+          return cookieStore.getAll()
         },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) => {
-            cookieStore.set(name, value, options);
-          });
+        setAll(cookiesToSet: { name: string; value: string; options?: Record<string, unknown> }[]) {
+          try {
+            cookiesToSet.forEach(({ name, value, options }) =>
+              cookieStore.set(name, value, options as never)
+            )
+          } catch {
+            // ignore in Server Components
+          }
         },
       },
     }
-  );
+  )
 
-  await supabase.auth.signOut();
-  return NextResponse.redirect(`${origin}/login`);
+  await supabase.auth.signOut()
+
+  const { origin } = new URL(request.url)
+  return NextResponse.redirect(`${origin}/login`, { status: 302 })
 }
