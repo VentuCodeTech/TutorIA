@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import { createClient } from '@/lib/supabase/client';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
 function LoginForm() {
@@ -13,7 +13,7 @@ function LoginForm() {
   const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-  const router = useRouter();
+
   const searchParams = useSearchParams();
   const supabase = createClient();
 
@@ -25,7 +25,7 @@ function LoginForm() {
     // Check if already logged in
     supabase.auth.getUser().then(({ data }) => {
       if (data.user) {
-        router.push('/dashboard');
+        window.location.href = '/dashboard';
       }
     });
   }, []);
@@ -58,7 +58,7 @@ function LoginForm() {
           setEmail('');
           setPassword('');
         } else if (data.session) {
-          router.push('/dashboard');
+          window.location.href = '/dashboard';
         }
       } else {
         const { error } = await supabase.auth.signInWithPassword({
@@ -77,8 +77,7 @@ function LoginForm() {
           return;
         }
 
-        router.push('/dashboard');
-        router.refresh();
+        window.location.href = '/dashboard';
       }
     } catch (err: unknown) {
       const error = err as Error;
