@@ -11,7 +11,7 @@ function ResetPasswordForm() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
-  const [mode, setMode] = useState<'request'|'reset'>(' request')
+  const [mode, setMode] = useState<'request'|'reset'>('request')
   const [email, setEmail] = useState('')
   const router = useRouter()
   const searchParams = useSearchParams()
