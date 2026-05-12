@@ -30,9 +30,12 @@ export async function middleware(request: NextRequest) {
   )
 
   // IMPORTANT: Do NOT add logic between createServerClient and supabase.auth.getUser()
+  // Use getSession for redirect decisions (doesn't require server API call)
+  // getUser() is still used by dashboard for security validation
   const {
-    data: { user },
-  } = await supabase.auth.getUser()
+    data: { session },
+  } = await supabase.auth.getSession()
+  const user = session?.user
 
   const pathname = request.nextUrl.pathname
 

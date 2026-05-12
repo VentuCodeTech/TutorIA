@@ -5,11 +5,13 @@ import Chatbot from '@/components/Chatbot';
 
 export default async function Dashboard() {
   const supabase = await createClient();
-  const { data: { user }, error } = await supabase.auth.getUser();
+  const { data: { session }, error } = await supabase.auth.getSession();
 
-  if (error || !user) {
+  if (error || !session || !session.user) {
     redirect('/login');
   }
+  
+  const user = session.user;
 
   const userName = user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split('@')[0] || 'Estudante';
   const userAvatar = user.user_metadata?.avatar_url;
