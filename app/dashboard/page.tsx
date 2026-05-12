@@ -1,20 +1,47 @@
-import { redirect } from 'next/navigation';
-import { createClient } from '@/lib/supabase/server';
+'use client';
+
+import { useState, useEffect } from 'react';
+import { createClient } from '@/lib/supabase/client';
 import Link from 'next/link';
 import Chatbot from '@/components/Chatbot';
 
-export default async function Dashboard() {
-  const supabase = await createClient();
-  const { data: { session }, error } = await supabase.auth.getSession();
+export default function Dashboard() {
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
-  if (error || !session || !session.user) {
-    redirect('/login');
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) {
+        window.location.href = '/login';
+        return;
+      }
+      setUser(session.user);
+      setLoading(false);
+    });
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-indigo-50 to-purple-50">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-500">Carregando dashboard...</p>
+        </div>
+      </div>
+    );
   }
-  
-  const user = session.user;
+
+  if (!user) return null;
 
   const userName = user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split('@')[0] || 'Estudante';
   const userAvatar = user.user_metadata?.avatar_url;
+
+  const handleSignOut = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    window.location.href = '/login';
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50 to-purple-50">
@@ -66,17 +93,15 @@ export default async function Dashboard() {
               <p className="text-xs text-gray-400 truncate">{user.email}</p>
             </div>
           </div>
-          <form action="/api/auth/signout" method="post">
-            <button
-              type="submit"
-              className="w-full flex items-center justify-center gap-2 text-xs text-gray-500 hover:text-red-600 py-2 px-3 rounded-lg hover:bg-red-50 transition-colors"
-            >
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-              </svg>
-              Sair
-            </button>
-          </form>
+          <button
+            onClick={handleSignOut}
+            className="w-full flex items-center justify-center gap-2 text-xs text-gray-500 hover:text-red-600 py-2 px-3 rounded-lg hover:bg-red-50 transition-colors"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+            Sair
+          </button>
         </div>
       </aside>
 
@@ -111,7 +136,6 @@ export default async function Dashboard() {
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          {/* Start Study */}
           <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-6 text-white">
             <h2 className="text-lg font-bold mb-2">🚀 Começar Sessão de Estudos</h2>
             <p className="text-indigo-200 text-sm mb-4">
@@ -122,7 +146,6 @@ export default async function Dashboard() {
             </button>
           </div>
 
-          {/* Daily Challenge */}
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
             <h2 className="text-lg font-bold text-gray-800 mb-2">⚡ Desafio Diário</h2>
             <p className="text-gray-500 text-sm mb-4">
