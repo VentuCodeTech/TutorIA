@@ -23,13 +23,8 @@ function LoginForm() {
     if (errorParam === 'auth_callback_failed') {
       setError('Falha na autenticação. Tente novamente.');
     }
-    // Check if already logged in
-    supabase.auth.getUser().then(({ data }) => {
-      if (data.user) {
-        window.location.href = '/dashboard';
-      }
-    });
-  }, []);
+    // Note: redirect for logged-in users is handled by middleware
+  }, [searchParams]);
 
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
