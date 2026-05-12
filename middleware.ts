@@ -15,50 +15,29 @@ export async function middleware(request: NextRequest) {
           return request.cookies.getAll()
         },
         setAll(cookiesToSet: { name: string; value: string; options?: Record<string, unknown> }[]) {
-          cookiesToSet.forEach(({ name, value }) =>
+          cookiesToSet.forEach(({ name, value }: { name: string; value: string }) =>
             request.cookies.set(name, value)
           )
           supabaseResponse = NextResponse.next({
             request,
           })
-          cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
+          cookiesToSet.forEach(({ name, value, options }: { name: string; value: string; options?: Record<string, unknown> }) =>
+            supabaseResponse.cookies.set(name, value, options as never)
           )
         },
       },
     }
   )
 
-  // IMPORTANT: Do NOT add logic between createServerClient and supabase.auth.getUser()
-  // Use getSession for redirect decisions (doesn't require server API call)
-  // getUser() is still used by dashboard for security validation
-  const {
-    data: { session },
-  } = await supabase.auth.getSession()
-  const user = session?.user
+  // Refresh session if needed - this updates the session cookie
+  await supabase.auth.getSession()
 
-  const pathname = request.nextUrl.pathname
-
-  // If user is authenticated and tries to access login, redirect to dashboard
-  if (user && (pathname === '/login' || pathname === '/login/')) {
-    const url = request.nextUrl.clone()
-    url.pathname = '/dashboard'
-    return NextResponse.redirect(url)
-  }
-
-  // If user is NOT authenticated and tries to access protected routes
-  if (!user && pathname.startsWith('/dashboard')) {
-    const url = request.nextUrl.clone()
-    url.pathname = '/login'
-    return NextResponse.redirect(url)
-  }
-
-  // IMPORTANT: Return supabaseResponse to preserve cookies
+  // IMPORTANT: Return the supabaseResponse to preserve cookies
   return supabaseResponse
 }
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|api/auth|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 }
