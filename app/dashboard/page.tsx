@@ -48,17 +48,17 @@ export default function Dashboard() {
       {/* Sidebar */}
       <aside className="fixed left-0 top-0 bottom-0 w-64 bg-white border-r border-gray-100 shadow-sm z-30 flex flex-col">
         <div className="p-6 border-b border-gray-100">
-          <Link href="/" className="text-2xl font-bold text-indigo-600">TutorIA</Link>
+          <Link href="/dashboard" className="text-2xl font-bold text-indigo-600">TutorIA</Link>
           <p className="text-xs text-gray-400 mt-1">Powered by Claude AI</p>
         </div>
 
         <nav className="flex-1 p-4 space-y-1">
           {[
             { icon: '🏠', label: 'Dashboard', href: '/dashboard', active: true },
-            { icon: '📚', label: 'Meus Estudos', href: '#', active: false },
-            { icon: '📝', label: 'Questões', href: '#', active: false },
-            { icon: '📊', label: 'Progresso', href: '#', active: false },
-            { icon: '🎯', label: 'Simulados', href: '#', active: false },
+            { icon: '📚', label: 'Meus Estudos', href: '/dashboard/estudos', active: false },
+            { icon: '📝', label: 'Questões', href: '/dashboard/questoes', active: false },
+            { icon: '📊', label: 'Progresso', href: '/dashboard/progresso', active: false },
+            { icon: '🎯', label: 'Simulados', href: '/dashboard/simulados', active: false },
             { icon: '💰', label: 'Planos', href: '/pricing', active: false },
           ].map((item) => (
             <Link
