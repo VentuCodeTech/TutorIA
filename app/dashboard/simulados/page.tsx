@@ -1,4 +1,5 @@
-'use client';
+'use client'
+import { useRouter } from 'next/navigation';
 
 import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
@@ -6,6 +7,7 @@ import Sidebar from '@/components/Sidebar';
 import Chatbot from '@/components/Chatbot';
 
 export default function SimuladosPage() {
+  const router = useRouter()
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -95,7 +97,7 @@ export default function SimuladosPage() {
                   <span>🎯</span><span className={`px-2 py-0.5 rounded-full text-xs font-medium ${diffColors[sim.difficulty]}`}>{sim.difficulty}</span>
                 </div>
               </div>
-              <button className="w-full bg-indigo-600 text-white py-2 rounded-xl font-medium hover:bg-indigo-700 transition-colors text-sm">
+              <button onClick={() => router.push('/dashboard/questoes')} className="w-full bg-indigo-600 text-white py-2 rounded-xl font-medium hover:bg-indigo-700 transition-colors text-sm">
                 Iniciar Simulado →
               </button>
             </div>

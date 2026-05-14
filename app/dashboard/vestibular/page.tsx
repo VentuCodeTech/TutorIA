@@ -1,4 +1,5 @@
 'use client'
+import { useRouter } from 'next/navigation'
 
 import { useState } from 'react'
 import Sidebar from '@/components/Sidebar'
@@ -29,6 +30,7 @@ const materiasPorVestibular: Record<string, string[]> = {
 }
 
 export default function VestibularPage() {
+  const router = useRouter()
   const [selecionado, setSelecionado] = useState<string | null>(null)
   const [materiasSelecionadas, setMateriasSelecionadas] = useState<string[]>([])
   const [salvo, setSalvo] = useState(false)
