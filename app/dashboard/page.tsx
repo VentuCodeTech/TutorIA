@@ -1,57 +1,82 @@
-'use client';
+'use client'
 
-import { useState, useEffect } from 'react';
-import { createClient } from '@/lib/supabase/client';
-import Link from 'next/link';
-import Chatbot from '@/components/Chatbot';
-import Sidebar from '@/components/Sidebar';
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import Sidebar from '@/components/Sidebar'
+import Chatbot from '@/components/Chatbot'
+import { createClient } from '@/lib/supabase/client'
 
 export default function Dashboard() {
-  const [user, setUser] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const router = useRouter()
+  const [userName, setUserName] = useState('Estudante')
+  const [userId, setUserId] = useState<string | null>(null)
+  const [stats, setStats] = useState({
+    streakDays: 0,
+    questionsToday: 0,
+    accuracy: 0,
+    ranking: '-'
+  })
+  const [dailyProgress, setDailyProgress] = useState(0)
+  const supabase = createClient()
 
   useEffect(() => {
-    const supabase = createClient();
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) {
-        window.location.href = '/login';
-        return;
-      }
-      setUser(session.user);
-      setLoading(false);
-    });
-  }, []);
+      if (!session) { window.location.href = '/login'; return }
+      setUserId(session.user.id)
+      const name = session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'Estudante'
+      setUserName(name)
+      loadStats(session.user.id)
+    })
+  }, [])
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-indigo-50 to-purple-50">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-500">Carregando dashboard...</p>
-        </div>
-      </div>
-    );
+  const loadStats = async (uid: string) => {
+    const today = new Date().toISOString().split('T')[0]
+    
+    const { data: allAnswers } = await supabase
+      .from('question_answers')
+      .select('is_correct, created_at')
+      .eq('user_id', uid)
+    
+    if (allAnswers && allAnswers.length > 0) {
+      const todayAnswers = allAnswers.filter(a => 
+        a.created_at && a.created_at.startsWith(today)
+      )
+      const correct = allAnswers.filter(a => a.is_correct).length
+      const accuracy = Math.round((correct / allAnswers.length) * 100)
+      setStats(prev => ({
+        ...prev,
+        questionsToday: todayAnswers.length,
+        accuracy
+      }))
+      setDailyProgress(Math.min((todayAnswers.length / 20) * 100, 100))
+    }
   }
 
-  if (!user) return null;
-
-  const userName = user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split('@')[0] || 'Estudante';
-  const userAvatar = user.user_metadata?.avatar_url;
-
-  const handleSignOut = async () => {
-    const supabase = createClient();
-    await supabase.auth.signOut();
-    window.location.href = '/login';
-  };
+  const studyAreas = [
+    { emoji: '🧮', subject: 'Matemática', path: '/dashboard/questoes?area=Matemática', color: 'blue' },
+    { emoji: '📖', subject: 'Português', path: '/dashboard/questoes?area=Português', color: 'green' },
+    { emoji: '🌍', subject: 'História', path: '/dashboard/questoes?area=História', color: 'orange' },
+    { emoji: '🦌', subject: 'Ciências', path: '/dashboard/questoes?area=Ciências', color: 'teal' },
+    { emoji: '⚛️', subject: 'Física', path: '/dashboard/questoes?area=Física', color: 'purple' },
+    { emoji: '🧪', subject: 'Química', path: '/dashboard/questoes?area=Química', color: 'red' },
+    { emoji: '🧬', subject: 'Biologia', path: '/dashboard/questoes?area=Biologia', color: 'emerald' },
+    { emoji: '✍️', subject: 'Redação', path: '/dashboard/questoes?area=Redação', color: 'pink' },
+    { emoji: '⚖️', subject: 'Direito Constitucional', path: '/dashboard/questoes?area=Direito Constitucional', color: 'indigo' },
+    { emoji: '📜', subject: 'Direito Civil', path: '/dashboard/questoes?area=Direito Civil', color: 'indigo' },
+    { emoji: '🔒', subject: 'Direito Penal', path: '/dashboard/questoes?area=Direito Penal', color: 'indigo' },
+    { emoji: '👔', subject: 'Direito Trabalhista', path: '/dashboard/questoes?area=Direito Trabalhista', color: 'indigo' },
+    { emoji: '💰', subject: 'Finanças Pessoais', path: '/dashboard/questoes?area=Finanças Pessoais', color: 'yellow' },
+    { emoji: '📈', subject: 'Investimentos', path: '/dashboard/questoes?area=Investimentos', color: 'yellow' },
+    { emoji: '🏦', subject: 'CPA-20', path: '/dashboard/questoes?area=CPA-20', color: 'yellow' },
+    { emoji: '🗺️', subject: 'Geografia', path: '/dashboard/questoes?area=Geografia', color: 'cyan' },
+    { emoji: '🇬🇧', subject: 'Inglês', path: '/dashboard/questoes?area=Inglês', color: 'blue' },
+    { emoji: '🇪🇸', subject: 'Espanhol', path: '/dashboard/questoes?area=Espanhol', color: 'red' },
+  ]
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50 to-purple-50">
-      {/* Sidebar */}
       <Sidebar />
-
-      {/* Main Content */}
       <main className="ml-64 p-8">
-        {/* Header */}
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-gray-800">
             Olá, {userName}! 👋
@@ -60,97 +85,83 @@ export default function Dashboard() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {[
-            { icon: '📅', title: 'Dias Estudando', value: '0', sub: 'dias consecutivos', color: 'from-blue-500 to-blue-600' },
-            { icon: '✅', title: 'Questões Hoje', value: '0', sub: 'de 20 meta diária', color: 'from-green-500 to-green-600' },
-            { icon: '📈', title: 'Taxa de Acerto', value: '0%', sub: 'geral', color: 'from-purple-500 to-purple-600' },
-            { icon: '🏆', title: 'Ranking', value: '-', sub: 'posição geral', color: 'from-orange-500 to-orange-600' },
+            { icon: '📅', value: stats.streakDays, label: 'Dias Estudando', sub: 'dias consecutivos' },
+            { icon: '✅', value: stats.questionsToday, label: 'Questões Hoje', sub: 'de 20 meta diária' },
+            { icon: '🎯', value: stats.accuracy + '%', label: 'Taxa de Acerto', sub: 'geral' },
+            { icon: '🏆', value: stats.ranking, label: 'Ranking', sub: 'posição geral' },
           ].map((stat, i) => (
-            <div key={i} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-              <div className={`w-10 h-10 rounded-xl bg-gradient-to-r ${stat.color} flex items-center justify-center mb-4`}>
-                <span className="text-lg">{stat.icon}</span>
+            <div key={i} className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+              <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-xl mb-3">
+                {stat.icon}
               </div>
-              <p className="text-3xl font-extrabold text-gray-800">{stat.value}</p>
-              <p className="text-sm font-medium text-gray-600 mt-1">{stat.title}</p>
+              <p className="text-2xl font-bold text-gray-800">{stat.value}</p>
+              <p className="text-sm font-medium text-gray-600 mt-0.5">{stat.label}</p>
               <p className="text-xs text-gray-400 mt-0.5">{stat.sub}</p>
             </div>
           ))}
         </div>
 
-        {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-6 text-white">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          {/* Start Study Session */}
+          <div className="lg:col-span-2 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-6 text-white">
             <h2 className="text-lg font-bold mb-2">🚀 Começar Sessão de Estudos</h2>
-            <p className="text-indigo-200 text-sm mb-4">
-              Use a IA para criar um plano de estudo personalizado para você.
-            </p>
-            <button className="bg-white text-indigo-700 font-bold px-6 py-2.5 rounded-xl text-sm hover:bg-indigo-50 transition-colors">
+            <p className="text-indigo-200 text-sm mb-4">Use a IA para criar um plano de estudo personalizado para você.</p>
+            <button
+              onClick={() => router.push('/dashboard/questoes')}
+              className="bg-white text-indigo-600 px-6 py-2.5 rounded-xl font-semibold hover:bg-indigo-50 transition-colors text-sm"
+            >
               Iniciar Agora
             </button>
           </div>
 
+          {/* Daily Challenge */}
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
             <h2 className="text-lg font-bold text-gray-800 mb-2">⚡ Desafio Diário</h2>
-            <p className="text-gray-500 text-sm mb-4">
-              Complete 20 questões hoje para manter sua sequência!
-            </p>
+            <p className="text-gray-500 text-sm mb-4">Complete 20 questões hoje para manter sua sequência!</p>
             <div className="flex items-center gap-3">
               <div className="flex-1 bg-gray-100 rounded-full h-2">
-                <div className="bg-indigo-600 h-2 rounded-full" style={{ width: '0%' }}></div>
+                <div
+                  className="bg-indigo-600 h-2 rounded-full transition-all"
+                  style={{ width: `${dailyProgress}%` }}
+                ></div>
               </div>
-              <span className="text-sm font-semibold text-gray-600">0/20</span>
+              <span className="text-sm font-semibold text-gray-600">{stats.questionsToday}/20</span>
             </div>
           </div>
         </div>
 
-        {/* Subject Areas */}
+        {/* Study Areas */}
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-8">
-          <h2 className="text-lg font-bold text-gray-800 mb-4">📚 Áreas de Estudo</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {[
-              { emoji: '🧮', subject: 'Matemática', progress: 0 },
-              { emoji: '📖', subject: 'Português', progress: 0 },
-              { emoji: '🌍', subject: 'História', progress: 0 },
-              { emoji: '⚗️', subject: 'Ciências', progress: 0 },
-              { emoji: '⚖️', subject: 'Direito', progress: 0 },
-              { emoji: '💰', subject: 'Finanças', progress: 0 },
-              { emoji: '🗺️', subject: 'Geografia', progress: 0 },
-              { emoji: '🇬🇧', subject: 'Inglês', progress: 0 },
-            ].map((item, i) => (
+          <h2 className="text-xl font-bold text-gray-800 mb-5">📚 Áreas de Estudo</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+            {studyAreas.map((item, i) => (
               <button
                 key={i}
-                className="flex flex-col items-center p-4 rounded-xl bg-gray-50 hover:bg-indigo-50 hover:border-indigo-200 border border-transparent transition-all group"
+                onClick={() => router.push(item.path)}
+                className="flex flex-col items-center p-4 rounded-xl bg-gray-50 hover:bg-indigo-50 hover:border-indigo-200 border border-transparent transition-all group cursor-pointer"
               >
                 <span className="text-2xl mb-2">{item.emoji}</span>
-                <p className="text-sm font-medium text-gray-700 group-hover:text-indigo-700">{item.subject}</p>
-                <div className="w-full bg-gray-200 rounded-full h-1 mt-2">
-                  <div
-                    className="bg-indigo-500 h-1 rounded-full"
-                    style={{ width: `${item.progress}%` }}
-                  ></div>
-                </div>
+                <p className="text-xs font-medium text-gray-700 group-hover:text-indigo-700 text-center leading-tight">{item.subject}</p>
               </button>
             ))}
           </div>
         </div>
 
-        {/* TutorIA Info Banner */}
+        {/* Info Banner */}
         <div className="bg-indigo-50 border border-indigo-100 rounded-2xl p-6 flex items-start gap-4">
-          <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center flex-shrink-0">
-            <span className="text-2xl">🎓</span>
-          </div>
+          <div className="text-3xl">🎓</div>
           <div>
-            <h3 className="font-bold text-indigo-900 mb-1">TutorIA está pronto para te ajudar!</h3>
-            <p className="text-indigo-700 text-sm">
-              Clique no botão de chat no canto inferior direito para tirar qualquer dúvida com nossa IA powered by Claude Sonnet 4.6.
+            <h3 className="font-semibold text-indigo-900 mb-1">TutorIA está pronto para te ajudar!</h3>
+            <p className="text-sm text-indigo-700">
+              Clique no botão de chat no canto inferior direito para tirar qualquer dúvida com nossa IA powered by Claude Sonnet 4.6. 
               Disponível 24/7 para te ajudar com ENEM, OAB, Concursos e muito mais!
             </p>
           </div>
         </div>
       </main>
-
       <Chatbot />
     </div>
-  );
+  )
 }
