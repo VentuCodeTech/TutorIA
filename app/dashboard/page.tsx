@@ -60,6 +60,12 @@ export default function Dashboard() {
             { icon: '📊', label: 'Progresso', href: '/dashboard/progresso', active: false },
             { icon: '🎯', label: 'Simulados', href: '/dashboard/simulados', active: false },
             { icon: '💰', label: 'Planos', href: '/pricing', active: false },
+              { icon: '🎯', label: 'Vestibular/Concurso', href: '/dashboard/vestibular', active: false },
+              { icon: '📈', label: 'Desempenho', href: '/dashboard/desempenho', active: false },
+              { icon: '📓', label: 'Anotações', href: '/dashboard/anotacoes', active: false },
+              { icon: '🤖', label: 'Assistente IA', href: '/dashboard/assistente', active: false },
+              { icon: '💬', label: 'Comunidade', href: '/dashboard/comunidade', active: false },
+              { icon: '🆕', label: 'Novidades', href: '/dashboard/novidades', active: false },
           ].map((item) => (
             <Link
               key={item.label}
