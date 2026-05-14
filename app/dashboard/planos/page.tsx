@@ -1,12 +1,67 @@
 'use client';
+import { useState } from 'react';
 import Sidebar from '@/components/Sidebar';
+import { useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 
-export default function PlanosPage() {
+function PlanosContent() {
+  const [loading, setLoading] = useState<string | null>(null);
+  const searchParams = useSearchParams();
+  const success = searchParams.get('success');
+  const canceled = searchParams.get('canceled');
+  const successPlan = searchParams.get('plan');
+
+  const planLabels: Record<string, string> = {
+    standard: 'Standard',
+    student: 'Student',
+    advanced_pro: 'Advanced Pro',
+  };
+
+  async function handleCheckout(planId: string) {
+    setLoading(planId);
+    try {
+      const res = await fetch('/api/stripe/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ planId }),
+      });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert('Erro ao iniciar checkout: ' + (data.error || 'Tente novamente.'));
+        setLoading(null);
+      }
+    } catch (e) {
+      alert('Erro de conexão. Tente novamente.');
+      setLoading(null);
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Sidebar />
       <div className="ml-64 p-8">
         <div className="max-w-6xl mx-auto">
+
+          {/* Success / Cancel banners */}
+          {success && (
+            <div className="mb-6 bg-green-50 border border-green-200 rounded-xl p-4 flex items-center gap-3">
+              <span className="text-2xl">🎉</span>
+              <div>
+                <p className="font-semibold text-green-800">Assinatura ativada com sucesso!</p>
+                <p className="text-sm text-green-700">Bem-vindo ao plano {planLabels[successPlan || ''] || successPlan}. Aproveite todos os recursos!</p>
+              </div>
+            </div>
+          )}
+          {canceled && (
+            <div className="mb-6 bg-yellow-50 border border-yellow-200 rounded-xl p-4 flex items-center gap-3">
+              <span className="text-2xl">ℹ️</span>
+              <p className="text-yellow-800">Checkout cancelado. Seu plano não foi alterado.</p>
+            </div>
+          )}
+
           {/* Header */}
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">💎 Planos e Preços</h1>
@@ -24,12 +79,12 @@ export default function PlanosPage() {
                 <span className="text-gray-500 mb-1">/mês</span>
               </div>
               <ul className="space-y-3 flex-1">
-                {["20 questões por dia","Acesso às matérias básicas","Dashboard básico","Comunidade de estudantes"].map(f => (
+                {['20 questões por dia','Acesso às matérias básicas','Dashboard básico','Comunidade de estudantes'].map(f => (
                   <li key={f} className="flex items-center gap-2 text-sm text-gray-700">
                     <span className="text-green-500">✅</span> {f}
                   </li>
                 ))}
-                {["Simulados ilimitados","Assistente IA ilimitado","Análise de desempenho avançada","Plano de estudos personalizado"].map(f => (
+                {['Simulados ilimitados','Assistente IA ilimitado','Análise de desempenho avançada','Plano de estudos personalizado'].map(f => (
                   <li key={f} className="flex items-center gap-2 text-sm text-gray-400">
                     <span className="text-red-400">❌</span> {f}
                   </li>
@@ -40,47 +95,59 @@ export default function PlanosPage() {
               </button>
             </div>
 
-            {/* Pro */}
+            {/* Standard */}
             <div className="bg-white rounded-2xl border-2 border-indigo-500 p-6 flex flex-col relative">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-indigo-500 text-white text-xs font-bold px-4 py-1 rounded-full">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-indigo-500 text-white text-xs font-bold px-4 py-1 rounded-full whitespace-nowrap">
                 Mais Popular
               </div>
-              <h2 className="text-xl font-bold text-gray-900 mb-1">Pro</h2>
+              <h2 className="text-xl font-bold text-gray-900 mb-1">Standard</h2>
               <div className="flex items-end gap-1 mb-6">
                 <span className="text-4xl font-bold text-gray-900">R$ 29,90</span>
                 <span className="text-gray-500 mb-1">/mês</span>
               </div>
               <ul className="space-y-3 flex-1">
-                {["Questões ilimitadas","Todas as matérias","Simulados ilimitados","Assistente IA (100 msgs/dia)","Análise de desempenho completa","Plano de estudos personalizado","Anotações sincronizadas","Suporte prioritário"].map(f => (
+                {['Questões ilimitadas','Todas as matérias','Simulados ilimitados','Assistente IA (100 msgs/dia)','Análise de desempenho completa','Plano de estudos personalizado','Anotações sincronizadas','Suporte prioritário'].map(f => (
                   <li key={f} className="flex items-center gap-2 text-sm text-gray-700">
                     <span className="text-green-500">✅</span> {f}
                   </li>
                 ))}
               </ul>
-              <button className="mt-6 w-full py-3 rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition-colors">
-                Assinar Pro
+              <button
+                onClick={() => handleCheckout('standard')}
+                disabled={loading === 'standard'}
+                className="mt-6 w-full py-3 rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                {loading === 'standard' ? (
+                  <><span className="animate-spin inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full"></span> Aguarde...</>
+                ) : 'Assinar Standard'}
               </button>
             </div>
 
-            {/* Premium */}
+            {/* Student */}
             <div className="bg-white rounded-2xl border-2 border-purple-500 p-6 flex flex-col relative">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-purple-500 text-white text-xs font-bold px-4 py-1 rounded-full">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-purple-500 text-white text-xs font-bold px-4 py-1 rounded-full whitespace-nowrap">
                 Mais Completo
               </div>
-              <h2 className="text-xl font-bold text-gray-900 mb-1">Premium</h2>
+              <h2 className="text-xl font-bold text-gray-900 mb-1">Student</h2>
               <div className="flex items-end gap-1 mb-6">
                 <span className="text-4xl font-bold text-gray-900">R$ 49,90</span>
                 <span className="text-gray-500 mb-1">/mês</span>
               </div>
               <ul className="space-y-3 flex-1">
-                {["Tudo do plano Pro","Assistente IA ilimitado","Mentoria em grupo semanal","Redação corrigida por IA","Acesso antecipado a novidades","Relatórios semanais por email","Integração com Google Calendar","Suporte 24/7 via chat"].map(f => (
+                {['Tudo do plano Standard','Assistente IA ilimitado','Mentoria em grupo semanal','Redação corrigida por IA','Acesso antecipado a novidades','Relatórios semanais por email','Integração com Google Calendar','Suporte 24/7 via chat'].map(f => (
                   <li key={f} className="flex items-center gap-2 text-sm text-gray-700">
                     <span className="text-green-500">✅</span> {f}
                   </li>
                 ))}
               </ul>
-              <button className="mt-6 w-full py-3 rounded-xl bg-purple-600 text-white font-semibold hover:bg-purple-700 transition-colors">
-                Assinar Premium
+              <button
+                onClick={() => handleCheckout('student')}
+                disabled={loading === 'student'}
+                className="mt-6 w-full py-3 rounded-xl bg-purple-600 text-white font-semibold hover:bg-purple-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                {loading === 'student' ? (
+                  <><span className="animate-spin inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full"></span> Aguarde...</>
+                ) : 'Assinar Student'}
               </button>
             </div>
 
@@ -96,30 +163,36 @@ export default function PlanosPage() {
               </div>
               <ul className="space-y-3 flex-1">
                 {[
-                  "Tudo do plano Premium",
-                  "Assistente IA sem limites com GPT-4",
-                  "Mentoria individual semanal",
-                  "Redações corrigidas ilimitadas",
-                  "Simulados personalizados por IA",
-                  "Plano de estudos adaptativo",
-                  "Acesso a professores especialistas",
-                  "Relatórios detalhados de evolução",
-                  "Prioridade máxima no suporte",
-                  "Badge exclusivo de Elite"
+                  'Tudo do plano Student',
+                  'Assistente IA sem limites com GPT-4',
+                  'Mentoria individual semanal',
+                  'Redações corrigidas ilimitadas',
+                  'Simulados personalizados por IA',
+                  'Plano de estudos adaptativo',
+                  'Acesso a professores especialistas',
+                  'Relatórios detalhados de evolução',
+                  'Prioridade máxima no suporte',
+                  'Badge exclusivo de Elite',
                 ].map(f => (
                   <li key={f} className="flex items-center gap-2 text-sm text-gray-700">
                     <span className="text-yellow-500">⭐</span> {f}
                   </li>
                 ))}
               </ul>
-              <button className="mt-6 w-full py-3 rounded-xl bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-bold hover:from-yellow-500 hover:to-orange-600 transition-all shadow-md">
-                🚀 Assinar Advanced Pro
+              <button
+                onClick={() => handleCheckout('advanced_pro')}
+                disabled={loading === 'advanced_pro'}
+                className="mt-6 w-full py-3 rounded-xl bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-bold hover:from-yellow-500 hover:to-orange-600 transition-all shadow-md disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                {loading === 'advanced_pro' ? (
+                  <><span className="animate-spin inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full"></span> Aguarde...</>
+                ) : '🚀 Assinar Advanced Pro'}
               </button>
             </div>
 
           </div>
 
-          {/* FAQ / Comparison Banner */}
+          {/* Bottom Banner */}
           <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-8 text-white text-center">
             <h3 className="text-2xl font-bold mb-2">🎓 Garanta seu futuro hoje!</h3>
             <p className="text-indigo-100 mb-4">Mais de 10.000 estudantes já passaram no vestibular com o TutorIA. Comece agora e transforme seus estudos.</p>
@@ -127,12 +200,20 @@ export default function PlanosPage() {
               <span>✅ Cancele quando quiser</span>
               <span>✅ Sem fidelidade</span>
               <span>✅ Garantia de 7 dias</span>
-              <span>✅ Pagamento seguro</span>
+              <span>✅ Pagamento seguro via Stripe</span>
             </div>
           </div>
 
         </div>
       </div>
     </div>
+  );
+}
+
+export default function PlanosPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-gray-50 flex items-center justify-center"><div className="animate-spin w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full"></div></div>}>
+      <PlanosContent />
+    </Suspense>
   );
 }
