@@ -96,10 +96,7 @@ function PlanosContent() {
             </div>
 
             {/* Standard */}
-            <div className="bg-white rounded-2xl border-2 border-indigo-500 p-6 flex flex-col relative">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-indigo-500 text-white text-xs font-bold px-4 py-1 rounded-full whitespace-nowrap">
-                Mais Popular
-              </div>
+            <div className="bg-white rounded-2xl border border-gray-200 p-6 flex flex-col">
               <h2 className="text-xl font-bold text-gray-900 mb-1">Standard</h2>
               <div className="flex items-end gap-1 mb-6">
                 <span className="text-4xl font-bold text-gray-900">R$ 19,90</span>
@@ -124,9 +121,9 @@ function PlanosContent() {
             </div>
 
             {/* Student */}
-            <div className="bg-white rounded-2xl border-2 border-purple-500 p-6 flex flex-col relative">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-purple-500 text-white text-xs font-bold px-4 py-1 rounded-full whitespace-nowrap">
-                Mais Completo
+            <div className="bg-white rounded-2xl border-2 border-indigo-500 p-6 flex flex-col relative shadow-md">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-indigo-600 text-white text-xs font-bold px-4 py-1 rounded-full whitespace-nowrap">
+                Mais Popular
               </div>
               <h2 className="text-xl font-bold text-gray-900 mb-1">Student</h2>
               <div className="flex items-end gap-1 mb-6">
