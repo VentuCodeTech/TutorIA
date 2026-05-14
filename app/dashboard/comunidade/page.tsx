@@ -1,223 +1,184 @@
-'use client'
+'use client';
+import { useState, useEffect } from 'react';
+import { createClient } from '@/lib/supabase/client';
+import Sidebar from '@/components/Sidebar';
 
-import { useState } from 'react'
+interface Post {
+  id: string;
+  user_name: string;
+  user_avatar: string;
+  content: string;
+  category: string;
+  likes: number;
+  replies: number;
+  created_at: string;
+}
 
-const topicos_iniciais = [
-  {
-    id: '1',
-    autor: 'Ana Silva',
-    avatar: 'A',
-    titulo: 'Dicas para a redação do ENEM 2025',
-    conteudo: 'Pessoal, estou compilando as principais dicas para a redação do ENEM. Quem tiver mais sugestões, por favor compartilhe!',
-    materia: 'Redação',
-    curtidas: 24,
-    respostas: 8,
-    data: '2025-05-10',
-    tags: ['ENEM', 'Redação', 'Dicas'],
-  },
-  {
-    id: '2',
-    autor: 'Carlos Mendes',
-    avatar: 'C',
-    titulo: 'Como resolver questões de probabilidade rapidamente?',
-    conteudo: 'Tenho muita dificuldade com probabilidade. Alguém tem um método visual ou mnemônico para facilitar?',
-    materia: 'Matemática',
-    curtidas: 15,
-    respostas: 12,
-    data: '2025-05-12',
-    tags: ['Matemática', 'Probabilidade', 'Técnicas'],
-  },
-  {
-    id: '3',
-    autor: 'Beatriz Santos',
-    avatar: 'B',
-    titulo: 'Resumo de Revolução Industrial - compartilhando!',
-    conteudo: 'Fiz um resumo completo sobre a Revolução Industrial com mapas mentais. Posso compartilhar com quem precisar!',
-    materia: 'História',
-    curtidas: 31,
-    respostas: 5,
-    data: '2025-05-13',
-    tags: ['História', 'Revolução Industrial', 'Resumo'],
-  },
-  {
-    id: '4',
-    autor: 'Ricardo Lima',
-    avatar: 'R',
-    titulo: 'Grupo de estudos para FUVEST - quem topa?',
-    conteudo: 'Buscando pessoas motivadas para formar grupo de estudos virtual para FUVEST 2026. Foco em exatas!',
-    materia: 'Geral',
-    curtidas: 18,
-    respostas: 22,
-    data: '2025-05-14',
-    tags: ['FUVEST', 'Grupo de Estudos', 'Exatas'],
-  },
-]
+const mockPosts: Post[] = [
+  { id: '1', user_name: 'Ana Silva', user_avatar: '', content: 'Alguém tem dicas para estudar Matemática para o ENEM? Estou com dificuldade em logaritmos!', category: 'ENEM', likes: 12, replies: 5, created_at: '2024-01-10' },
+  { id: '2', user_name: 'Carlos Mendes', user_avatar: '', content: 'Compartilhando minha rotina de estudos: 2h de manhã e 2h à noite. Resultados incríveis em 3 meses!', category: 'Dicas', likes: 34, replies: 8, created_at: '2024-01-09' },
+  { id: '3', user_name: 'Beatriz Costa', user_avatar: '', content: 'Consegui passar na FUVEST! Obrigada TutorIA pela ajuda com as questões de Redação!', category: 'Conquistas', likes: 89, replies: 15, created_at: '2024-01-08' },
+  { id: '4', user_name: 'Rafael Lima', user_avatar: '', content: 'Quem mais está estudando para concursos da área policial? Vamos criar um grupo de estudos?', category: 'Concursos', likes: 23, replies: 12, created_at: '2024-01-07' },
+  { id: '5', user_name: 'Juliana Ferreira', user_avatar: '', content: 'Dica: A técnica Pomodoro funciona muito bem! 25 min estudando, 5 min de pausa. Testei e aprovei!', category: 'Dicas', likes: 45, replies: 6, created_at: '2024-01-06' },
+];
 
-const cores = ['bg-purple-100 text-purple-600', 'bg-blue-100 text-blue-600', 'bg-green-100 text-green-600', 'bg-yellow-100 text-yellow-600', 'bg-red-100 text-red-600']
+const categories = ['Todos', 'ENEM', 'Vestibular', 'Concursos', 'Dicas', 'Conquistas', 'Dúvidas'];
 
 export default function ComunidadePage() {
-  const [topicos, setTopicos] = useState(topicos_iniciais)
-  const [novoTopico, setNovoTopico] = useState(false)
-  const [titulo, setTitulo] = useState('')
-  const [conteudo, setConteudo] = useState('')
-  const [materia, setMateria] = useState('Geral')
-  const [topicosAbertos, setTopicosAbertos] = useState<string[]>([])
-  const [respostasTexto, setRespostasTexto] = useState<Record<string, string>>({})
+  const [posts, setPosts] = useState<Post[]>(mockPosts);
+  const [selectedCategory, setSelectedCategory] = useState('Todos');
+  const [newPost, setNewPost] = useState('');
+  const [newCategory, setNewCategory] = useState('Dicas');
+  const [showNewPost, setShowNewPost] = useState(false);
+  const [userName, setUserName] = useState('Você');
+  const supabase = createClient();
 
-  const materias = ['Geral', 'Matemática', 'Português', 'História', 'Física', 'Química', 'Biologia', 'Direito', 'Redação']
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setUserName(user.user_metadata?.full_name || user.email?.split('@')[0] || 'Você');
+      }
+    };
+    getUser();
+  }, []);
 
-  const publicar = () => {
-    if (!titulo.trim() || !conteudo.trim()) return
-    const novo = {
+  const filteredPosts = selectedCategory === 'Todos'
+    ? posts
+    : posts.filter(p => p.category === selectedCategory);
+
+  const handleSubmitPost = () => {
+    if (!newPost.trim()) return;
+    const post: Post = {
       id: Date.now().toString(),
-      autor: 'Você',
-      avatar: 'V',
-      titulo,
-      conteudo,
-      materia,
-      curtidas: 0,
-      respostas: 0,
-      data: new Date().toISOString().split('T')[0],
-      tags: [materia],
-    }
-    setTopicos([novo, ...topicos])
-    setTitulo('')
-    setConteudo('')
-    setNovoTopico(false)
-  }
+      user_name: userName,
+      user_avatar: '',
+      content: newPost,
+      category: newCategory,
+      likes: 0,
+      replies: 0,
+      created_at: new Date().toISOString().split('T')[0],
+    };
+    setPosts([post, ...posts]);
+    setNewPost('');
+    setShowNewPost(false);
+  };
 
-  const curtir = (id: string) => {
-    setTopicos(prev => prev.map(t => t.id === id ? {...t, curtidas: t.curtidas + 1} : t))
-  }
-
-  const toggleTopico = (id: string) => {
-    setTopicosAbertos(prev => prev.includes(id) ? prev.filter(t => t !== id) : [...prev, id])
-  }
+  const handleLike = (id: string) => {
+    setPosts(posts.map(p => p.id === id ? { ...p, likes: p.likes + 1 } : p));
+  };
 
   return (
-    <div className="p-8 max-w-4xl">
-      <div className="mb-6 flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">💬 Comunidade</h1>
-          <p className="text-gray-500 mt-1">Fórum de debates e troca de conhecimentos</p>
-        </div>
-        <button
-          onClick={() => setNovoTopico(!novoTopico)}
-          className="px-4 py-2 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 transition-all"
-        >
-          + Novo Tópico
-        </button>
-      </div>
-
-      {novoTopico && (
-        <div className="bg-white rounded-2xl border border-indigo-200 p-6 mb-6">
-          <h3 className="font-semibold text-gray-900 mb-4">Criar novo tópico</h3>
-          <input
-            type="text"
-            placeholder="Título do tópico..."
-            value={titulo}
-            onChange={e => setTitulo(e.target.value)}
-            className="w-full px-4 py-2.5 border border-gray-200 rounded-xl mb-3 text-sm"
-          />
-          <div className="flex gap-3 mb-3">
-            <select
-              value={materia}
-              onChange={e => setMateria(e.target.value)}
-              className="px-3 py-2 border border-gray-200 rounded-xl text-sm"
+    <div className="min-h-screen bg-gray-50">
+      <Sidebar />
+      <div className="ml-64 p-8">
+        <div className="max-w-3xl mx-auto">
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">👥 Comunidade</h1>
+              <p className="text-gray-600 mt-1">Conecte-se com outros estudantes, compartilhe dicas e conquistas</p>
+            </div>
+            <button
+              onClick={() => setShowNewPost(!showNewPost)}
+              className="bg-indigo-600 text-white px-4 py-2 rounded-xl font-medium hover:bg-indigo-700 transition-colors"
             >
-              {materias.map(m => <option key={m}>{m}</option>)}
-            </select>
-          </div>
-          <textarea
-            placeholder="Descreva seu tópico, dúvida ou compartilhe conhecimento..."
-            value={conteudo}
-            onChange={e => setConteudo(e.target.value)}
-            rows={4}
-            className="w-full px-4 py-2.5 border border-gray-200 rounded-xl mb-3 text-sm resize-none"
-          />
-          <div className="flex gap-3">
-            <button onClick={publicar} className="px-5 py-2 bg-indigo-600 text-white rounded-xl text-sm font-medium hover:bg-indigo-700">
-              Publicar
-            </button>
-            <button onClick={() => setNovoTopico(false)} className="px-5 py-2 border border-gray-200 text-gray-600 rounded-xl text-sm hover:bg-gray-50">
-              Cancelar
+              + Nova Publicação
             </button>
           </div>
-        </div>
-      )}
 
-      <div className="space-y-4">
-        {topicos.map((topico, idx) => (
-          <div key={topico.id} className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-            <div className="p-5">
-              <div className="flex items-start gap-3">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold text-sm flex-shrink-0 ${cores[idx % cores.length]}`}>
-                  {topico.avatar}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-start justify-between gap-2">
-                    <h3 className="font-semibold text-gray-900">{topico.titulo}</h3>
-                    <span className="text-xs text-gray-400 flex-shrink-0">{topico.data}</span>
-                  </div>
-                  <p className="text-xs text-gray-500 mt-0.5">{topico.autor} • {topico.materia}</p>
-                  <p className="text-sm text-gray-700 mt-2">{topico.conteudo}</p>
-                  <div className="flex flex-wrap gap-1.5 mt-2">
-                    {topico.tags.map(tag => (
-                      <span key={tag} className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">#{tag}</span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-4 mt-4 pt-3 border-t border-gray-100">
-                <button
-                  onClick={() => curtir(topico.id)}
-                  className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-red-500 transition-colors"
+          {showNewPost && (
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
+              <h3 className="font-semibold text-gray-900 mb-4">Nova Publicação</h3>
+              <textarea
+                value={newPost}
+                onChange={(e) => setNewPost(e.target.value)}
+                placeholder="Compartilhe uma dúvida, dica ou conquista com a comunidade..."
+                className="w-full border border-gray-200 rounded-xl p-4 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+                rows={4}
+              />
+              <div className="flex items-center justify-between mt-4">
+                <select
+                  value={newCategory}
+                  onChange={(e) => setNewCategory(e.target.value)}
+                  className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 >
-                  <span>❤️</span> <span>{topico.curtidas}</span>
-                </button>
-                <button
-                  onClick={() => toggleTopico(topico.id)}
-                  className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-indigo-600 transition-colors"
-                >
-                  <span>💬</span> <span>{topico.respostas} respostas</span>
-                </button>
-                <button className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-green-600 transition-colors">
-                  <span>↗️</span> <span>Compartilhar</span>
-                </button>
+                  {categories.filter(c => c !== 'Todos').map(c => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setShowNewPost(false)}
+                    className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 transition-colors"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    onClick={handleSubmitPost}
+                    className="bg-indigo-600 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-indigo-700 transition-colors"
+                  >
+                    Publicar
+                  </button>
+                </div>
               </div>
             </div>
+          )}
 
-            {topicosAbertos.includes(topico.id) && (
-              <div className="bg-gray-50 p-4 border-t border-gray-100">
-                <div className="flex gap-3">
-                  <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-semibold text-xs flex-shrink-0">V</div>
-                  <div className="flex-1">
-                    <textarea
-                      placeholder="Escreva sua resposta..."
-                      value={respostasTexto[topico.id] || ''}
-                      onChange={e => setRespostasTexto(prev => ({...prev, [topico.id]: e.target.value}))}
-                      rows={2}
-                      className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm resize-none bg-white"
-                    />
-                    <button
-                      onClick={() => {
-                        if (respostasTexto[topico.id]?.trim()) {
-                          setTopicos(prev => prev.map(t => t.id === topico.id ? {...t, respostas: t.respostas + 1} : t))
-                          setRespostasTexto(prev => ({...prev, [topico.id]: ''}))
-                        }
-                      }}
-                      className="mt-2 px-4 py-1.5 bg-indigo-600 text-white rounded-lg text-sm hover:bg-indigo-700"
-                    >
-                      Responder
-                    </button>
+          <div className="flex gap-2 mb-6 flex-wrap">
+            {categories.map(cat => (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                  selectedCategory === cat
+                    ? 'bg-indigo-600 text-white'
+                    : 'bg-white text-gray-600 border border-gray-200 hover:border-indigo-300'
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+
+          <div className="space-y-4">
+            {filteredPosts.map(post => (
+              <div key={post.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
+                      <span className="text-indigo-600 font-semibold text-sm">
+                        {post.user_name.charAt(0).toUpperCase()}
+                      </span>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-gray-900 text-sm">{post.user_name}</p>
+                      <p className="text-xs text-gray-400">{post.created_at}</p>
+                    </div>
                   </div>
+                  <span className="bg-indigo-50 text-indigo-700 text-xs px-3 py-1 rounded-full font-medium">
+                    {post.category}
+                  </span>
+                </div>
+                <p className="text-gray-700 text-sm leading-relaxed mb-4">{post.content}</p>
+                <div className="flex items-center gap-4">
+                  <button
+                    onClick={() => handleLike(post.id)}
+                    className="flex items-center gap-1 text-gray-500 hover:text-indigo-600 transition-colors text-sm"
+                  >
+                    ❤️ {post.likes}
+                  </button>
+                  <button className="flex items-center gap-1 text-gray-500 hover:text-indigo-600 transition-colors text-sm">
+                    💬 {post.replies} respostas
+                  </button>
+                  <button className="flex items-center gap-1 text-gray-500 hover:text-indigo-600 transition-colors text-sm">
+                    🔗 Compartilhar
+                  </button>
                 </div>
               </div>
-            )}
+            ))}
           </div>
-        ))}
+        </div>
       </div>
     </div>
-  )
+  );
 }

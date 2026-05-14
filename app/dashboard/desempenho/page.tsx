@@ -1,142 +1,165 @@
-'use client'
+'use client';
+import { useState } from 'react';
+import Sidebar from '@/components/Sidebar';
 
-import { useState } from 'react'
+const subjectData = [
+  { subject: 'Matemática', correct: 72, total: 100, color: 'bg-blue-500', trend: '+5%' },
+  { subject: 'Português', correct: 85, total: 100, color: 'bg-green-500', trend: '+3%' },
+  { subject: 'História', correct: 68, total: 100, color: 'bg-yellow-500', trend: '-2%' },
+  { subject: 'Ciências', correct: 79, total: 100, color: 'bg-purple-500', trend: '+8%' },
+  { subject: 'Física', correct: 55, total: 100, color: 'bg-red-500', trend: '+1%' },
+  { subject: 'Química', correct: 62, total: 100, color: 'bg-orange-500', trend: '+4%' },
+  { subject: 'Biologia', correct: 88, total: 100, color: 'bg-teal-500', trend: '+6%' },
+  { subject: 'Geografia', correct: 74, total: 100, color: 'bg-indigo-500', trend: '-1%' },
+];
 
-const dadosSemana = [
-  { dia: 'Seg', questoes: 12, acertos: 9, tempo: 45 },
-  { dia: 'Ter', questoes: 18, acertos: 14, tempo: 60 },
-  { dia: 'Qua', questoes: 8, acertos: 5, tempo: 30 },
-  { dia: 'Qui', questoes: 22, acertos: 18, tempo: 75 },
-  { dia: 'Sex', questoes: 15, acertos: 12, tempo: 50 },
-  { dia: 'Sab', questoes: 25, acertos: 20, tempo: 90 },
-  { dia: 'Dom', questoes: 10, acertos: 8, tempo: 35 },
-]
-
-const desempenhoPorMateria = [
-  { materia: 'Matemática', acertos: 72, total: 100, cor: 'bg-blue-500' },
-  { materia: 'Português', acertos: 85, total: 100, cor: 'bg-green-500' },
-  { materia: 'História', acertos: 68, total: 100, cor: 'bg-yellow-500' },
-  { materia: 'Física', acertos: 55, total: 100, cor: 'bg-red-500' },
-  { materia: 'Química', acertos: 63, total: 100, cor: 'bg-purple-500' },
-  { materia: 'Biologia', acertos: 78, total: 100, cor: 'bg-teal-500' },
-]
-
-const conquistas = [
-  { icon: '🔥', nome: '7 Dias Seguidos', descricao: 'Estudou por 7 dias consecutivos', desbloqueada: true },
-  { icon: '⭐', nome: 'Primeira Centena', descricao: 'Respondeu 100 questões', desbloqueada: true },
-  { icon: '🎯', nome: 'Atirador de Elite', descricao: 'Taxa de acerto acima de 90%', desbloqueada: false },
-  { icon: '📚', nome: 'Maratonista', descricao: 'Estudou por 30 dias consecutivos', desbloqueada: false },
-  { icon: '🏆', nome: 'Top 100', descricao: 'Entrou no top 100 do ranking', desbloqueada: false },
-  { icon: '💎', nome: 'Diamante', descricao: 'Completou 1000 questões', desbloqueada: false },
-]
+const weeklyData = [
+  { day: 'Seg', questions: 18, correct: 14 },
+  { day: 'Ter', questions: 22, correct: 18 },
+  { day: 'Qua', questions: 15, correct: 11 },
+  { day: 'Qui', questions: 25, correct: 21 },
+  { day: 'Sex', questions: 20, correct: 17 },
+  { day: 'Sáb', questions: 30, correct: 26 },
+  { day: 'Dom', questions: 12, correct: 10 },
+];
 
 export default function DesempenhoPage() {
-  const [periodoSelecionado, setPeriodoSelecionado] = useState('semana')
+  const [period, setPeriod] = useState('semana');
 
-  const totalQuestoes = dadosSemana.reduce((sum, d) => sum + d.questoes, 0)
-  const totalAcertos = dadosSemana.reduce((sum, d) => sum + d.acertos, 0)
-  const taxaAcerto = Math.round((totalAcertos / totalQuestoes) * 100)
-  const totalTempo = dadosSemana.reduce((sum, d) => sum + d.tempo, 0)
+  const totalCorrect = subjectData.reduce((sum, s) => sum + s.correct, 0);
+  const totalQuestions = subjectData.reduce((sum, s) => sum + s.total, 0);
+  const overallRate = Math.round((totalCorrect / totalQuestions) * 100);
 
-  const maxQuestoes = Math.max(...dadosSemana.map(d => d.questoes))
+  const bestSubject = subjectData.reduce((best, s) =>
+    s.correct > best.correct ? s : best, subjectData[0]);
+  const worstSubject = subjectData.reduce((worst, s) =>
+    s.correct < worst.correct ? s : worst, subjectData[0]);
+
+  const maxQuestions = Math.max(...weeklyData.map(d => d.questions));
 
   return (
-    <div className="p-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">📈 Análise de Desempenho</h1>
-        <p className="text-gray-500 mt-1">Acompanhe sua evolução nos estudos</p>
-      </div>
-
-      {/* Stats Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        {[
-          { label: 'Questões na Semana', value: totalQuestoes, icon: '📝', cor: 'text-blue-600', bg: 'bg-blue-50' },
-          { label: 'Taxa de Acerto', value: `${taxaAcerto}%`, icon: '🎯', cor: 'text-green-600', bg: 'bg-green-50' },
-          { label: 'Minutos Estudados', value: totalTempo, icon: '⏱️', cor: 'text-purple-600', bg: 'bg-purple-50' },
-          { label: 'Sequência Atual', value: '7 dias', icon: '🔥', cor: 'text-orange-600', bg: 'bg-orange-50' },
-        ].map((stat) => (
-          <div key={stat.label} className={`${stat.bg} rounded-2xl p-5`}>
-            <div className="text-3xl mb-2">{stat.icon}</div>
-            <div className={`text-2xl font-bold ${stat.cor}`}>{stat.value}</div>
-            <div className="text-sm text-gray-600 mt-1">{stat.label}</div>
+    <div className="min-h-screen bg-gray-50">
+      <Sidebar />
+      <div className="ml-64 p-8">
+        <div className="max-w-6xl mx-auto">
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-gray-900">📈 Análise de Desempenho</h1>
+            <p className="text-gray-600 mt-1">Acompanhe sua evolução e identifique pontos de melhoria</p>
           </div>
-        ))}
-      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        {/* Gráfico de questões por dia */}
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
-          <h2 className="font-semibold text-gray-900 mb-4">📊 Questões por Dia (Semana)</h2>
-          <div className="flex items-end gap-3 h-40">
-            {dadosSemana.map((d) => (
-              <div key={d.dia} className="flex-1 flex flex-col items-center gap-1">
-                <div className="w-full relative" style={{ height: '120px' }}>
-                  <div
-                    className="w-full bg-indigo-100 rounded-t-lg absolute bottom-0"
-                    style={{ height: `${(d.questoes / maxQuestoes) * 100}%` }}
-                  >
-                    <div
-                      className="w-full bg-indigo-500 rounded-t-lg absolute bottom-0"
-                      style={{ height: `${(d.acertos / d.questoes) * 100}%` }}
-                    />
-                  </div>
-                </div>
-                <span className="text-xs text-gray-500">{d.dia}</span>
-                <span className="text-xs font-medium text-gray-700">{d.questoes}</span>
-              </div>
-            ))}
-          </div>
-          <div className="flex items-center gap-4 mt-3 text-xs text-gray-500">
-            <span className="flex items-center gap-1"><span className="w-3 h-3 bg-indigo-500 rounded inline-block"></span> Acertos</span>
-            <span className="flex items-center gap-1"><span className="w-3 h-3 bg-indigo-100 rounded inline-block"></span> Total</span>
-          </div>
-        </div>
-
-        {/* Desempenho por matéria */}
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
-          <h2 className="font-semibold text-gray-900 mb-4">📚 Desempenho por Matéria</h2>
-          <div className="space-y-3">
-            {desempenhoPorMateria.map((m) => (
-              <div key={m.materia}>
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-sm font-medium text-gray-700">{m.materia}</span>
-                  <span className="text-sm font-semibold text-gray-900">{m.acertos}%</span>
-                </div>
-                <div className="w-full bg-gray-100 rounded-full h-2">
-                  <div
-                    className={`${m.cor} h-2 rounded-full transition-all`}
-                    style={{ width: `${m.acertos}%` }}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Conquistas */}
-      <div className="bg-white rounded-2xl border border-gray-200 p-6">
-        <h2 className="font-semibold text-gray-900 mb-4">🏆 Conquistas</h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          {conquistas.map((c) => (
-            <div
-              key={c.nome}
-              className={`text-center p-3 rounded-xl border ${
-                c.desbloqueada
-                  ? 'border-yellow-200 bg-yellow-50'
-                  : 'border-gray-100 bg-gray-50 opacity-50'
-              }`}
-            >
-              <div className="text-3xl mb-1">{c.icon}</div>
-              <div className="text-xs font-semibold text-gray-900">{c.nome}</div>
-              <div className="text-xs text-gray-500 mt-0.5">{c.descricao}</div>
-              {c.desbloqueada && (
-                <div className="text-xs text-yellow-600 mt-1 font-medium">✅ Desbloqueada</div>
-              )}
+          <div className="grid grid-cols-4 gap-4 mb-8">
+            <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+              <div className="text-3xl font-bold text-indigo-600">{overallRate}%</div>
+              <div className="text-sm text-gray-600 mt-1">Taxa de Acerto Geral</div>
+              <div className="text-xs text-green-600 mt-1">▲ +3.2% esta semana</div>
             </div>
-          ))}
+            <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+              <div className="text-3xl font-bold text-green-600">{totalCorrect}</div>
+              <div className="text-sm text-gray-600 mt-1">Questões Corretas</div>
+              <div className="text-xs text-gray-400 mt-1">de {totalQuestions} tentadas</div>
+            </div>
+            <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+              <div className="text-3xl font-bold text-yellow-500">🏆</div>
+              <div className="text-sm font-medium text-gray-900 mt-1">{bestSubject.subject}</div>
+              <div className="text-xs text-green-600 mt-1">Melhor matéria ({bestSubject.correct}%)</div>
+            </div>
+            <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+              <div className="text-3xl font-bold text-red-400">⚠️</div>
+              <div className="text-sm font-medium text-gray-900 mt-1">{worstSubject.subject}</div>
+              <div className="text-xs text-red-600 mt-1">Precisa de atenção ({worstSubject.correct}%)</div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-6 mb-6">
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+              <h3 className="font-semibold text-gray-900 mb-4">📊 Desempenho por Matéria</h3>
+              <div className="space-y-3">
+                {subjectData.map((item) => (
+                  <div key={item.subject}>
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="text-sm text-gray-700">{item.subject}</span>
+                      <div className="flex items-center gap-2">
+                        <span className={`text-xs ${item.trend.startsWith('+') ? 'text-green-600' : 'text-red-500'}`}>
+                          {item.trend}
+                        </span>
+                        <span className="text-sm font-semibold text-gray-900">{item.correct}%</span>
+                      </div>
+                    </div>
+                    <div className="w-full bg-gray-100 rounded-full h-2">
+                      <div
+                        className={`${item.color} h-2 rounded-full transition-all`}
+                        style={{ width: `${item.correct}%` }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="font-semibold text-gray-900">📅 Questões por Dia</h3>
+                <select
+                  value={period}
+                  onChange={(e) => setPeriod(e.target.value)}
+                  className="text-xs border border-gray-200 rounded-lg px-2 py-1 focus:outline-none"
+                >
+                  <option value="semana">Esta semana</option>
+                  <option value="mes">Este mês</option>
+                </select>
+              </div>
+              <div className="flex items-end gap-2 h-48">
+                {weeklyData.map((day) => (
+                  <div key={day.day} className="flex-1 flex flex-col items-center gap-1">
+                    <div className="w-full flex flex-col items-center justify-end h-36">
+                      <div
+                        className="w-full bg-indigo-100 rounded-t-lg relative flex flex-col justify-end"
+                        style={{ height: `${(day.questions / maxQuestions) * 100}%` }}
+                      >
+                        <div
+                          className="w-full bg-indigo-500 rounded-t-lg"
+                          style={{ height: `${(day.correct / day.questions) * 100}%` }}
+                        />
+                      </div>
+                    </div>
+                    <span className="text-xs text-gray-500">{day.day}</span>
+                    <span className="text-xs font-medium text-gray-700">{day.questions}</span>
+                  </div>
+                ))}
+              </div>
+              <div className="flex gap-4 mt-3 text-xs text-gray-500">
+                <div className="flex items-center gap-1">
+                  <div className="w-3 h-3 bg-indigo-500 rounded-sm" /> Corretas
+                </div>
+                <div className="flex items-center gap-1">
+                  <div className="w-3 h-3 bg-indigo-100 rounded-sm" /> Total
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+            <h3 className="font-semibold text-gray-900 mb-4">💡 Recomendações Personalizadas</h3>
+            <div className="grid grid-cols-3 gap-4">
+              <div className="bg-red-50 rounded-xl p-4 border border-red-100">
+                <div className="text-red-500 font-semibold text-sm mb-1">⚠️ Prioridade Alta</div>
+                <p className="text-sm text-gray-700 font-medium">{worstSubject.subject}</p>
+                <p className="text-xs text-gray-500 mt-1">Taxa de acerto: {worstSubject.correct}%. Dedique mais tempo a esta matéria!</p>
+              </div>
+              <div className="bg-yellow-50 rounded-xl p-4 border border-yellow-100">
+                <div className="text-yellow-600 font-semibold text-sm mb-1">📌 Atenção</div>
+                <p className="text-sm text-gray-700 font-medium">Consistência Diária</p>
+                <p className="text-xs text-gray-500 mt-1">Tente responder pelo menos 20 questões por dia para manter o ritmo.</p>
+              </div>
+              <div className="bg-green-50 rounded-xl p-4 border border-green-100">
+                <div className="text-green-600 font-semibold text-sm mb-1">✅ Ponto Forte</div>
+                <p className="text-sm text-gray-700 font-medium">{bestSubject.subject}</p>
+                <p className="text-xs text-gray-500 mt-1">Excelente! {bestSubject.correct}% de acerto. Continue assim!</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

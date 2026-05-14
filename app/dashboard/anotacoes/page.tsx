@@ -1,222 +1,260 @@
-'use client'
+'use client';
+import { useState, useEffect } from 'react';
+import { createClient } from '@/lib/supabase/client';
+import Sidebar from '@/components/Sidebar';
 
-import { useState, useEffect } from 'react'
-
-interface Anotacao {
-  id: string
-  titulo: string
-  conteudo: string
-  materia: string
-  dataCriacao: string
-  dataAtualizacao: string
+interface Note {
+  id: string;
+  title: string;
+  content: string;
+  subject: string;
+  color: string;
+  created_at: string;
+  updated_at: string;
 }
 
-const materias = ['Matemática', 'Português', 'História', 'Física', 'Química', 'Biologia', 'Direito', 'Geografia', 'Inglês', 'Geral']
+const COLORS = ['bg-yellow-100', 'bg-blue-100', 'bg-green-100', 'bg-pink-100', 'bg-purple-100', 'bg-orange-100'];
+const SUBJECTS = ['Geral', 'Matemática', 'Português', 'História', 'Ciências', 'Física', 'Química', 'Biologia', 'Geografia', 'Inglês', 'Filosofia', 'Sociologia'];
 
 export default function AnotacoesPage() {
-  const [anotacoes, setAnotacoes] = useState<Anotacao[]>([])
-  const [anotacaoAtual, setAnotacaoAtual] = useState<Anotacao | null>(null)
-  const [modoEdicao, setModoEdicao] = useState(false)
-  const [titulo, setTitulo] = useState('')
-  const [conteudo, setConteudo] = useState('')
-  const [materia, setMateria] = useState('Geral')
-  const [filtroMateria, setFiltroMateria] = useState('Todas')
-  const [busca, setBusca] = useState('')
+  const [notes, setNotes] = useState<Note[]>([]);
+  const [showNew, setShowNew] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+  const [subject, setSubject] = useState('Geral');
+  const [color, setColor] = useState(COLORS[0]);
+  const [search, setSearch] = useState('');
+  const [filterSubject, setFilterSubject] = useState('Todos');
+  const [loading, setLoading] = useState(true);
+  const supabase = createClient();
 
   useEffect(() => {
-    const salvas = localStorage.getItem('tutoria_anotacoes')
-    if (salvas) {
-      setAnotacoes(JSON.parse(salvas))
+    loadNotes();
+  }, []);
+
+  const loadNotes = async () => {
+    setLoading(true);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const stored = localStorage.getItem(`tutoria_notes_${user.id}`);
+      if (stored) {
+        setNotes(JSON.parse(stored));
+      }
     }
-  }, [])
+    setLoading(false);
+  };
 
-  const salvarAnotacoes = (novas: Anotacao[]) => {
-    setAnotacoes(novas)
-    localStorage.setItem('tutoria_anotacoes', JSON.stringify(novas))
-  }
+  const saveNotes = async (newNotes: Note[]) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      localStorage.setItem(`tutoria_notes_${user.id}`, JSON.stringify(newNotes));
+    }
+  };
 
-  const criarNova = () => {
-    setAnotacaoAtual(null)
-    setTitulo('')
-    setConteudo('')
-    setMateria('Geral')
-    setModoEdicao(true)
-  }
-
-  const editarAnotacao = (anotacao: Anotacao) => {
-    setAnotacaoAtual(anotacao)
-    setTitulo(anotacao.titulo)
-    setConteudo(anotacao.conteudo)
-    setMateria(anotacao.materia)
-    setModoEdicao(true)
-  }
-
-  const salvar = () => {
-    if (!titulo.trim()) return
-    const agora = new Date().toISOString()
-    
-    if (anotacaoAtual) {
-      const atualizadas = anotacoes.map(a =>
-        a.id === anotacaoAtual.id
-          ? { ...a, titulo, conteudo, materia, dataAtualizacao: agora }
-          : a
-      )
-      salvarAnotacoes(atualizadas)
+  const handleSave = async () => {
+    if (!title.trim() || !content.trim()) return;
+    let updated: Note[];
+    if (editingId) {
+      updated = notes.map(n => n.id === editingId
+        ? { ...n, title, content, subject, color, updated_at: new Date().toISOString() }
+        : n
+      );
     } else {
-      const nova: Anotacao = {
+      const newNote: Note = {
         id: Date.now().toString(),
-        titulo,
-        conteudo,
-        materia,
-        dataCriacao: agora,
-        dataAtualizacao: agora,
-      }
-      salvarAnotacoes([nova, ...anotacoes])
+        title,
+        content,
+        subject,
+        color,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+      updated = [newNote, ...notes];
     }
-    setModoEdicao(false)
-  }
+    setNotes(updated);
+    await saveNotes(updated);
+    resetForm();
+  };
 
-  const excluir = (id: string) => {
-    if (confirm('Deseja excluir esta anotação?')) {
-      salvarAnotacoes(anotacoes.filter(a => a.id !== id))
-      if (modoEdicao && anotacaoAtual?.id === id) {
-        setModoEdicao(false)
-      }
-    }
-  }
+  const handleEdit = (note: Note) => {
+    setEditingId(note.id);
+    setTitle(note.title);
+    setContent(note.content);
+    setSubject(note.subject);
+    setColor(note.color);
+    setShowNew(true);
+  };
 
-  const anotacoesFiltradas = anotacoes.filter(a => {
-    const passaFiltro = filtroMateria === 'Todas' || a.materia === filtroMateria
-    const passaBusca = !busca || a.titulo.toLowerCase().includes(busca.toLowerCase()) || a.conteudo.toLowerCase().includes(busca.toLowerCase())
-    return passaFiltro && passaBusca
-  })
+  const handleDelete = async (id: string) => {
+    const updated = notes.filter(n => n.id !== id);
+    setNotes(updated);
+    await saveNotes(updated);
+  };
+
+  const resetForm = () => {
+    setShowNew(false);
+    setEditingId(null);
+    setTitle('');
+    setContent('');
+    setSubject('Geral');
+    setColor(COLORS[0]);
+  };
+
+  const filtered = notes.filter(n => {
+    const matchSearch = n.title.toLowerCase().includes(search.toLowerCase()) ||
+      n.content.toLowerCase().includes(search.toLowerCase());
+    const matchSubject = filterSubject === 'Todos' || n.subject === filterSubject;
+    return matchSearch && matchSubject;
+  });
+
+  const formatDate = (iso: string) => {
+    const d = new Date(iso);
+    return d.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' });
+  };
 
   return (
-    <div className="p-8 h-full">
-      <div className="mb-6 flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">📓 Anotações</h1>
-          <p className="text-gray-500 mt-1">Suas anotações de estudo salvas por conta</p>
-        </div>
-        <button
-          onClick={criarNova}
-          className="px-4 py-2 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 transition-all flex items-center gap-2"
-        >
-          <span>+</span> Nova Anotação
-        </button>
-      </div>
-
-      <div className="flex gap-6 h-[calc(100vh-220px)]">
-        {/* Lista */}
-        <div className="w-80 flex-shrink-0 flex flex-col">
-          <div className="mb-3 space-y-2">
-            <input
-              type="text"
-              placeholder="Buscar anotações..."
-              value={busca}
-              onChange={e => setBusca(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm"
-            />
-            <select
-              value={filtroMateria}
-              onChange={e => setFiltroMateria(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm"
+    <div className="min-h-screen bg-gray-50">
+      <Sidebar />
+      <div className="ml-64 p-8">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">📒 Anotações</h1>
+              <p className="text-gray-600 mt-1">Suas anotações de estudo, sempre sincronizadas</p>
+            </div>
+            <button
+              onClick={() => { resetForm(); setShowNew(true); }}
+              className="bg-indigo-600 text-white px-4 py-2 rounded-xl font-medium hover:bg-indigo-700 transition-colors"
             >
-              <option>Todas</option>
-              {materias.map(m => <option key={m}>{m}</option>)}
-            </select>
+              + Nova Anotação
+            </button>
           </div>
 
-          <div className="flex-1 overflow-y-auto space-y-2">
-            {anotacoesFiltradas.length === 0 ? (
-              <div className="text-center py-8 text-gray-400">
-                <p className="text-4xl mb-2">📝</p>
-                <p className="text-sm">Nenhuma anotação encontrada</p>
-              </div>
-            ) : (
-              anotacoesFiltradas.map(a => (
-                <div
-                  key={a.id}
-                  onClick={() => editarAnotacao(a)}
-                  className={`p-3 rounded-xl border cursor-pointer transition-all hover:shadow-sm ${
-                    anotacaoAtual?.id === a.id && modoEdicao
-                      ? 'border-indigo-400 bg-indigo-50'
-                      : 'border-gray-200 bg-white hover:border-indigo-300'
-                  }`}
-                >
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="min-w-0">
-                      <p className="font-medium text-gray-900 text-sm truncate">{a.titulo}</p>
-                      <p className="text-xs text-gray-500 mt-0.5 line-clamp-2">{a.conteudo}</p>
-                    </div>
-                    <button
-                      onClick={e => { e.stopPropagation(); excluir(a.id) }}
-                      className="text-gray-300 hover:text-red-500 flex-shrink-0 text-lg leading-none"
-                    >×</button>
-                  </div>
-                  <div className="flex items-center gap-2 mt-2">
-                    <span className="text-xs bg-indigo-100 text-indigo-600 px-2 py-0.5 rounded-full">{a.materia}</span>
-                    <span className="text-xs text-gray-400">{new Date(a.dataAtualizacao).toLocaleDateString('pt-BR')}</span>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-
-        {/* Editor */}
-        <div className="flex-1">
-          {modoEdicao ? (
-            <div className="bg-white rounded-2xl border border-gray-200 p-6 h-full flex flex-col">
-              <div className="flex items-center gap-3 mb-4">
+          {showNew && (
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
+              <h3 className="font-semibold text-gray-900 mb-4">
+                {editingId ? 'Editar Anotação' : 'Nova Anotação'}
+              </h3>
+              <div className="grid grid-cols-2 gap-4 mb-4">
                 <input
                   type="text"
-                  placeholder="Título da anotação..."
-                  value={titulo}
-                  onChange={e => setTitulo(e.target.value)}
-                  className="flex-1 text-xl font-semibold border-0 outline-none text-gray-900 placeholder-gray-300"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="Título da anotação"
+                  className="border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
                 <select
-                  value={materia}
-                  onChange={e => setMateria(e.target.value)}
-                  className="px-3 py-1.5 border border-gray-200 rounded-lg text-sm"
+                  value={subject}
+                  onChange={(e) => setSubject(e.target.value)}
+                  className="border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 >
-                  {materias.map(m => <option key={m}>{m}</option>)}
+                  {SUBJECTS.map(s => <option key={s}>{s}</option>)}
                 </select>
               </div>
               <textarea
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
                 placeholder="Escreva sua anotação aqui..."
-                value={conteudo}
-                onChange={e => setConteudo(e.target.value)}
-                className="flex-1 resize-none outline-none text-gray-700 text-sm leading-relaxed"
+                className="w-full border border-gray-200 rounded-xl p-4 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none mb-4"
+                rows={6}
               />
-              <div className="flex gap-3 mt-4 pt-4 border-t border-gray-100">
-                <button
-                  onClick={salvar}
-                  disabled={!titulo.trim()}
-                  className="px-6 py-2 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 transition-all disabled:opacity-50"
-                >
-                  Salvar
-                </button>
-                <button
-                  onClick={() => setModoEdicao(false)}
-                  className="px-6 py-2 border border-gray-200 text-gray-600 rounded-xl font-medium hover:bg-gray-50 transition-all"
-                >
-                  Cancelar
-                </button>
+              <div className="flex items-center justify-between">
+                <div className="flex gap-2">
+                  <span className="text-sm text-gray-600 mr-2">Cor:</span>
+                  {COLORS.map(c => (
+                    <button
+                      key={c}
+                      onClick={() => setColor(c)}
+                      className={`w-7 h-7 rounded-full ${c} border-2 ${color === c ? 'border-indigo-600' : 'border-transparent'} transition-all`}
+                    />
+                  ))}
+                </div>
+                <div className="flex gap-2">
+                  <button onClick={resetForm} className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800">
+                    Cancelar
+                  </button>
+                  <button
+                    onClick={handleSave}
+                    className="bg-indigo-600 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-indigo-700 transition-colors"
+                  >
+                    {editingId ? 'Salvar Alterações' : 'Salvar Anotação'}
+                  </button>
+                </div>
               </div>
             </div>
+          )}
+
+          <div className="flex gap-4 mb-6">
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="🔍 Buscar anotações..."
+              className="flex-1 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+            <select
+              value={filterSubject}
+              onChange={(e) => setFilterSubject(e.target.value)}
+              className="border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            >
+              <option value="Todos">Todas matérias</option>
+              {SUBJECTS.map(s => <option key={s}>{s}</option>)}
+            </select>
+          </div>
+
+          {loading ? (
+            <div className="text-center py-12 text-gray-500">Carregando anotações...</div>
+          ) : filtered.length === 0 ? (
+            <div className="text-center py-12">
+              <div className="text-6xl mb-4">📒</div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                {notes.length === 0 ? 'Nenhuma anotação ainda' : 'Nenhuma anotação encontrada'}
+              </h3>
+              <p className="text-gray-600 text-sm mb-4">
+                {notes.length === 0 ? 'Crie sua primeira anotação de estudo!' : 'Tente buscar com outras palavras.'}
+              </p>
+              {notes.length === 0 && (
+                <button
+                  onClick={() => { resetForm(); setShowNew(true); }}
+                  className="bg-indigo-600 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-indigo-700 transition-colors"
+                >
+                  Criar Primeira Anotação
+                </button>
+              )}
+            </div>
           ) : (
-            <div className="flex items-center justify-center h-full text-gray-400">
-              <div className="text-center">
-                <p className="text-5xl mb-4">📓</p>
-                <p className="text-lg font-medium">Selecione uma anotação para editar</p>
-                <p className="text-sm mt-2">ou crie uma nova clicando em "+ Nova Anotação"</p>
-              </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filtered.map(note => (
+                <div key={note.id} className={`${note.color} rounded-2xl p-5 relative group`}>
+                  <div className="flex items-start justify-between mb-2">
+                    <h3 className="font-semibold text-gray-900 text-sm flex-1 pr-2">{note.title}</h3>
+                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button
+                        onClick={() => handleEdit(note)}
+                        className="text-gray-500 hover:text-indigo-600 text-xs p-1"
+                      >
+                        ✏️
+                      </button>
+                      <button
+                        onClick={() => handleDelete(note.id)}
+                        className="text-gray-500 hover:text-red-600 text-xs p-1"
+                      >
+                        🗑️
+                      </button>
+                    </div>
+                  </div>
+                  <span className="text-xs text-gray-500 bg-white/50 px-2 py-0.5 rounded-full mb-2 inline-block">
+                    {note.subject}
+                  </span>
+                  <p className="text-gray-700 text-xs leading-relaxed line-clamp-4">{note.content}</p>
+                  <p className="text-xs text-gray-400 mt-3">{formatDate(note.updated_at)}</p>
+                </div>
+              ))}
             </div>
           )}
         </div>
       </div>
     </div>
-  )
+  );
 }
