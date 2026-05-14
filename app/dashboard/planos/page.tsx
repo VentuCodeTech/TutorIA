@@ -102,7 +102,7 @@ function PlanosContent() {
               </div>
               <h2 className="text-xl font-bold text-gray-900 mb-1">Standard</h2>
               <div className="flex items-end gap-1 mb-6">
-                <span className="text-4xl font-bold text-gray-900">R$ 29,90</span>
+                <span className="text-4xl font-bold text-gray-900">R$ 19,90</span>
                 <span className="text-gray-500 mb-1">/mês</span>
               </div>
               <ul className="space-y-3 flex-1">
