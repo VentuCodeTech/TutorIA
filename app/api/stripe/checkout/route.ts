@@ -1,10 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import Stripe from 'stripe';
-import { createClient } from '@/utils/supabase/server';
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-04-30.basil',
-});
+import { stripe } from '@/lib/stripe';
+import { createClient } from '@/lib/supabase/server';
 
 const PRICE_IDS: Record<string, string> = {
   standard:     'price_1TUZ11FPyDxwG3POShBnmqB0',
@@ -38,7 +34,6 @@ export async function POST(req: NextRequest) {
       },
       allow_promotion_codes: true,
       billing_address_collection: 'auto',
-      locale: 'pt-BR',
     });
 
     return NextResponse.json({ url: session.url });
