@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 import Image from 'next/image'
 
 interface SidebarProps {
-  user: {
+  user?: {
     name: string
     email: string
     avatar?: string
@@ -27,7 +27,7 @@ const navItems = [
   { href: '/dashboard/planos', label: '💰 Planos' },
 ]
 
-export default function Sidebar({ user }: SidebarProps) {
+export default function Sidebar({ user }: SidebarProps = {}) {
   const pathname = usePathname()
 
   return (
@@ -59,25 +59,27 @@ export default function Sidebar({ user }: SidebarProps) {
       </nav>
 
       <div className="p-4 border-t border-gray-100">
-        <div className="flex items-center gap-3 mb-3">
-          {user.avatar ? (
-            <Image
-              src={user.avatar}
-              alt={user.name}
-              width={36}
-              height={36}
-              className="rounded-full"
-            />
-          ) : (
-            <div className="w-9 h-9 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-semibold text-sm">
-              {user.name?.charAt(0)?.toUpperCase() || 'U'}
+        {user && (
+          <div className="flex items-center gap-3 mb-3">
+            {user.avatar ? (
+              <Image
+                src={user.avatar}
+                alt={user.name}
+                width={36}
+                height={36}
+                className="rounded-full"
+              />
+            ) : (
+              <div className="w-9 h-9 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-semibold text-sm">
+                {user.name?.charAt(0)?.toUpperCase() || 'U'}
+              </div>
+            )}
+            <div className="min-w-0">
+              <p className="text-sm font-medium text-gray-900 truncate">{user.name}</p>
+              <p className="text-xs text-gray-400 truncate">{user.email}</p>
             </div>
-          )}
-          <div className="min-w-0">
-            <p className="text-sm font-medium text-gray-900 truncate">{user.name}</p>
-            <p className="text-xs text-gray-400 truncate">{user.email}</p>
           </div>
-        </div>
+        )}
         <a
           href="/api/auth/signout"
           className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
