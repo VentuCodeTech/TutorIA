@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useSearchParams } from 'next/navigation'
 import Sidebar from '@/components/Sidebar'
 import Chatbot from '@/components/Chatbot'
 import { createClient } from '@/lib/supabase/client'
@@ -16,9 +15,8 @@ interface Question {
   difficulty: string
 }
 
-export default function QuestoesPage() {
-  const searchParams = useSearchParams()
-  const [selectedArea, setSelectedArea] = useState(searchParams.get('area') || 'Todas')
+function QuestoesContent() {
+  const [selectedArea, setSelectedArea] = useState('Todas')
   const [selectedDifficulty, setSelectedDifficulty] = useState('Todas')
   const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null)
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null)
@@ -30,6 +28,11 @@ export default function QuestoesPage() {
   const supabase = createClient()
 
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search)
+      const area = params.get('area')
+      if (area) setSelectedArea(decodeURIComponent(area))
+    }
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session) { window.location.href = '/login'; return }
       setUserId(session.user.id)
@@ -90,7 +93,7 @@ export default function QuestoesPage() {
     }
   }
 
-  const areas = ['Todas', 'Matemática', 'Português', 'História', 'Ciências', 'Física', 'Química', 'Biologia', 'Redação', 'Direito', 'Finanças', 'Geografia', 'Inglês', 'Espanhol']
+  const areas = ['Todas', 'Matemática', 'Português', 'História', 'Ciências', 'Física', 'Química', 'Biologia', 'Redação', 'Direito Constitucional', 'Direito Civil', 'Direito Penal', 'Direito Trabalhista', 'Finanças Pessoais', 'Investimentos', 'CPA-20', 'Geografia', 'Inglês', 'Espanhol']
   const difficulties = ['Todas', 'Fácil', 'Médio', 'Difícil']
 
   return (
@@ -251,4 +254,8 @@ export default function QuestoesPage() {
       <Chatbot />
     </div>
   )
+}
+
+export default function QuestoesPage() {
+  return <QuestoesContent />
 }
