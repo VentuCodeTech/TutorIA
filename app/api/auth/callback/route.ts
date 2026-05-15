@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerClient } from '@supabase/ssr'
 
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url)
@@ -8,38 +7,20 @@ export async function GET(request: NextRequest) {
   const error = searchParams.get('error')
   const error_description = searchParams.get('error_description')
 
-  // Handle OAuth errors
+  // Handle OAuth errors from provider
   if (error) {
     console.error('OAuth error:', error, error_description)
     return NextResponse.redirect(`${origin}/login?error=auth_callback_failed`)
   }
 
   if (code) {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-
-    const response = NextResponse.redirect(`${origin}${next}`)
-
-    const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll()
-        },
-        setAll(cookiesToSet: Array<{ name: string; value: string; options?: Record<string, unknown> }>) {
-          cookiesToSet.forEach(({ name, value, options }) =>
-            response.cookies.set(name, value, options as Parameters<typeof response.cookies.set>[2])
-          )
-        },
-      },
-    })
-
-    const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code)
-
-    if (!exchangeError) {
-      return response
+    // Pass code to client-side handler which has access to PKCE code_verifier in localStorage
+    const callbackUrl = new URL('/auth/callback', origin)
+    callbackUrl.searchParams.set('code', code)
+    if (next !== '/dashboard') {
+      callbackUrl.searchParams.set('next', next)
     }
-
-    console.error('Exchange error:', exchangeError.message)
+    return NextResponse.redirect(callbackUrl)
   }
 
   return NextResponse.redirect(`${origin}/login?error=auth_callback_failed`)
