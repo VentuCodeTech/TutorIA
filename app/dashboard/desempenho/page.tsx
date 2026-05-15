@@ -123,8 +123,8 @@ export default function DesempenhoPage() {
   if (loading) {
             return (
                         <div className="min-h-screen flex items-center justify-center">
-                                <div className="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>div>
-                        </div>div>
+                                <div className="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+                        </div>
                       );
   }
       
@@ -133,50 +133,50 @@ export default function DesempenhoPage() {
                         <Sidebar />
                         <main className="ml-64 p-8">
                                 <div className="mb-8">
-                                          <h1 className="text-3xl font-bold text-gray-800">Analise de Desempenho</h1>h1>
-                                          <p className="text-gray-500 mt-1">Acompanhe sua evolucao e identifique pontos de melhoria</p>p>
-                                </div>div>
+                                          <h1 className="text-3xl font-bold text-gray-800">Analise de Desempenho</h1>
+                                          <p className="text-gray-500 mt-1">Acompanhe sua evolucao e identifique pontos de melhoria</p>
+                                </div>
                         
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                                           <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-                                                      <div className="text-3xl font-bold text-indigo-600">{overallRate}%</div>div>
-                                                      <div className="text-sm text-gray-600 mt-1">Taxa de Acerto Geral</div>div>
-                                                      <div className="text-xs text-gray-400 mt-1">{totalAnswered} questoes respondidas</div>div>
-                                          </div>div>
+                                                      <div className="text-3xl font-bold text-indigo-600">{overallRate}%</div>
+                                                      <div className="text-sm text-gray-600 mt-1">Taxa de Acerto Geral</div>
+                                                      <div className="text-xs text-gray-400 mt-1">{totalAnswered} questoes respondidas</div>
+                                          </div>
                                           <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-                                                      <div className="text-3xl font-bold text-green-600">{totalCorrect}</div>div>
-                                                      <div className="text-sm text-gray-600 mt-1">Questoes Corretas</div>div>
-                                                      <div className="text-xs text-gray-400 mt-1">de {totalAnswered} tentadas</div>div>
-                                          </div>div>
+                                                      <div className="text-3xl font-bold text-green-600">{totalCorrect}</div>
+                                                      <div className="text-sm text-gray-600 mt-1">Questoes Corretas</div>
+                                                      <div className="text-xs text-gray-400 mt-1">de {totalAnswered} tentadas</div>
+                                          </div>
                                           <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-                                                      <div className="text-2xl font-bold text-yellow-500">Melhor</div>div>
-                                                      <div className="text-sm font-medium text-gray-900 mt-1">{best ? best.subject : 'Sem dados'}</div>div>
+                                                      <div className="text-2xl font-bold text-yellow-500">Melhor</div>
+                                                      <div className="text-sm font-medium text-gray-900 mt-1">{best ? best.subject : 'Sem dados'}</div>
                                                       <div className="text-xs text-green-600 mt-1">
                                                             {best && best.total > 0 ? Math.round((best.correct / best.total) * 100) + '% acerto' : 'Responda questoes'}
-                                                      </div>div>
-                                          </div>div>
+                                                      </div>
+                                          </div>
                                           <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-                                                      <div className="text-2xl font-bold text-red-400">Atencao</div>div>
-                                                      <div className="text-sm font-medium text-gray-900 mt-1">{worst && worst !== best ? worst.subject : 'Continue!'}</div>div>
+                                                      <div className="text-2xl font-bold text-red-400">Atencao</div>
+                                                      <div className="text-sm font-medium text-gray-900 mt-1">{worst && worst !== best ? worst.subject : 'Continue!'}</div>
                                                       <div className="text-xs text-red-600 mt-1">
                                                             {worst && worst !== best && worst.total > 0 ? Math.round((worst.correct / worst.total) * 100) + '% acerto' : 'Bom trabalho!'}
-                                                      </div>div>
-                                          </div>div>
-                                </div>div>
+                                                      </div>
+                                          </div>
+                                </div>
                         
                               {totalAnswered === 0 ? (
                                   <div className="bg-white rounded-2xl p-12 shadow-sm border border-gray-100 text-center">
-                                              <div className="text-6xl mb-4">📚</div>div>
-                                              <h3 className="text-xl font-bold text-gray-800 mb-2">Nenhum dado ainda</h3>h3>
-                                              <p className="text-gray-500 mb-6">Comece a responder questoes para ver seu desempenho aqui!</p>p>
+                                              <div className="text-6xl mb-4">📚</div>
+                                              <h3 className="text-xl font-bold text-gray-800 mb-2">Nenhum dado ainda</h3>
+                                              <p className="text-gray-500 mb-6">Comece a responder questoes para ver seu desempenho aqui!</p>
                                               <a href="/dashboard/questoes" className="bg-indigo-600 text-white px-6 py-3 rounded-xl font-medium hover:bg-indigo-700 transition-colors">
                                                             Ir para Questoes
-                                              </a>a>
-                                  </div>div>
+                                              </a>
+                                  </div>
                                 ) : (
                                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                                               <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                                                            <h3 className="font-semibold text-gray-900 mb-4">Desempenho por Materia</h3>h3>
+                                                            <h3 className="font-semibold text-gray-900 mb-4">Desempenho por Materia</h3>
                                                             <div className="space-y-3">
                                                                   {subjects.map(s => {
                                                           const pct = s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0;
@@ -184,82 +184,82 @@ export default function DesempenhoPage() {
                                                           return (
                                                                                     <div key={s.subject}>
                                                                                                           <div className="flex justify-between items-center mb-1">
-                                                                                                                                  <span className="text-sm text-gray-700">{s.subject}</span>span>
+                                                                                                                                  <span className="text-sm text-gray-700">{s.subject}</span>
                                                                                                                                   <div className="flex items-center gap-2">
-                                                                                                                                                            <span className="text-xs text-gray-400">{s.correct}/{s.total}</span>span>
-                                                                                                                                                            <span className="text-sm font-semibold text-gray-900">{pct}%</span>span>
-                                                                                                                                        </div>div>
-                                                                                                                </div>div>
+                                                                                                                                                            <span className="text-xs text-gray-400">{s.correct}/{s.total}</span>
+                                                                                                                                                            <span className="text-sm font-semibold text-gray-900">{pct}%</span>
+                                                                                                                                        </div>
+                                                                                                                </div>
                                                                                                           <div className="w-full bg-gray-100 rounded-full h-2">
-                                                                                                                                  <div className={color + ' h-2 rounded-full transition-all'} style={{width: pct + '%'}}></div>div>
-                                                                                                                </div>div>
-                                                                                          </div>div>
+                                                                                                                                  <div className={color + ' h-2 rounded-full transition-all'} style={{width: pct + '%'}}></div>
+                                                                                                                </div>
+                                                                                          </div>
                                                                                   );
                                   })}
-                                                            </div>div>
-                                              </div>div>
+                                                            </div>
+                                              </div>
                                   
                                               <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                                                             <div className="flex justify-between items-center mb-4">
-                                                                            <h3 className="font-semibold text-gray-900">Questoes por Dia</h3>h3>
+                                                                            <h3 className="font-semibold text-gray-900">Questoes por Dia</h3>
                                                                             <select value={period} onChange={e => setPeriod(e.target.value)} className="text-xs border border-gray-200 rounded-lg px-2 py-1 focus:outline-none">
-                                                                                              <option value="semana">Esta semana</option>option>
-                                                                                              <option value="mes">Este mes</option>option>
-                                                                            </select>select>
-                                                            </div>div>
+                                                                                              <option value="semana">Esta semana</option>
+                                                                                              <option value="mes">Este mes</option>
+                                                                            </select>
+                                                            </div>
                                                             <div className="flex items-end gap-2 h-48">
                                                                   {weeklyData.map((d, idx) => (
                                                           <div key={idx} className="flex-1 flex flex-col items-center gap-1">
                                                                               <div className="w-full flex flex-col items-center justify-end h-36">
                                                                                     {d.questions > 0 ? (
                                                                                         <div className="w-full bg-indigo-100 rounded-t-lg relative flex flex-col justify-end" style={{height: Math.round((d.questions / maxQ) * 100) + '%'}}>
-                                                                                                                  <div className="w-full bg-indigo-500 rounded-t-lg" style={{height: Math.round((d.correct / d.questions) * 100) + '%'}}></div>div>
-                                                                                              </div>div>
+                                                                                                                  <div className="w-full bg-indigo-500 rounded-t-lg" style={{height: Math.round((d.correct / d.questions) * 100) + '%'}}></div>
+                                                                                              </div>
                                                                                       ) : (
-                                                                                        <div className="w-full bg-gray-100 rounded-t-lg" style={{height: '4px'}}></div>div>
+                                                                                        <div className="w-full bg-gray-100 rounded-t-lg" style={{height: '4px'}}></div>
                                                                                                     )}
-                                                                              </div>div>
-                                                                              <span className="text-xs text-gray-500">{d.day}</span>span>
-                                                                              <span className="text-xs font-medium text-gray-700">{d.questions}</span>span>
-                                                          </div>div>
+                                                                              </div>
+                                                                              <span className="text-xs text-gray-500">{d.day}</span>
+                                                                              <span className="text-xs font-medium text-gray-700">{d.questions}</span>
+                                                          </div>
                                                         ))}
-                                                            </div>div>
+                                                            </div>
                                                             <div className="flex gap-4 mt-3 text-xs text-gray-500">
-                                                                            <div className="flex items-center gap-1"><div className="w-3 h-3 bg-indigo-500 rounded-sm"></div>div> Corretas</div>div>
-                                                                            <div className="flex items-center gap-1"><div className="w-3 h-3 bg-indigo-100 rounded-sm"></div>div> Total</div>div>
-                                                            </div>div>
-                                              </div>div>
-                                  </div>div>
+                                                                            <div className="flex items-center gap-1"><div className="w-3 h-3 bg-indigo-500 rounded-sm"></div> Corretas</div>
+                                                                            <div className="flex items-center gap-1"><div className="w-3 h-3 bg-indigo-100 rounded-sm"></div> Total</div>
+                                                            </div>
+                                              </div>
+                                  </div>
                                 )}
                         
                               {totalAnswered > 0 && (
                                   <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                                              <h3 className="font-semibold text-gray-900 mb-4">Recomendacoes Personalizadas</h3>h3>
+                                              <h3 className="font-semibold text-gray-900 mb-4">Recomendacoes Personalizadas</h3>
                                               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                                     {worst && worst.total > 0 && (
                                                         <div className="bg-red-50 rounded-xl p-4 border border-red-100">
-                                                                          <div className="text-red-500 font-semibold text-sm mb-1">Prioridade Alta</div>div>
-                                                                          <p className="text-sm text-gray-700 font-medium">{worst.subject}</p>p>
-                                                                          <p className="text-xs text-gray-500 mt-1">Taxa de acerto: {Math.round((worst.correct / worst.total) * 100)}%. Dedique mais tempo!</p>p>
-                                                        </div>div>
+                                                                          <div className="text-red-500 font-semibold text-sm mb-1">Prioridade Alta</div>
+                                                                          <p className="text-sm text-gray-700 font-medium">{worst.subject}</p>
+                                                                          <p className="text-xs text-gray-500 mt-1">Taxa de acerto: {Math.round((worst.correct / worst.total) * 100)}%. Dedique mais tempo!</p>
+                                                        </div>
                                                             )}
                                                             <div className="bg-yellow-50 rounded-xl p-4 border border-yellow-100">
-                                                                            <div className="text-yellow-600 font-semibold text-sm mb-1">Atencao</div>div>
-                                                                            <p className="text-sm text-gray-700 font-medium">Consistencia Diaria</p>p>
-                                                                            <p className="text-xs text-gray-500 mt-1">Tente responder pelo menos 20 questoes por dia para manter o ritmo.</p>p>
-                                                            </div>div>
+                                                                            <div className="text-yellow-600 font-semibold text-sm mb-1">Atencao</div>
+                                                                            <p className="text-sm text-gray-700 font-medium">Consistencia Diaria</p>
+                                                                            <p className="text-xs text-gray-500 mt-1">Tente responder pelo menos 20 questoes por dia para manter o ritmo.</p>
+                                                            </div>
                                                     {best && best.total > 0 && (
                                                         <div className="bg-green-50 rounded-xl p-4 border border-green-100">
-                                                                          <div className="text-green-600 font-semibold text-sm mb-1">Ponto Forte</div>div>
-                                                                          <p className="text-sm text-gray-700 font-medium">{best.subject}</p>p>
-                                                                          <p className="text-xs text-gray-500 mt-1">Excelente! {Math.round((best.correct / best.total) * 100)}% de acerto. Continue assim!</p>p>
-                                                        </div>div>
+                                                                          <div className="text-green-600 font-semibold text-sm mb-1">Ponto Forte</div>
+                                                                          <p className="text-sm text-gray-700 font-medium">{best.subject}</p>
+                                                                          <p className="text-xs text-gray-500 mt-1">Excelente! {Math.round((best.correct / best.total) * 100)}% de acerto. Continue assim!</p>
+                                                        </div>
                                                             )}
-                                              </div>div>
-                                  </div>div>
+                                              </div>
+                                  </div>
                                 )}
                                 <Chatbot />
-                        </main>main>
-                  </div>div>
+                        </main>
+                  </div>
                 );
 }</div>
