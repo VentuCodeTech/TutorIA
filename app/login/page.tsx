@@ -107,10 +107,6 @@ function LoginForm() {
       setGoogleLoading(false);
     }
   };
-      setError(error.message || 'Erro ao conectar com Google. Tente novamente.');
-      setGoogleLoading(false);
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex items-center justify-center px-4">
