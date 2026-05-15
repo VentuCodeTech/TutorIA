@@ -38,7 +38,7 @@ export default function Home() {
         <section className="max-w-7xl mx-auto px-6 py-20 text-center">
           <div className="inline-flex items-center gap-2 bg-indigo-100 text-indigo-700 px-4 py-2 rounded-full text-sm font-medium mb-6">
             <span className="w-2 h-2 bg-indigo-500 rounded-full animate-pulse"></span>
-            Powered by Claude AI • Sonnet 4.6
+            Powered by Gemini AI • 2.0 Flash
           </div>
           <h1 className="text-5xl md:text-7xl font-extrabold text-gray-900 mb-6 leading-tight">
             Estude com{' '}
@@ -72,7 +72,7 @@ export default function Home() {
               {
                 icon: '🧠',
                 title: 'IA Inteligente',
-                desc: 'Assistente powered by Claude AI que aprende com seu estilo de estudo e se adapta às suas necessidades.'
+                desc: 'Assistente powered by Gemini AI que aprende com seu estilo de estudo e se adapta às suas necessidades.'
               },
               {
                 icon: '📊',
@@ -152,7 +152,7 @@ export default function Home() {
               © 2026 TutorIA - VentuCodeTech. Todos os direitos reservados.
             </p>
             <p className="text-gray-600 text-xs">
-              Powered by Claude AI (Anthropic)
+              Powered by Gemini AI (Google)
             </p>
           </div>
         </div>
