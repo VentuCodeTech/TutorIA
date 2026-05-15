@@ -25,10 +25,13 @@ export async function POST(request: NextRequest) {
       });
 
       // Convert messages to Gemini format
-      const history = messages.slice(0, -1).map((msg: { role: string; content: string }) => ({
+      const rawHistory = messages.slice(0, -1).map((msg: { role: string; content: string }) => ({
               role: msg.role === 'assistant' ? 'model' : 'user',
               parts: [{ text: msg.content }],
       }));
+              // Filter out leading 'model' messages (Gemini requires history to start with 'user')
+                      let firstUserIdx = rawHistory.findIndex(h => h.role === 'user');
+                              const history = firstUserIdx >= 0 ? rawHistory.slice(firstUserIdx) : [];
 
       const lastMessage = messages[messages.length - 1];
 
