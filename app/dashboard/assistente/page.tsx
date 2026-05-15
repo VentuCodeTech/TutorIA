@@ -112,9 +112,9 @@ export default function AssistentePage() {
               <Sidebar />
               <div className="ml-64 flex flex-col h-screen">
                       <div className="p-6 border-b border-gray-100 bg-white">
-                                <h1 className="text-2xl font-bold text-gray-900">🤖 Assistente IA</h1>h1>
-                                <p className="text-gray-600 text-sm mt-1">Tire todas as suas dúvidas de estudo</p>p>
-                      </div>div>
+                                <h1 className="text-2xl font-bold text-gray-900">🤖 Assistente IA</h1>
+                                <p className="text-gray-600 text-sm mt-1">Tire todas as suas dúvidas de estudo</p>
+                      </div>
               
                       <div className="flex-1 overflow-y-auto p-6 space-y-4">
                         {messages.map((msg) => (
@@ -127,19 +127,19 @@ export default function AssistentePage() {
                                                         msg.role === 'user' ? 'bg-indigo-600 text-white' : 'bg-gradient-to-br from-indigo-500 to-purple-600 text-white'
                                     }`}>
                                                       {msg.role === 'user' ? userName.charAt(0).toUpperCase() : '🤖'}
-                                                    </div>div>
+                                                    </div>
                                                     <div className={`rounded-2xl px-4 py-3 ${
                                                         msg.role === 'user'
                                                           ? 'bg-indigo-600 text-white'
                                                           : 'bg-white border border-gray-100 text-gray-800 shadow-sm'
                                     }`}>
-                                                                      <p className="text-sm leading-relaxed whitespace-pre-line">{msg.content}</p>p>
+                                                                      <p className="text-sm leading-relaxed whitespace-pre-line">{msg.content}</p>
                                                                       <p className={`text-xs mt-1 ${msg.role === 'user' ? 'text-indigo-200' : 'text-gray-400'}`}>
                                                                         {msg.timestamp.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
-                                                                      </p>p>
-                                                    </div>div>
-                                    </div>div>
-                      </div>div>
+                                                                      </p>
+                                                    </div>
+                                    </div>
+                      </div>
                     ))}
                       
                         {loading && (
@@ -147,21 +147,21 @@ export default function AssistentePage() {
                                     <div className="flex gap-3">
                                                     <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-sm text-white">
                                                                       🤖
-                                                    </div>div>
+                                                    </div>
                                                     <div className="bg-white border border-gray-100 rounded-2xl px-4 py-3 shadow-sm">
                                                                       <div className="flex gap-1">
                                                                                           <div className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
                                                                                           <div className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
                                                                                           <div className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
-                                                                      </div>div>
-                                                    </div>div>
-                                    </div>div>
-                      </div>div>
+                                                                      </div>
+                                                    </div>
+                                    </div>
+                      </div>
                                 )}
                       
                         {messages.length === 1 && (
                       <div className="mt-4">
-                                    <p className="text-xs text-gray-400 mb-3">💡 Sugestões de perguntas:</p>p>
+                                    <p className="text-xs text-gray-400 mb-3">💡 Sugestões de perguntas:</p>
                                     <div className="flex flex-wrap gap-2">
                                       {suggestions.map((s, i) => (
                                           <button
@@ -170,14 +170,14 @@ export default function AssistentePage() {
                                                                 className="text-xs bg-white border border-gray-200 text-gray-600 px-3 py-2 rounded-full hover:border-indigo-300 hover:text-indigo-600 transition-colors"
                                                               >
                                             {s}
-                                          </button>button>
+                                          </button>
                                         ))}
-                                    </div>div>
-                      </div>div>
+                                    </div>
+                      </div>
                                 )}
                       
                                 <div ref={messagesEndRef} />
-                      </div>div>
+                      </div>
               
                       <div className="p-4 border-t border-gray-100 bg-white">
                                 <div className="flex gap-3">
@@ -196,13 +196,13 @@ export default function AssistentePage() {
                                                             className="bg-indigo-600 text-white px-4 py-3 rounded-xl font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                                           >
                                                           ➤
-                                            </button>button>
-                                </div>div>
+                                            </button>
+                                </div>
                                 <p className="text-xs text-gray-400 mt-2 text-center">
                                             Respostas de IA podem conter imprecisões
-                                </p>p>
-                      </div>div>
-              </div>div>
-        </div>div>
+                                </p>
+                      </div>
+              </div>
+        </div>
       );
 }</div>
