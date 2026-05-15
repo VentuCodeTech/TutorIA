@@ -88,13 +88,20 @@ function LoginForm() {
     setError('');
 
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}/api/auth/callback`,
+      const { data, error } = await supabase.auth.signInWithOAuth({
+                  provider: 'google',
+                            options: {
+                                        redirectTo: `${window.location.origin}/api/auth/callback`,
+                                                    skipBrowserRedirect: true,
+                                                              },
+                                                                      });
 
-        },
-      });
+                                                                              if (error) throw error;
+
+                                                                                      if (data.url) {
+                                                                                                window.location.href = data.url;
+                                                                                                        }
+      })
 
       if (error) throw error;
     } catch (err: unknown) {
