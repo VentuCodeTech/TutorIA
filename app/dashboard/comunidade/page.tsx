@@ -5,21 +5,20 @@ import Sidebar from '@/components/Sidebar';
 
 interface Post {
   id: string;
+  user_id: string;
   user_name: string;
-  user_avatar: string;
   content: string;
   category: string;
   likes: number;
-  replies: number;
   created_at: string;
 }
 
 const mockPosts: Post[] = [
-  { id: '1', user_name: 'Ana Silva', user_avatar: '', content: 'Alguém tem dicas para estudar Matemática para o ENEM? Estou com dificuldade em logaritmos!', category: 'ENEM', likes: 12, replies: 5, created_at: '2024-01-10' },
-  { id: '2', user_name: 'Carlos Mendes', user_avatar: '', content: 'Compartilhando minha rotina de estudos: 2h de manhã e 2h à noite. Resultados incríveis em 3 meses!', category: 'Dicas', likes: 34, replies: 8, created_at: '2024-01-09' },
-  { id: '3', user_name: 'Beatriz Costa', user_avatar: '', content: 'Consegui passar na FUVEST! Obrigada TutorIA pela ajuda com as questões de Redação!', category: 'Conquistas', likes: 89, replies: 15, created_at: '2024-01-08' },
-  { id: '4', user_name: 'Rafael Lima', user_avatar: '', content: 'Quem mais está estudando para concursos da área policial? Vamos criar um grupo de estudos?', category: 'Concursos', likes: 23, replies: 12, created_at: '2024-01-07' },
-  { id: '5', user_name: 'Juliana Ferreira', user_avatar: '', content: 'Dica: A técnica Pomodoro funciona muito bem! 25 min estudando, 5 min de pausa. Testei e aprovei!', category: 'Dicas', likes: 45, replies: 6, created_at: '2024-01-06' },
+  { id: '1', user_id: 'u1', user_name: 'Ana Silva', content: 'Alguém tem dicas para estudar Matemática para o ENEM? Estou com dificuldade em logaritmos!', category: 'ENEM', likes: 12, created_at: '2024-01-10' },
+  { id: '2', user_id: 'u2', user_name: 'Carlos Mendes', content: 'Compartilhando minha rotina de estudos: 2h de manhã e 2h à noite. Resultados incríveis em 3 meses!', category: 'Dicas', likes: 34, created_at: '2024-01-09' },
+  { id: '3', user_id: 'u3', user_name: 'Beatriz Costa', content: 'Consegui passar na FUVEST! Obrigada TutorIA pela ajuda com as questões de Redação!', category: 'Conquistas', likes: 89, created_at: '2024-01-08' },
+  { id: '4', user_id: 'u4', user_name: 'Rafael Lima', content: 'Quem mais está estudando para concursos da área policial? Vamos criar um grupo de estudos?', category: 'Concursos', likes: 23, created_at: '2024-01-07' },
+  { id: '5', user_id: 'u5', user_name: 'Juliana Ferreira', content: 'Dica: A técnica Pomodoro funciona muito bem! 25 min estudando, 5 min de pausa. Testei e aprovei!', category: 'Dicas', likes: 45, created_at: '2024-01-06' },
 ];
 
 const categories = ['Todos', 'ENEM', 'Vestibular', 'Concursos', 'Dicas', 'Conquistas', 'Dúvidas'];
@@ -31,13 +30,22 @@ export default function ComunidadePage() {
   const [newCategory, setNewCategory] = useState('Dicas');
   const [showNewPost, setShowNewPost] = useState(false);
   const [userName, setUserName] = useState('Você');
+  const [userId, setUserId] = useState('');
+  const [likedPosts, setLikedPosts] = useState<Set<string>>(new Set());
+  const [shareMsg, setShareMsg] = useState('');
   const supabase = createClient();
 
   useEffect(() => {
     const getUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
+        setUserId(user.id);
         setUserName(user.user_metadata?.full_name || user.email?.split('@')[0] || 'Você');
+        // Carregar likes já dados pelo usuário (localStorage por post)
+        const savedLikes = localStorage.getItem(`liked_posts_${user.id}`);
+        if (savedLikes) {
+          setLikedPosts(new Set(JSON.parse(savedLikes)));
+        }
       }
     };
     getUser();
@@ -51,12 +59,11 @@ export default function ComunidadePage() {
     if (!newPost.trim()) return;
     const post: Post = {
       id: Date.now().toString(),
+      user_id: userId,
       user_name: userName,
-      user_avatar: '',
       content: newPost,
       category: newCategory,
       likes: 0,
-      replies: 0,
       created_at: new Date().toISOString().split('T')[0],
     };
     setPosts([post, ...posts]);
@@ -65,7 +72,48 @@ export default function ComunidadePage() {
   };
 
   const handleLike = (id: string) => {
-    setPosts(posts.map(p => p.id === id ? { ...p, likes: p.likes + 1 } : p));
+    if (likedPosts.has(id)) {
+      // Remover like
+      const newLiked = new Set(likedPosts);
+      newLiked.delete(id);
+      setLikedPosts(newLiked);
+      setPosts(posts.map(p => p.id === id ? { ...p, likes: Math.max(0, p.likes - 1) } : p));
+      localStorage.setItem(`liked_posts_${userId}`, JSON.stringify(Array.from(newLiked)));
+    } else {
+      // Adicionar like (apenas 1 por usuário por post)
+      const newLiked = new Set(likedPosts);
+      newLiked.add(id);
+      setLikedPosts(newLiked);
+      setPosts(posts.map(p => p.id === id ? { ...p, likes: p.likes + 1 } : p));
+      localStorage.setItem(`liked_posts_${userId}`, JSON.stringify(Array.from(newLiked)));
+    }
+  };
+
+  const handleShare = async (post: Post) => {
+    const url = `${window.location.origin}/dashboard/comunidade?post=${post.id}`;
+    const text = `${post.user_name} na TutorIA: "${post.content.substring(0, 100)}..." - Confira!`;
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: 'TutorIA - Comunidade', text, url });
+      } catch {}
+    } else {
+      // Fallback: copiar link
+      try {
+        await navigator.clipboard.writeText(url);
+        setShareMsg(post.id);
+        setTimeout(() => setShareMsg(''), 2000);
+      } catch {
+        const ta = document.createElement('textarea');
+        ta.value = url;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        setShareMsg(post.id);
+        setTimeout(() => setShareMsg(''), 2000);
+      }
+    }
   };
 
   return (
@@ -115,7 +163,8 @@ export default function ComunidadePage() {
                   </button>
                   <button
                     onClick={handleSubmitPost}
-                    className="bg-indigo-600 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-indigo-700 transition-colors"
+                    disabled={!newPost.trim()}
+                    className="bg-indigo-600 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-indigo-700 disabled:opacity-50 transition-colors"
                   >
                     Publicar
                   </button>
@@ -163,15 +212,21 @@ export default function ComunidadePage() {
                 <div className="flex items-center gap-4">
                   <button
                     onClick={() => handleLike(post.id)}
-                    className="flex items-center gap-1 text-gray-500 hover:text-indigo-600 transition-colors text-sm"
+                    className={`flex items-center gap-1 transition-colors text-sm font-medium ${
+                      likedPosts.has(post.id)
+                        ? 'text-red-500 hover:text-red-700'
+                        : 'text-gray-500 hover:text-red-500'
+                    }`}
+                    title={likedPosts.has(post.id) ? 'Remover curtida' : 'Curtir (1 curtida por conta)'}
                   >
-                    ❤️ {post.likes}
+                    {likedPosts.has(post.id) ? '❤️' : '🤍'} {post.likes}
                   </button>
-                  <button className="flex items-center gap-1 text-gray-500 hover:text-indigo-600 transition-colors text-sm">
-                    💬 {post.replies} respostas
-                  </button>
-                  <button className="flex items-center gap-1 text-gray-500 hover:text-indigo-600 transition-colors text-sm">
-                    🔗 Compartilhar
+                  <button
+                    onClick={() => handleShare(post)}
+                    className="flex items-center gap-1 text-gray-500 hover:text-indigo-600 transition-colors text-sm"
+                    title="Copiar link de compartilhamento"
+                  >
+                    🔗 {shareMsg === post.id ? 'Link copiado!' : 'Compartilhar'}
                   </button>
                 </div>
               </div>
