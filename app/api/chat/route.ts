@@ -3,14 +3,13 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
-// Modelos a tentar em ordem (fallback)
-const MODELS = ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-flash-8b'];
+// Modelos a tentar em ordem
+const MODELS = ['gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-flash', 'gemini-1.5-flash-8b'];
 
 const SYSTEM_PROMPT = `Você é o TutorIA, um assistente de estudos inteligente e especializado.
 Você ajuda estudantes a se prepararem para ENEM, OAB, Concursos Públicos e CPA-20.
 Responda sempre em português brasileiro de forma clara, didática e motivadora.
 Quando explicar conceitos, use exemplos práticos e relevantes.
-Se o aluno tiver dúvidas sobre matemática, português, história, geografia, ciências, direito ou finanças, esteja pronto para ajudar.
 Mantenha um tom amigável, encorajador e profissional.`;
 
 async function tryModel(modelName: string, messages: {role: string; content: string}[]): Promise<string> {
@@ -44,51 +43,46 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    let lastError: Error | null = null;
+    let hadRateLimit = false;
     
     for (const modelName of MODELS) {
       try {
         const text = await tryModel(modelName, messages);
         return NextResponse.json({ message: text });
       } catch (err: unknown) {
-        lastError = err as Error;
         const errMsg = (err as Error).message || '';
         
-        // If rate limit, try next model
         if (errMsg.includes('429') || errMsg.includes('Too Many Requests') || errMsg.includes('quota')) {
+          hadRateLimit = true;
           console.log(`Model ${modelName} rate limited, trying next...`);
           continue;
         }
         
-        // If model not found, try next
-        if (errMsg.includes('404') || errMsg.includes('not found')) {
-          console.log(`Model ${modelName} not found, trying next...`);
+        if (errMsg.includes('404') || errMsg.includes('not found') || errMsg.includes('INVALID_ARGUMENT')) {
+          console.log(`Model ${modelName} not available, trying next...`);
           continue;
         }
         
-        // Other error - rethrow
-        throw err;
+        // Unexpected error - log and continue
+        console.error(`Model ${modelName} error:`, errMsg.substring(0, 200));
+        continue;
       }
     }
 
-    // All models failed
-    const errMsg = lastError?.message || '';
-    if (errMsg.includes('429') || errMsg.includes('quota')) {
+    // All models failed - return friendly message
+    if (hadRateLimit) {
       return NextResponse.json({
-        message: 'O assistente está temporariamente indisponível devido ao alto volume de uso. Por favor, aguarde alguns minutos e tente novamente. 🙏',
+        message: 'O assistente está temporariamente sobrecarregado devido ao alto volume de uso. Por favor, aguarde 1-2 minutos e tente novamente. A API gratuita do Gemini tem limites de uso. 🙏',
       });
     }
 
-    console.error('All models failed:', lastError);
-    return NextResponse.json(
-      { error: 'Failed to get response from AI' },
-      { status: 500 }
-    );
+    return NextResponse.json({
+      message: 'Serviço de IA temporariamente indisponível. Por favor, tente novamente em instantes.',
+    });
   } catch (error) {
     console.error('Chatbot API error:', error);
-    return NextResponse.json(
-      { error: 'Failed to get response from AI' },
-      { status: 500 }
-    );
+    return NextResponse.json({
+      message: 'Ocorreu um erro inesperado. Por favor, tente novamente.',
+    });
   }
 }
