@@ -7,7 +7,7 @@ import Chatbot from '@/components/Chatbot'
 import { createClient } from '@/lib/supabase/client'
 
 export default function Dashboard() {
-  const router = useRouter()
+  const router = useRouter()h
   const [userName, setUserName] = useState('Estudante')
   const [userId, setUserId] = useState<string | null>(null)
   const [stats, setStats] = useState({
@@ -69,8 +69,8 @@ export default function Dashboard() {
     { emoji: '📈', subject: 'Investimentos', path: '/dashboard/questoes?area=Investimentos', color: 'yellow' },
     { emoji: '🏦', subject: 'CPA-20', path: '/dashboard/questoes?area=CPA-20', color: 'yellow' },
     { emoji: '🗺️', subject: 'Geografia', path: '/dashboard/questoes?area=Geografia', color: 'cyan' },
-    { emoji: '🇬🇧', subject: 'Inglês', path: '/dashboard/questoes?area=Inglês', color: 'blue' },
-    { emoji: '🇪🇸', subject: 'Espanhol', path: '/dashboard/questoes?area=Espanhol', color: 'red' },
+    { emoji: '📚', subject: 'Inglês', path: '/dashboard/questoes?area=Inglês', color: 'blue' },
+    { emoji: '🗣️', subject: 'Espanhol', path: '/dashboard/questoes?area=Espanhol', color: 'red' },
   ]
 
   return (
