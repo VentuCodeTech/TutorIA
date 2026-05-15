@@ -7,7 +7,7 @@ import Chatbot from '@/components/Chatbot'
 import { createClient } from '@/lib/supabase/client'
 
 export default function Dashboard() {
-  const router = useRouter()h
+  const router = useRouter()
   const [userName, setUserName] = useState('Estudante')
   const [userId, setUserId] = useState<string | null>(null)
   const [stats, setStats] = useState({
