@@ -110,89 +110,89 @@ function QuestoesContent() {
               <Sidebar />
               <main className="ml-64 p-8">
                       <div className="mb-8">
-                                <h1 className="text-3xl font-bold text-gray-800">Questoes</h1>h1>
-                                <p className="text-gray-500 mt-1">Pratique com questoes adaptativas geradas por IA</p>p>
-                      </div>div>
+                                <h1 className="text-3xl font-bold text-gray-800">Questoes</h1>
+                                <p className="text-gray-500 mt-1">Pratique com questoes adaptativas geradas por IA</p>
+                      </div>
               
                       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
                                 <div className="lg:col-span-1 space-y-4">
                                             <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                                                          <h2 className="text-lg font-semibold text-gray-800 mb-4">Filtros</h2>h2>
+                                                          <h2 className="text-lg font-semibold text-gray-800 mb-4">Filtros</h2>
                                                           <div className="mb-4">
-                                                                          <label className="block text-sm font-medium text-gray-700 mb-2">AREA</label>label>
+                                                                          <label className="block text-sm font-medium text-gray-700 mb-2">AREA</label>
                                                                           <select
                                                                                               value={selectedArea}
                                                                                               onChange={(e) => { setSelectedArea(e.target.value); setShownTexts([]); }}
                                                                                               className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500"
                                                                                             >
-                                                                            {areas.map(a => <option key={a} value={a}>{a}</option>option>)}
-                                                                          </select>select>
-                                                          </div>div>
+                                                                            {areas.map(a => <option key={a} value={a}>{a}</option>)}
+                                                                          </select>
+                                                          </div>
                                                           <div className="mb-4">
-                                                                          <label className="block text-sm font-medium text-gray-700 mb-2">DIFICULDADE</label>label>
+                                                                          <label className="block text-sm font-medium text-gray-700 mb-2">DIFICULDADE</label>
                                                                           <select
                                                                                               value={selectedDifficulty}
                                                                                               onChange={(e) => { setSelectedDifficulty(e.target.value); setShownTexts([]); }}
                                                                                               className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500"
                                                                                             >
-                                                                            {difficulties.map(d => <option key={d} value={d}>{d}</option>option>)}
-                                                                          </select>select>
-                                                          </div>div>
+                                                                            {difficulties.map(d => <option key={d} value={d}>{d}</option>)}
+                                                                          </select>
+                                                          </div>
                                                           <button
                                                                             onClick={() => generateQuestion(selectedArea, selectedDifficulty, shownTexts)}
                                                                             disabled={loading}
                                                                             className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-2 rounded-xl font-medium hover:from-indigo-700 hover:to-purple-700 disabled:opacity-50 transition-all"
                                                                           >
                                                             {loading ? 'Gerando...' : 'Gerar Questao'}
-                                                          </button>button>
-                                            </div>div>
+                                                          </button>
+                                            </div>
                                 
                                             <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                                                          <h2 className="text-lg font-semibold text-gray-800 mb-4">Estatisticas</h2>h2>
+                                                          <h2 className="text-lg font-semibold text-gray-800 mb-4">Estatisticas</h2>
                                                           <div className="space-y-3">
                                                                           <div className="flex justify-between">
-                                                                                            <span className="text-sm text-gray-600">Respondidas</span>span>
-                                                                                            <span className="text-sm font-bold text-gray-800">{stats.answered}</span>span>
-                                                                          </div>div>
+                                                                                            <span className="text-sm text-gray-600">Respondidas</span>
+                                                                                            <span className="text-sm font-bold text-gray-800">{stats.answered}</span>
+                                                                          </div>
                                                                           <div className="flex justify-between">
-                                                                                            <span className="text-sm text-gray-600">Acertos</span>span>
-                                                                                            <span className="text-sm font-bold text-green-600">{stats.correct}</span>span>
-                                                                          </div>div>
+                                                                                            <span className="text-sm text-gray-600">Acertos</span>
+                                                                                            <span className="text-sm font-bold text-green-600">{stats.correct}</span>
+                                                                          </div>
                                                                           <div className="flex justify-between">
-                                                                                            <span className="text-sm text-gray-600">Taxa de acerto</span>span>
+                                                                                            <span className="text-sm text-gray-600">Taxa de acerto</span>
                                                                                             <span className="text-sm font-bold text-gray-800">
                                                                                               {stats.answered > 0 ? Math.round((stats.correct / stats.answered) * 100) : 0}%
-                                                                                              </span>span>
-                                                                          </div>div>
-                                                          </div>div>
-                                            </div>div>
-                                </div>div>
+                                                                                              </span>
+                                                                          </div>
+                                                          </div>
+                                            </div>
+                                </div>
                       
                                 <div className="lg:col-span-3">
                                   {!currentQuestion && !loading ? (
                         <div className="bg-white rounded-2xl p-12 shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center min-h-96">
-                                        <div className="text-6xl mb-4">📋</div>div>
-                                        <h3 className="text-xl font-bold text-gray-800 mb-2">Pronto para praticar?</h3>h3>
-                                        <p className="text-gray-500 mb-6">Selecione os filtros e clique em Gerar Questao para comecar.</p>p>
+                                        <div className="text-6xl mb-4">📋</div>
+                                        <h3 className="text-xl font-bold text-gray-800 mb-2">Pronto para praticar?</h3>
+                                        <p className="text-gray-500 mb-6">Selecione os filtros e clique em Gerar Questao para comecar.</p>
                                         <button
                                                             onClick={() => generateQuestion()}
                                                             className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-xl font-medium hover:from-indigo-700 hover:to-purple-700 transition-all"
                                                           >
                                                           Comecar Agora
-                                        </button>button>
-                        </div>div>
+                                        </button>
+                        </div>
                       ) : loading ? (
                         <div className="bg-white rounded-2xl p-12 shadow-sm border border-gray-100 flex flex-col items-center justify-center min-h-96">
-                                        <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-4"></div>div>
-                                        <p className="text-gray-500">Gerando questao...</p>p>
-                        </div>div>
+                                        <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-4"></div>
+                                        <p className="text-gray-500">Gerando questao...</p>
+                        </div>
                       ) : currentQuestion && (
                         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                                         <div className="flex gap-2 mb-4">
-                                                          <span className="bg-indigo-100 text-indigo-700 text-xs font-medium px-3 py-1 rounded-full">{currentQuestion.subject}</span>span>
-                                                          <span className="bg-gray-100 text-gray-700 text-xs font-medium px-3 py-1 rounded-full">{currentQuestion.difficulty}</span>span>
-                                        </div>div>
-                                        <p className="text-gray-800 font-medium mb-6 text-lg leading-relaxed">{currentQuestion.text}</p>p>
+                                                          <span className="bg-indigo-100 text-indigo-700 text-xs font-medium px-3 py-1 rounded-full">{currentQuestion.subject}</span>
+                                                          <span className="bg-gray-100 text-gray-700 text-xs font-medium px-3 py-1 rounded-full">{currentQuestion.difficulty}</span>
+                                        </div>
+                                        <p className="text-gray-800 font-medium mb-6 text-lg leading-relaxed">{currentQuestion.text}</p>
                                         <div className="space-y-3 mb-6">
                                           {currentQuestion.options.map((opt, idx) => {
                                               let cls = 'w-full text-left p-4 rounded-xl border-2 transition-all cursor-pointer ';
@@ -212,17 +212,17 @@ function QuestoesContent() {
                                                                                                 onClick={() => !showResult && setSelectedAnswer(idx)}
                                                                                                 disabled={showResult}
                                                                                               >
-                                                                                              <span className="font-semibold mr-2">{String.fromCharCode(65 + idx)}.</span>span> {opt}
-                                                                      </button>button>
+                                                                                              <span className="font-semibold mr-2">{String.fromCharCode(65 + idx)}.</span> {opt}
+                                                                      </button>
                                                                     );
                         })}
-                                        </div>div>
+                                        </div>
                         
                           {showResult && (
                                             <div className={`p-4 rounded-xl mb-4 ${isCorrect ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
-                                                                <p className="font-semibold mb-1">{isCorrect ? 'Correto!' : 'Incorreto'}</p>p>
-                                                                <p className="text-sm text-gray-600">{currentQuestion.explanation}</p>p>
-                                            </div>div>
+                                                                <p className="font-semibold mb-1">{isCorrect ? 'Correto!' : 'Incorreto'}</p>
+                                                                <p className="text-sm text-gray-600">{currentQuestion.explanation}</p>
+                                            </div>
                                         )}
                         
                           {!showResult ? (
@@ -232,29 +232,29 @@ function QuestoesContent() {
                                                                   className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 rounded-xl font-medium hover:from-indigo-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                                                                 >
                                                                 Confirmar Resposta
-                                            </button>button>
+                                            </button>
                                           ) : (
                                             <button
                                                                   onClick={handleNextQuestion}
                                                                   className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 rounded-xl font-medium hover:from-indigo-700 hover:to-purple-700 transition-all"
                                                                 >
                                                                 Proxima Questao
-                                            </button>button>
+                                            </button>
                                         )}
-                        </div>div>
+                        </div>
                                             )}
-                                </div>div>
-                      </div>div>
+                                </div>
+                      </div>
                       <Chatbot />
-              </main>main>
-        </div>div>
+              </main>
+        </div>
       )
 }
 
 export default function QuestoesPage() {
     return (
-          <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>div></div>div>}>
+          <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div></div>}>
                 <QuestoesContent />
-          </Suspense>Suspense>
+          </Suspense>
         )
 }</div>
