@@ -13,10 +13,10 @@ const novidades = [
   },
   {
     id: 2,
-    title: '🤖 Assistente IA com Claude Sonnet 4.6',
+    title: '🤖 Assistente IA com Gemini 2.0 Flash',
     category: 'IA',
     date: '10 Mai 2026',
-    description: 'Nosso Assistente IA agora utiliza o modelo Claude Sonnet 4.6, o mais avançado da Anthropic. Respostas mais precisas e contextuais para seus estudos!',
+    description: 'Nosso Assistente IA agora utiliza o modelo Gemini 2.0 Flash, o mais avançado da Anthropic. Respostas mais precisas e contextuais para seus estudos!',
     badge: 'IA',
     badgeColor: 'bg-purple-100 text-purple-700',
   },
