@@ -48,10 +48,10 @@ export default function Sidebar() {
         <aside className="fixed left-0 top-0 bottom-0 w-64 bg-white border-r border-gray-100 shadow-sm z-30 flex flex-col">
               <div className="p-6 border-b border-gray-100">
                       <Link href="/dashboard">
-                                <h1 className="text-2xl font-bold text-indigo-600">TutorIA</h1>h1>
-                                <p className="text-xs text-gray-400">Powered by Gemini AI</p>p>
-                      </Link>Link>
-              </div>div>
+                                <h1 className="text-2xl font-bold text-indigo-600">TutorIA</h1>
+                                <p className="text-xs text-gray-400">Powered by Gemini AI</p>
+                      </Link>
+              </div>
               <nav className="flex-1 overflow-y-auto py-4">
                 {navItems.map((item) => {
                     const isActive = pathname === item.href ||
@@ -66,12 +66,12 @@ export default function Sidebar() {
                                                                       : 'text-gray-600 hover:bg-gray-50 hover:text-gray-800'
                                                   }`}
                                                 >
-                                                <span className="text-base">{item.icon}</span>span>
+                                                <span className="text-base">{item.icon}</span>
                                     {item.label}
-                                  </Link>Link>
+                                  </Link>
                                 );
         })}
-              </nav>nav>
+              </nav>
               <div className="p-4 border-t border-gray-100">
                       <div className="flex items-center gap-3 mb-3">
                         {userAvatar ? (
@@ -80,21 +80,21 @@ export default function Sidebar() {
                       <div className="w-9 h-9 bg-indigo-100 rounded-full flex items-center justify-center">
                                     <span className="text-indigo-600 font-semibold text-sm">
                                       {userName.charAt(0).toUpperCase()}
-                                    </span>span>
-                      </div>div>
+                                    </span>
+                      </div>
                                 )}
                                 <div className="flex-1 min-w-0">
-                                            <p className="text-sm font-semibold text-gray-800 truncate">{userName}</p>p>
-                                            <p className="text-xs text-gray-400 truncate">{userEmail}</p>p>
-                                </div>div>
-                      </div>div>
+                                            <p className="text-sm font-semibold text-gray-800 truncate">{userName}</p>
+                                            <p className="text-xs text-gray-400 truncate">{userEmail}</p>
+                                </div>
+                      </div>
                       <button
                                   onClick={handleSignOut}
                                   className="w-full text-xs text-gray-500 hover:text-red-500 transition-colors py-1"
                                 >
                                 Sair da conta
-                      </button>button>
-              </div>div>
-        </aside>aside>
+                      </button>
+              </div>
+        </aside>
       );
-}</aside>
+}
