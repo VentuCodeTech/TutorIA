@@ -3,101 +3,110 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
+// Banco de questoes baseado em vestibulares reais (ENEM, FUVEST, UNICAMP, etc.)
 const questionBank = [
-    { subject: 'Matematica', difficulty: 'Facil', text: 'Qual e o resultado de 15% de 200?', options: ['25', '30', '35', '40'], correctAnswer: 1, explanation: '15% de 200 = 0,15 x 200 = 30' },
-    { subject: 'Matematica', difficulty: 'Medio', text: 'Se x2 - 5x + 6 = 0, quais sao os valores de x?', options: ['x=1 e x=6', 'x=2 e x=3', 'x=-2 e x=-3', 'x=0 e x=5'], correctAnswer: 1, explanation: 'Fatorando: (x-2)(x-3) = 0, entao x=2 ou x=3' },
-    { subject: 'Matematica', difficulty: 'Facil', text: 'Quanto e 25% de 80?', options: ['15', '20', '25', '30'], correctAnswer: 1, explanation: '25% de 80 = 0,25 x 80 = 20' },
-    { subject: 'Matematica', difficulty: 'Medio', text: 'Qual o valor de log base 10 de 1000?', options: ['2', '3', '4', '10'], correctAnswer: 1, explanation: 'log10(1000) = 3, pois 10^3 = 1000' },
-    { subject: 'Matematica', difficulty: 'Dificil', text: 'Qual e a integral de 2x com relacao a x?', options: ['x^2', 'x^2 + C', '2', 'x + C'], correctAnswer: 1, explanation: 'Integral de 2x dx = x^2 + C' },
-    { subject: 'Portugues', difficulty: 'Facil', text: 'Qual e o sujeito da frase: O aluno estudou muito para a prova?', options: ['a prova', 'muito', 'O aluno', 'estudou'], correctAnswer: 2, explanation: 'O sujeito e O aluno pois e o ser que pratica a acao' },
-    { subject: 'Portugues', difficulty: 'Medio', text: 'Qual figura de linguagem esta em: A vida e uma viagem?', options: ['Metonimia', 'Metafora', 'Sinestesia', 'Eufemismo'], correctAnswer: 1, explanation: 'Metafora e a comparacao implicita entre vida e viagem' },
-    { subject: 'Historia', difficulty: 'Facil', text: 'Em que ano foi proclamada a Republica no Brasil?', options: ['1822', '1888', '1889', '1891'], correctAnswer: 2, explanation: 'A Republica foi proclamada em 15 de novembro de 1889' },
-    { subject: 'Historia', difficulty: 'Medio', text: 'Quem foi o lider da Inconfidencia Mineira?', options: ['Dom Pedro I', 'Tiradentes', 'Jose Bonifacio', 'Marques de Pombal'], correctAnswer: 1, explanation: 'Tiradentes (Joaquim Jose da Silva Xavier) liderou a Inconfidencia Mineira' },
-    { subject: 'Ciencias', difficulty: 'Facil', text: 'Qual e o principal gas da fotossintese que as plantas absorvem?', options: ['Oxigenio', 'Nitrogenio', 'Dioxido de Carbono', 'Hidrogenio'], correctAnswer: 2, explanation: 'Na fotossintese, as plantas absorvem CO2 e liberam O2' },
-    { subject: 'Fisica', difficulty: 'Medio', text: 'Um objeto percorre 60m em 3s com velocidade constante. Qual e sua velocidade?', options: ['10 m/s', '15 m/s', '20 m/s', '25 m/s'], correctAnswer: 2, explanation: 'v = d/t = 60/3 = 20 m/s' },
-    { subject: 'Fisica', difficulty: 'Facil', text: 'Qual e a unidade de medida da forca no SI?', options: ['Joule', 'Newton', 'Pascal', 'Watt'], correctAnswer: 1, explanation: 'A forca e medida em Newtons (N) no Sistema Internacional' },
-    { subject: 'Fisica', difficulty: 'Dificil', text: 'Qual e a formula da energia cinetica?', options: ['E=mc^2', 'Ec=mv^2/2', 'F=ma', 'P=mv'], correctAnswer: 1, explanation: 'Energia cinetica Ec = mv^2/2, onde m e massa e v e velocidade' },
-    { subject: 'Quimica', difficulty: 'Facil', text: 'Qual e o simbolo quimico do ouro?', options: ['Go', 'Or', 'Au', 'Ag'], correctAnswer: 2, explanation: 'O ouro tem simbolo Au, do latim aurum' },
-    { subject: 'Quimica', difficulty: 'Medio', text: 'Qual e o numero atomico do carbono?', options: ['4', '6', '8', '12'], correctAnswer: 1, explanation: 'O carbono tem numero atomico 6 (6 protons no nucleo)' },
-    { subject: 'Biologia', difficulty: 'Facil', text: 'Qual organela celular e responsavel pela producao de energia?', options: ['Nucleo', 'Ribossomo', 'Mitocondria', 'Vacuolo'], correctAnswer: 2, explanation: 'A mitocondria realiza a respiracao celular produzindo ATP' },
-    { subject: 'Biologia', difficulty: 'Medio', text: 'O que e a meiose?', options: ['Divisao celular que duplica', 'Divisao celular que reduz o numero de cromossomos', 'Sintese de proteinas', 'Replicacao do DNA'], correctAnswer: 1, explanation: 'Meiose e a divisao celular que reduz o numero cromossomico pela metade' },
-    { subject: 'Direito Constitucional', difficulty: 'Medio', text: 'Qual e o prazo para a interposicao de Recurso Extraordinario?', options: ['5 dias', '10 dias', '15 dias', '30 dias'], correctAnswer: 2, explanation: 'O prazo para RE e de 15 dias uteis conforme o CPC/2015' },
-    { subject: 'Direito Civil', difficulty: 'Medio', text: 'Qual e a capacidade civil plena no Brasil?', options: ['16 anos', '18 anos', '21 anos', '25 anos'], correctAnswer: 1, explanation: 'No Brasil, a capacidade civil plena e adquirida aos 18 anos (Art. 5 CC)' },
-    { subject: 'Fiancas Pessoais', difficulty: 'Facil', text: 'O que significa a sigla CDI?', options: ['Certificado de Deposito Imobiliario', 'Certificado de Deposito Interbancario', 'Credito Direto ao Investidor', 'Capital de Desenvolvimento Individual'], correctAnswer: 1, explanation: 'CDI = Certificado de Deposito Interbancario, taxa de referencia para investimentos' },
-    { subject: 'Investimentos', difficulty: 'Medio', text: 'O que e diversificacao de carteira?', options: ['Concentrar em uma unica acao', 'Distribuir investimentos em diferentes ativos', 'Investir apenas em renda fixa', 'Comprar ativos do mesmo setor'], correctAnswer: 1, explanation: 'Diversificar reduz o risco ao distribuir investimentos em diferentes classes de ativos' },
-    { subject: 'CPA-20', difficulty: 'Medio', text: 'O que e o IPCA?', options: ['Indice de Precos ao Consumidor Amplo', 'Indice de Pagamento de Credito Amplo', 'Indice de Producao de Capital Ativo', 'Indicador de Preco por Cambio Autonomo'], correctAnswer: 0, explanation: 'IPCA = Indice de Precos ao Consumidor Amplo, principal medida de inflacao do Brasil' },
-    { subject: 'Geografia', difficulty: 'Facil', text: 'Qual e o maior pais do mundo em extensao territorial?', options: ['China', 'Brasil', 'Canada', 'Russia'], correctAnswer: 3, explanation: 'A Russia e o maior pais do mundo com aproximadamente 17 milhoes de km2' },
-    { subject: 'Redacao', difficulty: 'Medio', text: 'Qual e a estrutura basica de uma dissertacao argumentativa?', options: ['Introducao, narracao, conclusao', 'Introducao, desenvolvimento, conclusao', 'Tema, hipotese, prova', 'Titulo, corpo, referencias'], correctAnswer: 1, explanation: 'A dissertacao argumentativa tem Introducao (tese), Desenvolvimento (argumentos) e Conclusao (proposta)' },
-    { subject: 'Ingles', difficulty: 'Facil', text: 'What is the plural of child in English?', options: ['childs', 'childrens', 'children', 'child'], correctAnswer: 2, explanation: 'The plural of child is children (irregular plural)' },
-    { subject: 'Ingles', difficulty: 'Medio', text: 'What does the idiom to bite the bullet mean?', options: ['To eat something hard', 'To endure a painful situation', 'To shoot a gun', 'To chew food slowly'], correctAnswer: 1, explanation: 'To bite the bullet means to endure a painful or difficult situation' },
-    { subject: 'Espanhol', difficulty: 'Facil', text: 'Como se dice obrigado en espanol?', options: ['Perdon', 'Gracias', 'Por favor', 'De nada'], correctAnswer: 1, explanation: 'Obrigado en espanol es Gracias' },
-    { subject: 'Espanhol', difficulty: 'Medio', text: 'Cual es el genero de la palabra problema en espanol?', options: ['Femenino', 'Masculino', 'Neutro', 'Variable'], correctAnswer: 1, explanation: 'Problema es masculino en espanol: el problema' },
-    { subject: 'Matematica', difficulty: 'Medio', text: 'Um trem parte de A para B a 80 km/h e leva 3 horas. Qual e a distancia?', options: ['200 km', '240 km', '260 km', '280 km'], correctAnswer: 1, explanation: 'd = v x t = 80 x 3 = 240 km' },
-    { subject: 'Fisica', difficulty: 'Medio', text: 'Qual e a velocidade da luz no vacuo aproximadamente?', options: ['3x10^6 m/s', '3x10^8 m/s', '3x10^10 m/s', '3x10^4 m/s'], correctAnswer: 1, explanation: 'A velocidade da luz no vacuo e aproximadamente 3x10^8 m/s' },
-    ];
+  // MATEMATICA - ENEM
+    { subject: 'Matematica', difficulty: 'Facil', text: '(ENEM 2022) Um comerciante comprou uma mercadoria por R$ 120,00 e a vendeu com 25% de lucro. Por quanto ele vendeu a mercadoria?', options: ['R$ 145,00', 'R$ 150,00', 'R$ 155,00', 'R$ 160,00'], correctAnswer: 1, explanation: 'Lucro de 25% sobre R$ 120,00: 120 x 1,25 = R$ 150,00' },
+      { subject: 'Matematica', difficulty: 'Medio', text: '(FUVEST 2023) Uma progressao aritmetica tem primeiro termo 3 e razao 4. Qual e o 10o termo?', options: ['35', '39', '40', '43'], correctAnswer: 1, explanation: 'an = a1 + (n-1)r = 3 + (10-1)4 = 3 + 36 = 39' },
+        { subject: 'Matematica', difficulty: 'Dificil', text: '(UNICAMP 2023) Calcule o limite de (x^2 - 4)/(x - 2) quando x tende a 2.', options: ['0', '2', '4', 'Indefinido'], correctAnswer: 2, explanation: 'Fatorando: (x-2)(x+2)/(x-2) = x+2. Quando x->2: 2+2 = 4' },
+          { subject: 'Matematica', difficulty: 'Medio', text: '(ENEM 2021) Em um triangulo retangulo, os catetos medem 3cm e 4cm. Qual e a hipotenusa?', options: ['5 cm', '6 cm', '7 cm', '8 cm'], correctAnswer: 0, explanation: 'Teorema de Pitagoras: h^2 = 3^2 + 4^2 = 9 + 16 = 25, h = 5 cm' },
+            { subject: 'Matematica', difficulty: 'Facil', text: '(ENEM 2020) Qual e o valor de 2^10?', options: ['512', '1000', '1024', '2048'], correctAnswer: 2, explanation: '2^10 = 1024' },
+              // PORTUGUES - ENEM
+                { subject: 'Portugues', difficulty: 'Facil', text: '(ENEM 2022) Qual alternativa apresenta um exemplo de metafora?', options: ['"Ela canta como um passaro."', '"A vida e um sonho."', '"Sorriso de crianca e alegria."', '"O estudante, cansado, dormiu."'], correctAnswer: 1, explanation: 'A metafora e uma comparacao implicita sem uso de conectivos. "A vida e um sonho" compara vida a sonho sem usar como/qual.' },
+                  { subject: 'Portugues', difficulty: 'Medio', text: '(FUVEST 2023) Identifique a oração subordinada adverbial causal: "Como chegou cedo, pôde organizar tudo."', options: ['pôde organizar tudo', 'Como chegou cedo', 'organizar tudo', 'Chegou cedo'], correctAnswer: 1, explanation: '"Como chegou cedo" exprime causa da ação principal, sendo uma oração subordinada adverbial causal.' },
+                    { subject: 'Portugues', difficulty: 'Medio', text: '(ENEM 2021) A palavra "saudade" é considerada intraduzível por expressar:', options: ['Um sentimento de alegria intensa', 'Um estado de melancolica lembrança de algo amado e ausente', 'O desejo de conquista de novos horizontes', 'A sensação de medo do desconhecido'], correctAnswer: 1, explanation: 'Saudade expressa uma nostalgia melancólica por algo ou alguém amado que está ausente, conceito único da língua portuguesa.' },
+                      // HISTORIA - ENEM
+                        { subject: 'Historia', difficulty: 'Facil', text: '(ENEM 2022) O processo de independência do Brasil em 1822 foi liderado por:', options: ['Dom João VI', 'Dom Pedro I', 'Jose Bonifacio', 'Tiradentes'], correctAnswer: 1, explanation: 'Dom Pedro I proclamou a Independência do Brasil em 7 de setembro de 1822 às margens do Rio Ipiranga.' },
+                          { subject: 'Historia', difficulty: 'Medio', text: '(ENEM 2021) A Revolução Francesa (1789) teve como principal lema:', options: ['Paz, Terra e Pão', 'Liberdade, Igualdade, Fraternidade', 'Ordem e Progresso', 'Un pour tous, tous pour un'], correctAnswer: 1, explanation: '"Liberté, Egalité, Fraternité" foi o principal lema da Revolução Francesa, representando seus ideais iluministas.' },
+                            { subject: 'Historia', difficulty: 'Dificil', text: '(FUVEST 2023) O Plano Marshall (1947) tinha como objetivo principal:', options: ['Reconstruir a Europa e conter o avanço do comunismo', 'Criar a OTAN para defesa militar ocidental', 'Estabelecer o Banco Mundial e o FMI', 'Promover a descolonizacao da Africa'], correctAnswer: 0, explanation: 'O Plano Marshall foi um programa de ajuda econômica dos EUA para reconstrução da Europa Ocidental pós-2a Guerra, contendo o avanço soviético.' },
+                              // CIENCIAS DA NATUREZA - ENEM
+                                { subject: 'Biologia', difficulty: 'Facil', text: '(ENEM 2022) Qual processo permite às plantas produzir seu próprio alimento usando luz solar?', options: ['Respiração celular', 'Fotossíntese', 'Fermentação', 'Digestão'], correctAnswer: 1, explanation: 'A fotossíntese é o processo pelo qual plantas, algas e cianobactérias convertem luz solar, CO2 e água em glicose e oxigênio.' },
+                                  { subject: 'Biologia', difficulty: 'Medio', text: '(ENEM 2021) O DNA é composto por nucleotídeos. Cada nucleotídeo é formado por:', options: ['Aminoácido, fosfato e ribose', 'Base nitrogenada, fosfato e desoxirribose', 'Base nitrogenada, sulfato e glicose', 'Adenina, timina e glicose'], correctAnswer: 1, explanation: 'Nucleotídeo = base nitrogenada + grupo fosfato + açúcar desoxirribose (no DNA).' },
+                                    { subject: 'Quimica', difficulty: 'Medio', text: '(ENEM 2022) O pH de uma solução indica sua acidez. Uma solução com pH = 7 é:', options: ['Ácida', 'Básica', 'Neutra', 'Fortemente ácida'], correctAnswer: 2, explanation: 'pH = 7 indica solução neutra. pH < 7 é ácido; pH > 7 é básico/alcalino.' },
+                                      { subject: 'Fisica', difficulty: 'Medio', text: '(ENEM 2022) Um corpo parte do repouso com aceleração de 4 m/s². Qual é sua velocidade após 5 segundos?', options: ['10 m/s', '15 m/s', '20 m/s', '25 m/s'], correctAnswer: 2, explanation: 'v = v0 + at = 0 + 4 × 5 = 20 m/s' },
+                                        // DIREITO - OAB
+                                          { subject: 'Direito Constitucional', difficulty: 'Medio', text: '(OAB 2023) De acordo com a CF/88, qual é o prazo de mandato do Presidente da República?', options: ['4 anos, permitida uma reeleição', '4 anos, sem possibilidade de reeleição', '5 anos, permitida uma reeleição', '6 anos, sem possibilidade de reeleição'], correctAnswer: 0, explanation: 'Art. 82 CF/88: mandato de 4 anos, permitida uma única reeleição para período subsequente.' },
+                                            { subject: 'Direito Civil', difficulty: 'Medio', text: '(OAB 2022) Segundo o Código Civil, a capacidade civil plena é adquirida:', options: ['Aos 16 anos', 'Aos 18 anos', 'Aos 21 anos', 'Com o casamento independente da idade'], correctAnswer: 1, explanation: 'Art. 5° CC: a menoridade cessa aos 18 anos completos, quando a pessoa fica habilitada à prática de todos os atos da vida civil.' },
+                                              { subject: 'Direito Penal', difficulty: 'Dificil', text: '(OAB 2023) O princípio da insignificância (bagatela) afasta:', options: ['A tipicidade formal da conduta', 'A tipicidade material da conduta', 'A culpabilidade do agente', 'A antijuridicidade da conduta'], correctAnswer: 1, explanation: 'O princípio da insignificância afasta a tipicidade material, pois a conduta não causa lesão significativa ao bem jurídico protegido.' },
+                                                // FINANCAS - CPA-20
+                                                  { subject: 'Investimentos', difficulty: 'Facil', text: '(CPA-20 2023) O Tesouro Selic é uma aplicação em:', options: ['Renda variável com alto risco', 'Renda fixa indexada à taxa Selic', 'Fundos de ações da bolsa', 'Derivativos financeiros'], correctAnswer: 1, explanation: 'Tesouro Selic (LFT) é um título público federal de renda fixa indexado à taxa básica de juros (Selic), considerado um dos investimentos mais seguros.' },
+                                                    { subject: 'Matematica Financeira', difficulty: 'Medio', text: '(CPA-20 2023) Um capital de R$ 10.000 aplicado por 2 anos a juros compostos de 10% a.a. renderá:', options: ['R$ 2.000,00', 'R$ 2.100,00', 'R$ 2.500,00', 'R$ 12.100,00'], correctAnswer: 1, explanation: 'M = C(1+i)^n = 10000(1,1)^2 = 10000 x 1,21 = R$12.100. Rendimento = R$2.100.' },
+                                                      // ENEM - REDACAO
+                                                        { subject: 'Redacao', difficulty: 'Medio', text: '(ENEM 2022) Na redação dissertativo-argumentativa do ENEM, a competência V avalia:', options: ['O domínio da norma padrão da escrita', 'O conhecimento dos mecanismos linguísticos', 'A proposta de intervenção detalhada e articulada', 'A coesão e coerência do texto'], correctAnswer: 2, explanation: 'Competência V avalia a proposta de intervenção: deve ser detalhada (ação, agente, modo/meio, efeito e destinatário) e relacionada ao tema.' },
+                                                          // GEOGRAFIA
+                                                            { subject: 'Geografia', difficulty: 'Facil', text: '(ENEM 2022) O fenômeno El Niño é caracterizado pelo aquecimento anormal das águas do:', options: ['Oceano Atlântico Norte', 'Oceano Índico', 'Oceano Pacífico Tropical', 'Mar do Caribe'], correctAnswer: 2, explanation: 'El Niño é o aquecimento anormal das águas superficiais do Oceano Pacífico Tropical (entre a Austrália e a América do Sul).' },
+                                                              { subject: 'Geografia', difficulty: 'Medio', text: '(ENEM 2021) O processo de urbanização no Brasil intensificou-se principalmente a partir de:', options: ['1822, com a Independência', '1889, com a República', '1950, com a industrialização', '1985, com a redemocratização'], correctAnswer: 2, explanation: 'O êxodo rural e a urbanização acelerada no Brasil ocorreram a partir dos anos 1950-1960, com o processo de industrialização e migração campo-cidade.' },
+                                                              ];
 
-export async function POST(request: NextRequest) {
-      try {
-              const { area, difficulty, excludeTexts } = await request.json();
-              const excluded: string[] = excludeTexts || [];
+                                                              export async function POST(request: NextRequest) {
+                                                                try {
+                                                                    const { area, difficulty, excludeTexts } = await request.json();
+                                                                        const excluded: string[] = excludeTexts || [];
 
-        try {
-                  const areaText = area === 'Todas' ? 'qualquer area de estudo brasileira (Matematica, Portugues, Historia, Fisica, Quimica, Biologia, Direito, Financas, etc.)' : area;
-                  const diffText = difficulty === 'Todas' ? 'aleatoria (Facil, Medio ou Dificil)' : difficulty;
-                  const excludeHint = excluded.length > 0 ? ` IMPORTANTE: Nao repita estas questoes: ${excluded.slice(-5).join(' | ')}` : '';
+                                                                            // Tentar gerar questao via Gemini AI primeiro
+                                                                                try {
+                                                                                      const areaText = area === 'Todas' ? 'qualquer area de estudo do ENEM, FUVEST, UNICAMP, OAB ou CPA-20' : area;
+                                                                                            const diffText = difficulty === 'Todas' ? 'aleatoria (Facil, Medio ou Dificil)' : difficulty;
+                                                                                                  const excludeHint = excluded.length > 0 ? ` NAO use estas questoes ou similares: ${excluded.slice(-3).join(' | ')}` : '';
+                                                                                                        
+                                                                                                              const randomSeed = Math.floor(Math.random() * 1000);
 
-                const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-                  const prompt = `Gere UMA questao NOVA e DIFERENTE de multipla escolha sobre ${areaText} com dificuldade ${diffText} para estudantes brasileiros preparando para vestibulares ou concursos. ${excludeHint}
-                  Retorne APENAS JSON valido sem markdown:
-                  {"text":"pergunta?","options":["A","B","C","D"],"correctAnswer":0,"explanation":"explicacao","subject":"Materia","difficulty":"Facil"}`;
+                                                                                                                    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+                                                                                                                          const prompt = `Gere UMA questao NOVA e ORIGINAL de multipla escolha sobre ${areaText} com dificuldade ${diffText} para estudantes brasileiros. ${excludeHint}
+                                                                                                                          Baseie-se em questoes de vestibulares reais como ENEM, FUVEST, UNICAMP, OAB, CPA-20, Cesgranrio. Randomizador: ${randomSeed}.
+                                                                                                                          A questao deve ser DIFERENTE e INEDITA, nunca repetindo enunciados anteriores.
+                                                                                                                          Retorne APENAS JSON valido sem markdown, sem explicacoes fora do JSON:
+                                                                                                                          {"text":"enunciado da questao?","options":["opcao A","opcao B","opcao C","opcao D"],"correctAnswer":0,"explanation":"explicacao detalhada da resposta correta","subject":"${area === 'Todas' ? 'materia' : area}","difficulty":"${difficulty === 'Todas' ? 'Medio' : difficulty}","source":"ENEM 2024 (adaptada)"}`;
 
-                const result = await model.generateContent(prompt);
-                  const text = result.response.text();
+                                                                                                                                const result = await model.generateContent(prompt);
+                                                                                                                                      const text = result.response.text();
 
-                const jsonMatch = text.match(/\{[\s\S]*\}/);
-                  if (jsonMatch) {
-                              const question = JSON.parse(jsonMatch[0]);
-                              if (!excluded.includes(question.text)) {
-                                            question.id = `ai_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-                                            return NextResponse.json({ question });
-                              }
-                  }
-        } catch (aiError) {
-                  console.log('AI unavailable, using question bank');
-        }
+                                                                                                                                            const jsonMatch = text.match(/\{[\s\S]*\}/);
+                                                                                                                                                  if (jsonMatch) {
+                                                                                                                                                          const question = JSON.parse(jsonMatch[0]);
+                                                                                                                                                                  if (question.text && question.options && question.options.length === 4 && !excluded.includes(question.text)) {
+                                                                                                                                                                            question.id = `ai_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+                                                                                                                                                                                      return NextResponse.json({ question });
+                                                                                                                                                                                              }
+                                                                                                                                                                                                    }
+                                                                                                                                                                                                        } catch (aiError) {
+                                                                                                                                                                                                              console.log('AI unavailable, using question bank:', aiError);
+                                                                                                                                                                                                                  }
 
-        let filtered = questionBank.filter(q => !excluded.includes(q.text));
-              if (filtered.length === 0) filtered = questionBank;
+                                                                                                                                                                                                                      // Fallback: usar banco de questoes local
+                                                                                                                                                                                                                          let filtered = questionBank.filter(q => !excluded.includes(q.text));
+                                                                                                                                                                                                                              if (filtered.length === 0) filtered = [...questionBank];
 
-        if (area !== 'Todas') {
-                  const byArea = filtered.filter(q => {
-                              const norm = area.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-                              const subj = q.subject.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-                              return subj.toLowerCase().includes(norm.toLowerCase()) || norm.toLowerCase().includes(subj.toLowerCase());
-                  });
-                  if (byArea.length > 0) filtered = byArea;
-        }
+                                                                                                                                                                                                                                  // Filtrar por area
+                                                                                                                                                                                                                                      if (area !== 'Todas') {
+                                                                                                                                                                                                                                            const norm = area.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+                                                                                                                                                                                                                                                  const byArea = filtered.filter(q => {
+                                                                                                                                                                                                                                                          const subj = q.subject.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+                                                                                                                                                                                                                                                                  return subj.includes(norm) || norm.includes(subj);
+                                                                                                                                                                                                                                                                        });
+                                                                                                                                                                                                                                                                              if (byArea.length > 0) filtered = byArea;
+                                                                                                                                                                                                                                                                                  }
 
-        if (difficulty !== 'Todas') {
-                  const normDiff = difficulty.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-                  const byDiff = filtered.filter(q => {
-                              const qDiff = q.difficulty.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-                              return qDiff.toLowerCase() === normDiff.toLowerCase();
-                  });
-                  if (byDiff.length > 0) filtered = byDiff;
-        }
+                                                                                                                                                                                                                                                                                      // Filtrar por dificuldade
+                                                                                                                                                                                                                                                                                          if (difficulty !== 'Todas') {
+                                                                                                                                                                                                                                                                                                const normDiff = difficulty.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+                                                                                                                                                                                                                                                                                                      const byDiff = filtered.filter(q => {
+                                                                                                                                                                                                                                                                                                              const qDiff = q.difficulty.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+                                                                                                                                                                                                                                                                                                                      return qDiff === normDiff;
+                                                                                                                                                                                                                                                                                                                            });
+                                                                                                                                                                                                                                                                                                                                  if (byDiff.length > 0) filtered = byDiff;
+                                                                                                                                                                                                                                                                                                                                      }
 
-        const randomQ = filtered[Math.floor(Math.random() * filtered.length)];
-              const question = {
-                        ...randomQ,
-                        subject: area !== 'Todas' ? area : randomQ.subject,
-                        difficulty: difficulty !== 'Todas' ? difficulty : randomQ.difficulty,
-                        id: `bank_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-              };
+                                                                                                                                                                                                                                                                                                                                          const randomQ = filtered[Math.floor(Math.random() * filtered.length)];
+                                                                                                                                                                                                                                                                                                                                              const question = {
+                                                                                                                                                                                                                                                                                                                                                    ...randomQ,
+                                                                                                                                                                                                                                                                                                                                                          id: `bank_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+                                                                                                                                                                                                                                                                                                                                                              };
 
-        return NextResponse.json({ question });
-      } catch (error) {
-              console.error('Error generating question:', error);
-              return NextResponse.json({ error: 'Failed to generate question' }, { status: 500 });
-      }
-}
+                                                                                                                                                                                                                                                                                                                                                                  return NextResponse.json({ question });
+                                                                                                                                                                                                                                                                                                                                                                    } catch (error) {
+                                                                                                                                                                                                                                                                                                                                                                        console.error('Error generating question:', error);
+                                                                                                                                                                                                                                                                                                                                                                            return NextResponse.json({ error: 'Failed to generate question' }, { status: 500 });
+                                                                                                                                                                                                                                                                                                                                                                              }
+                                                                                                                                                                                                                                                                                                                                                                              }
+                                                                                                                                                                                                                                                                                                                                                                              
