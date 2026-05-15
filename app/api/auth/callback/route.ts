@@ -1,43 +1,28 @@
-import { createServerClient } from '@supabase/ssr'
 import { NextRequest, NextResponse } from 'next/server'
-import { cookies } from 'next/headers'
 
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url)
     const code = searchParams.get('code')
       const next = searchParams.get('next') ?? '/dashboard'
+        const error = searchParams.get('error')
+          const error_description = searchParams.get('error_description')
 
-        if (code) {
-            const cookieStore = await cookies()
+            // Handle OAuth errors
+              if (error) {
+                  console.error('OAuth error:', error, error_description)
+                      return NextResponse.redirect(`${origin}/login?error=auth_callback_failed`)
+                        }
 
-                const supabase = createServerClient(
-                      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-                            process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-                                  {
-                                          cookies: {
-                                                    getAll() {
-                                                                return cookieStore.getAll()
-                                                                          },
-                                                                                    setAll(cookiesToSet: { name: string; value: string; options?: Record<string, unknown> }[]) {
-                                                                                                cookiesToSet.forEach(({ name, value, options }) => {
-                                                                                                              cookieStore.set(name, value, options as never)
-                                                                                                                          })
-                                                                                                                                    },
-                                                                                                                                            },
-                                                                                                                                                  }
-                                                                                                                                                      )
+                          if (code) {
+                              // Redirect to the auth-callback page where the client can handle PKCE
+                                  const callbackUrl = new URL('/auth/callback', origin)
+                                      callbackUrl.searchParams.set('code', code)
+                                          if (next !== '/dashboard') {
+                                                callbackUrl.searchParams.set('next', next)
+                                                    }
+                                                        return NextResponse.redirect(callbackUrl)
+                                                          }
 
-                                                                                                                                                          const { error } = await supabase.auth.exchangeCodeForSession(code)
-
-                                                                                                                                                              if (!error) {
-                                                                                                                                                                    const redirectUrl = new URL(next, origin)
-                                                                                                                                                                          return NextResponse.redirect(redirectUrl)
-                                                                                                                                                                              }
-
-                                                                                                                                                                                  console.error('Auth callback error:', error.message)
-                                                                                                                                                                                    }
-
-                                                                                                                                                                                      // Return the user to an error page with instructions
-                                                                                                                                                                                        return NextResponse.redirect(`${origin}/login?error=auth_callback_failed`)
-                                                                                                                                                                                        }
-                                                                                                                                                                                        
+                                                            return NextResponse.redirect(`${origin}/login?error=auth_callback_failed`)
+                                                            }
+                                                            
