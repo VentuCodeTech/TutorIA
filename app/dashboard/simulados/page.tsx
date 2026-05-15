@@ -177,7 +177,7 @@ export default function SimuladosPage() {
   };
 
   if (loading) {
-        return <div className="min-h-screen flex items-center justify-center"><div className="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>div></div>div>;
+        return <div className="min-h-screen flex items-center justify-center"><div className="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div></div>;
   }
   
     if (generatingQuestions) {
@@ -186,12 +186,12 @@ export default function SimuladosPage() {
                           <Sidebar />
                           <main className="ml-64 p-8 flex items-center justify-center" style={{minHeight: '100vh'}}>
                                     <div className="text-center">
-                                                <div className="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>div>
-                                                <h2 className="text-2xl font-bold text-gray-800 mb-2">Gerando Simulado...</h2>h2>
-                                                <p className="text-gray-500">Preparando {activeSimulado?.questions} questões exclusivas para você</p>p>
-                                    </div>div>
-                          </main>main>
-                  </div>div>
+                                                <div className="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                                                <h2 className="text-2xl font-bold text-gray-800 mb-2">Gerando Simulado...</h2>
+                                                <p className="text-gray-500">Preparando {activeSimulado?.questions} questões exclusivas para você</p>
+                                    </div>
+                          </main>
+                  </div>
                 );
     }
   
@@ -204,42 +204,42 @@ export default function SimuladosPage() {
                           <Sidebar />
                           <main className="ml-64 p-8">
                                     <div className="max-w-2xl mx-auto bg-white rounded-2xl p-8 shadow-sm border border-gray-100 text-center">
-                                                <div className="text-6xl mb-4">{approved ? '🏆' : '📚'}</div>div>
-                                                <h2 className="text-3xl font-bold text-gray-800 mb-2">Simulado Concluído!</h2>h2>
-                                                <p className="text-gray-500 mb-6">{activeSimulado.title}</p>p>
+                                                <div className="text-6xl mb-4">{approved ? '🏆' : '📚'}</div>
+                                                <h2 className="text-3xl font-bold text-gray-800 mb-2">Simulado Concluído!</h2>
+                                                <p className="text-gray-500 mb-6">{activeSimulado.title}</p>
                                                 <div className="grid grid-cols-3 gap-4 mb-8">
                                                               <div className="bg-indigo-50 rounded-xl p-4">
-                                                                              <div className="text-3xl font-bold text-indigo-600">{pct}%</div>div>
-                                                                              <div className="text-xs text-gray-500">Nota Final</div>div>
-                                                              </div>div>
+                                                                              <div className="text-3xl font-bold text-indigo-600">{pct}%</div>
+                                                                              <div className="text-xs text-gray-500">Nota Final</div>
+                                                              </div>
                                                               <div className="bg-green-50 rounded-xl p-4">
-                                                                              <div className="text-3xl font-bold text-green-600">{score}/{simQuestions.length}</div>div>
-                                                                              <div className="text-xs text-gray-500">Acertos</div>div>
-                                                              </div>div>
+                                                                              <div className="text-3xl font-bold text-green-600">{score}/{simQuestions.length}</div>
+                                                                              <div className="text-xs text-gray-500">Acertos</div>
+                                                              </div>
                                                               <div className={`${approved ? 'bg-green-50' : 'bg-red-50'} rounded-xl p-4`}>
                                                                               <div className={`text-xl font-bold ${approved ? 'text-green-600' : 'text-red-500'}`}>
                                                                                 {approved ? '✅ Aprovado' : '❌ Reprovado'}
-                                                                              </div>div>
-                                                                              <div className="text-xs text-gray-500">Resultado</div>div>
-                                                              </div>div>
-                                                </div>div>
+                                                                              </div>
+                                                                              <div className="text-xs text-gray-500">Resultado</div>
+                                                              </div>
+                                                </div>
                                                 <div className="flex gap-4 justify-center">
                                                               <button
                                                                                 onClick={() => { setActiveSimulado(null); setSimFinished(false); }}
                                                                                 className="bg-gray-100 text-gray-700 px-6 py-3 rounded-xl font-medium hover:bg-gray-200 transition-colors"
                                                                               >
                                                                               ← Voltar aos Simulados
-                                                              </button>button>
+                                                              </button>
                                                               <button
                                                                                 onClick={() => startSimulado(activeSimulado)}
                                                                                 className="bg-indigo-600 text-white px-6 py-3 rounded-xl font-medium hover:bg-indigo-700 transition-colors"
                                                                               >
                                                                               🔄 Refazer Simulado
-                                                              </button>button>
-                                                </div>div>
-                                    </div>div>
-                          </main>main>
-                  </div>div>
+                                                              </button>
+                                                </div>
+                                    </div>
+                          </main>
+                  </div>
                 );
     }
   
@@ -253,32 +253,32 @@ export default function SimuladosPage() {
                                     <div className="max-w-3xl mx-auto">
                                                 <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 mb-4 flex items-center justify-between">
                                                               <div>
-                                                                              <h2 className="font-bold text-gray-800">{activeSimulado.title}</h2>h2>
-                                                                              <p className="text-sm text-gray-500">Questão {currentQIndex + 1} de {simQuestions.length}</p>p>
-                                                              </div>div>
+                                                                              <h2 className="font-bold text-gray-800">{activeSimulado.title}</h2>
+                                                                              <p className="text-sm text-gray-500">Questão {currentQIndex + 1} de {simQuestions.length}</p>
+                                                              </div>
                                                               <div className="flex items-center gap-4">
                                                                               <div className={`text-xl font-bold font-mono ${timeLeft < 120 ? 'text-red-500' : 'text-gray-700'}`}>
                                                                                                 ⏱ {formatTime(timeLeft)}
-                                                                              </div>div>
+                                                                              </div>
                                                                               <button
                                                                                                   onClick={() => { if (timerRef.current) clearInterval(timerRef.current); finishSimulado(simQuestions, answers); }}
                                                                                                   className="text-sm text-red-500 hover:text-red-700 border border-red-200 px-3 py-1 rounded-lg"
                                                                                                 >
                                                                                                 Encerrar
-                                                                              </button>button>
-                                                              </div>div>
-                                                </div>div>
+                                                                              </button>
+                                                              </div>
+                                                </div>
                                     
                                                 <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
-                                                              <div className="bg-indigo-500 h-2 rounded-full transition-all" style={{width: `${progress}%`}}></div>div>
-                                                </div>div>
+                                                              <div className="bg-indigo-500 h-2 rounded-full transition-all" style={{width: `${progress}%`}}></div>
+                                                </div>
                                     
                                                 <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                                                               <div className="flex gap-2 mb-4">
-                                                                              <span className="bg-indigo-100 text-indigo-700 text-xs px-2 py-1 rounded-full">{currentQ.subject}</span>span>
-                                                                              <span className="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full">{currentQ.difficulty}</span>span>
-                                                              </div>div>
-                                                              <p className="text-gray-800 font-medium mb-6 text-lg leading-relaxed">{currentQ.text}</p>p>
+                                                                              <span className="bg-indigo-100 text-indigo-700 text-xs px-2 py-1 rounded-full">{currentQ.subject}</span>
+                                                                              <span className="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full">{currentQ.difficulty}</span>
+                                                              </div>
+                                                              <p className="text-gray-800 font-medium mb-6 text-lg leading-relaxed">{currentQ.text}</p>
                                                               <div className="space-y-3 mb-6">
                                                                 {currentQ.options.map((opt, idx) => {
                                       let cls = 'w-full text-left p-4 rounded-xl border-2 transition-all ';
@@ -293,17 +293,17 @@ export default function SimuladosPage() {
                                       }
                                       return (
                                                             <button key={idx} className={cls} onClick={() => !showResult && setSelectedAnswer(idx)}>
-                                                                                  <span className="font-semibold mr-2">{String.fromCharCode(65 + idx)}.</span>span> {opt}
-                                                            </button>button>
+                                                                                  <span className="font-semibold mr-2">{String.fromCharCode(65 + idx)}.</span> {opt}
+                                                            </button>
                                                           );
                   })}
-                                                              </div>div>
+                                                              </div>
                                                 
                                                   {showResult && (
                                     <div className={`p-4 rounded-xl mb-4 ${answers[answers.length - 1]?.correct ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
-                                                      <p className="font-semibold mb-1">{answers[answers.length - 1]?.correct ? '✅ Correto!' : '❌ Incorreto'}</p>p>
-                                                      <p className="text-sm text-gray-600">{currentQ.explanation}</p>p>
-                                    </div>div>
+                                                      <p className="font-semibold mb-1">{answers[answers.length - 1]?.correct ? '✅ Correto!' : '❌ Incorreto'}</p>
+                                                      <p className="text-sm text-gray-600">{currentQ.explanation}</p>
+                                    </div>
                                                               )}
                                                 
                                                   {!showResult ? (
@@ -313,19 +313,19 @@ export default function SimuladosPage() {
                                                         className="w-full bg-indigo-600 text-white py-3 rounded-xl font-medium hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                                                       >
                                                       Confirmar Resposta
-                                    </button>button>
+                                    </button>
                                   ) : currentQIndex + 1 < simQuestions.length ? (
                                     <button
                                                         onClick={nextQuestion}
                                                         className="w-full bg-indigo-600 text-white py-3 rounded-xl font-medium hover:bg-indigo-700 transition-colors"
                                                       >
                                                       Próxima Questão →
-                                    </button>button>
+                                    </button>
                                   ) : null}
-                                                </div>div>
-                                    </div>div>
-                          </main>main>
-                  </div>div>
+                                                </div>
+                                    </div>
+                          </main>
+                  </div>
                 );
     }
   
@@ -335,10 +335,10 @@ export default function SimuladosPage() {
                 <main className="ml-64 p-8">
                         <div className="mb-8 flex items-center justify-between">
                                   <div>
-                                              <h1 className="text-3xl font-bold text-gray-800">🎯 Simulados</h1>h1>
-                                              <p className="text-gray-500 mt-1">Simule provas completas cronometradas</p>p>
-                                  </div>div>
-                        </div>div>
+                                              <h1 className="text-3xl font-bold text-gray-800">🎯 Simulados</h1>
+                                              <p className="text-gray-500 mt-1">Simule provas completas cronometradas</p>
+                                  </div>
+                        </div>
                 
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                           {[
@@ -348,55 +348,55 @@ export default function SimuladosPage() {
             { label: 'Aprovações', value: stats.approved.toString(), icon: '✅' },
                       ].map((stat, i) => (
                                     <div key={i} className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex items-center gap-3">
-                                                  <span className="text-2xl">{stat.icon}</span>span>
+                                                  <span className="text-2xl">{stat.icon}</span>
                                                   <div>
-                                                                  <p className="text-xl font-bold text-gray-800">{stat.value}</p>p>
-                                                                  <p className="text-xs text-gray-500">{stat.label}</p>p>
-                                                  </div>div>
-                                    </div>div>
+                                                                  <p className="text-xl font-bold text-gray-800">{stat.value}</p>
+                                                                  <p className="text-xs text-gray-500">{stat.label}</p>
+                                                  </div>
+                                    </div>
                                   ))}
-                        </div>div>
+                        </div>
                 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-8">
                           {simuladosList.map((sim, i) => (
                         <div key={i} className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition-all">
                                       <div className={`inline-block px-2 py-1 rounded-lg text-xs font-medium border mb-3 ${colorMap[sim.color]}`}>
                                         {sim.tag}
-                                      </div>div>
-                                      <h3 className="font-bold text-gray-800 mb-3 leading-tight">{sim.title}</h3>h3>
+                                      </div>
+                                      <h3 className="font-bold text-gray-800 mb-3 leading-tight">{sim.title}</h3>
                                       <div className="space-y-2 mb-4">
                                                       <div className="flex items-center gap-2 text-sm text-gray-500">
-                                                                        <span>📝</span>span><span>{sim.questions} questões</span>span>
-                                                      </div>div>
+                                                                        <span>📝</span><span>{sim.questions} questões</span>
+                                                      </div>
                                                       <div className="flex items-center gap-2 text-sm text-gray-500">
-                                                                        <span>⏱️</span>span><span>{sim.timeMinutes} min</span>span>
-                                                      </div>div>
+                                                                        <span>⏱️</span><span>{sim.timeMinutes} min</span>
+                                                      </div>
                                                       <div className="flex items-center gap-2 text-sm">
-                                                                        <span>🎯</span>span><span className={`px-2 py-0.5 rounded-full text-xs font-medium ${diffColors[sim.difficulty]}`}>{sim.difficulty}</span>span>
-                                                      </div>div>
-                                      </div>div>
+                                                                        <span>🎯</span><span className={`px-2 py-0.5 rounded-full text-xs font-medium ${diffColors[sim.difficulty]}`}>{sim.difficulty}</span>
+                                                      </div>
+                                      </div>
                                       <button
                                                         onClick={() => startSimulado(sim)}
                                                         className="w-full bg-indigo-600 text-white py-2 rounded-xl font-medium hover:bg-indigo-700 transition-colors text-sm"
                                                       >
                                                       Iniciar Simulado →
-                                      </button>button>
-                        </div>div>
+                                      </button>
+                        </div>
                       ))}
-                        </div>div>
+                        </div>
                 
                         <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-6 text-white">
-                                  <h2 className="text-xl font-bold mb-2">🤖 Simulado Inteligente com IA</h2>h2>
-                                  <p className="text-indigo-100 mb-4">Nossa IA cria um simulado personalizado com base no seu histórico de erros e no seu nível atual.</p>p>
+                                  <h2 className="text-xl font-bold mb-2">🤖 Simulado Inteligente com IA</h2>
+                                  <p className="text-indigo-100 mb-4">Nossa IA cria um simulado personalizado com base no seu histórico de erros e no seu nível atual.</p>
                                   <button
                                                 onClick={() => startSimulado({ title: 'Simulado Adaptativo IA', questions: 10, timeMinutes: 20, difficulty: 'Todas', area: 'Todas', color: 'indigo', tag: 'IA Adaptativo' })}
                                                 className="bg-white text-indigo-600 px-5 py-2 rounded-xl font-semibold hover:bg-indigo-50 transition-colors"
                                               >
                                               Criar Simulado Adaptativo
-                                  </button>button>
-                        </div>div>
+                                  </button>
+                        </div>
                         <Chatbot />
-                </main>main>
-          </div>div>
+                </main>
+          </div>
         );
 }</div>
