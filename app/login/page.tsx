@@ -89,23 +89,24 @@ function LoginForm() {
 
     try {
       const { data, error } = await supabase.auth.signInWithOAuth({
-                  provider: 'google',
-                            options: {
-                                        redirectTo: `${window.location.origin}/api/auth/callback`,
-                                                    skipBrowserRedirect: true,
-                                                              },
-                                                                      });
-
-                                                                              if (error) throw error;
-
-                                                                                      if (data.url) {
-                                                                                                window.location.href = data.url;
-                                                                                                        }
-      })
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/api/auth/callback`,
+          skipBrowserRedirect: true,
+        },
+      });
 
       if (error) throw error;
+
+      if (data.url) {
+        window.location.href = data.url;
+      }
     } catch (err: unknown) {
       const error = err as Error;
+      setError(error.message || 'Erro ao conectar com Google. Tente novamente.');
+      setGoogleLoading(false);
+    }
+  };
       setError(error.message || 'Erro ao conectar com Google. Tente novamente.');
       setGoogleLoading(false);
     }
