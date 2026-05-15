@@ -399,4 +399,4 @@ export default function SimuladosPage() {
                 </main>
           </div>
         );
-}</div>
+}
