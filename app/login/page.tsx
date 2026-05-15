@@ -84,30 +84,24 @@ function LoginForm() {
   };
 
   const handleGoogleLogin = async () => {
-    setGoogleLoading(true);
-    setError('');
+  setGoogleLoading(true);
+  setError('');
 
-    try {
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}/api/auth/callback`,
-          skipBrowserRedirect: true,
-        },
-      });
+  try {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/api/auth/callback`,
+      },
+    });
 
-      if (error) throw error;
-
-      if (data.url) {
-        window.location.href = data.url;
-      }
-    } catch (err: unknown) {
-      const error = err as Error;
-      setError(error.message || 'Erro ao conectar com Google. Tente novamente.');
-      setGoogleLoading(false);
-    }
-  };
-
+    if (error) throw error;
+  } catch (err: unknown) {
+    const error = err as Error;
+    setError(error.message || 'Erro ao conectar com Google. Tente novamente.');
+    setGoogleLoading(false);
+  }
+};
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex items-center justify-center px-4">
       <div className="w-full max-w-md">
