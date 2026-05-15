@@ -104,7 +104,7 @@ export default function Chatbot() {
                 <span key={i}>
                   {line}
                   {i < content.split('\n').length - 1 && <br />}
-                </span>span>
+                </span>
               ));
   };
 
@@ -119,25 +119,25 @@ export default function Chatbot() {
                             <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-t-2xl p-4 flex items-center justify-between">
                                         <div className="flex items-center gap-3">
                                                       <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-                                                                      <span className="text-white text-lg">🎓</span>span>
-                                                      </div>div>
+                                                                      <span className="text-white text-lg">🎓</span>
+                                                      </div>
                                                       <div>
-                                                                      <p className="text-white font-bold text-sm">TutorIA</p>p>
+                                                                      <p className="text-white font-bold text-sm">TutorIA</p>
                                                                       <div className="flex items-center gap-1">
-                                                                                        <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>div>
-                                                                                        <p className="text-indigo-200 text-xs">IA Online • Gemini</p>p>
-                                                                      </div>div>
-                                                      </div>div>
-                                        </div>div>
+                                                                                        <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                                                                                        <p className="text-indigo-200 text-xs">IA Online • Gemini</p>
+                                                                      </div>
+                                                      </div>
+                                        </div>
                                         <button
                                                         onClick={() => setIsOpen(false)}
                                                         className="text-white/80 hover:text-white transition-colors w-8 h-8 rounded-full hover:bg-white/20 flex items-center justify-center"
                                                       >
                                                       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                                      </svg>svg>
-                                        </button>button>
-                            </div>div>
+                                                      </svg>
+                                        </button>
+                            </div>
                   
                     {/* Messages */}
                             <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50">
@@ -148,8 +148,8 @@ export default function Chatbot() {
                                                               >
                                                 {message.role === 'assistant' && (
                                                                                   <div className="w-7 h-7 bg-indigo-100 rounded-full flex items-center justify-center mr-2 mt-1 flex-shrink-0">
-                                                                                                      <span className="text-xs">🎓</span>span>
-                                                                                    </div>div>
+                                                                                                      <span className="text-xs">🎓</span>
+                                                                                    </div>
                                                               )}
                                                               <div
                                                                                   className={`max-w-[78%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
@@ -161,26 +161,26 @@ export default function Chatbot() {
                                                                 {formatMessage(message.content)}
                                                                                 <p className={`text-xs mt-1 ${message.role === 'user' ? 'text-indigo-200' : 'text-gray-400'}`}>
                                                                                   {message.timestamp.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
-                                                                                </p>p>
-                                                              </div>div>
-                                              </div>div>
+                                                                                </p>
+                                                              </div>
+                                              </div>
                                             ))}
                               {isLoading && (
                                               <div className="flex justify-start">
                                                               <div className="w-7 h-7 bg-indigo-100 rounded-full flex items-center justify-center mr-2 mt-1">
-                                                                                <span className="text-xs">🎓</span>span>
-                                                              </div>div>
+                                                                                <span className="text-xs">🎓</span>
+                                                              </div>
                                                               <div className="bg-white rounded-2xl rounded-bl-sm px-4 py-3 shadow-sm border border-gray-100">
                                                                                 <div className="flex gap-1">
-                                                                                                    <div className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>div>
-                                                                                                    <div className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>div>
-                                                                                                    <div className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>div>
-                                                                                </div>div>
-                                                              </div>div>
-                                              </div>div>
+                                                                                                    <div className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                                                                                                    <div className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                                                                                                    <div className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                                                                                </div>
+                                                              </div>
+                                              </div>
                                         )}
                                         <div ref={messagesEndRef} />
-                            </div>div>
+                            </div>
                   
                     {/* Input */}
                             <div className="p-3 bg-white rounded-b-2xl border-t border-gray-100">
@@ -202,11 +202,11 @@ export default function Chatbot() {
                                                                       >
                                                                       <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                                                                      </svg>svg>
-                                                      </button>button>
-                                        </div>div>
-                            </div>div>
-                  </div>div>
+                                                                      </svg>
+                                                      </button>
+                                        </div>
+                            </div>
+                  </div>
               )}
         
           {/* Toggle Button */}
@@ -217,13 +217,13 @@ export default function Chatbot() {
                 {isOpen ? (
                                   <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                  </svg>svg>
+                                  </svg>
                                 ) : (
                                   <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-                                  </svg>svg>
+                                  </svg>
                       )}
-              </button>button>
-        </div>div>
+              </button>
+        </div>
       );
 }</div>
