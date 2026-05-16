@@ -7,7 +7,7 @@ import Link from 'next/link';
 
 function LoginForm() {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [password, setPassword] = useState('');h
   const [isSignUp, setIsSignUp] = useState(false);
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
@@ -21,6 +21,17 @@ function LoginForm() {
   useEffect(() => {
     const errorParam = searchParams.get('error');
     if (errorParam === 'auth_callback_failed') {
+      // Check if hash has access_token (implicit flow success)
+      const hash = window.location.hash;
+      if (hash && hash.includes('access_token=')) {
+        // Token is in hash - let Supabase client handle it
+        supabase.auth.getSession().then(({ data: { session } }) => {
+          if (session) {
+            router.replace('/dashboard');
+          }
+        });
+        return;
+      }
       setError('Falha na autenticação. Tente novamente.');
     }
     // Note: redirect for logged-in users is handled by middleware
@@ -91,7 +102,7 @@ function LoginForm() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/api/auth/callback`,
+        redirectTo: `${window.location.origin}/auth/callback`,
       },
     });
 
