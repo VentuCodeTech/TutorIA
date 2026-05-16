@@ -13,42 +13,53 @@ function AuthCallbackContent() {
     const code = searchParams.get('code')
     const next = searchParams.get('next') ?? '/dashboard'
 
-    if (code) {
-      supabase.auth.exchangeCodeForSession(code)
-        .then(({ data, error }) => {
+    const handleAuth = async () => {
+      if (code) {
+        // PKCE flow: exchange code for session
+        try {
+          const { data, error } = await supabase.auth.exchangeCodeForSession(code)
+          if (data?.session) {
+            router.replace(next)
+            return
+          }
           if (error) {
-            console.error('Auth callback error:', error.message)
-            // Try to get current session even if exchange failed (might already be authenticated)
-            return supabase.auth.getSession()
+            console.error('Code exchange failed:', error.message)
           }
-          return { data, error: null }
-        })
-        .then((result) => {
-          if (result && 'data' in result && result.data?.session) {
-            router.push(next)
-          } else if (result && 'error' in result && !result.error) {
-            router.push(next)
-          } else {
-            // Check if we have a session anyway
-            supabase.auth.getSession().then(({ data: sessionData }) => {
-              if (sessionData?.session) {
-                router.push(next)
-              } else {
-                router.push('/login?error=auth_callback_failed')
-              }
-            })
-          }
-        })
-    } else {
-      // No code - check if there's a hash fragment (implicit flow)
-      supabase.auth.getSession().then(({ data: sessionData }) => {
-        if (sessionData?.session) {
-          router.push(next)
-        } else {
-          router.push('/login?error=auth_callback_failed')
+        } catch (err) {
+          console.error('Code exchange exception:', err)
+        }
+      }
+
+      // Implicit flow: wait for Supabase to process hash fragment
+      // The client library auto-processes #access_token on init
+      // Give it a moment then check session
+      await new Promise(resolve => setTimeout(resolve, 500))
+      
+      const { data: { session } } = await supabase.auth.getSession()
+      if (session) {
+        router.replace(next)
+        return
+      }
+
+      // Last resort: listen for auth state change
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+        if (session) {
+          subscription.unsubscribe()
+          router.replace(next)
         }
       })
+
+      // If still no session after 3 seconds, redirect to login
+      setTimeout(async () => {
+        const { data: { session: finalSession } } = await supabase.auth.getSession()
+        if (!finalSession) {
+          subscription.unsubscribe()
+          router.replace('/login?error=auth_callback_failed')
+        }
+      }, 3000)
     }
+
+    handleAuth()
   }, [searchParams, router, supabase])
 
   return (
