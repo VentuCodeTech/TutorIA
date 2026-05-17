@@ -15,6 +15,8 @@ interface Question {
     difficulty: string
 }
 
+import { useUserPlan } from '@/lib/useUserPlan'
+
 function QuestoesContent() {
     const [selectedArea, setSelectedArea] = useState('Todas')
     const [selectedDifficulty, setSelectedDifficulty] = useState('Todas')
@@ -27,6 +29,8 @@ function QuestoesContent() {
     const [userId, setUserId] = useState<string | null>(null)
     const [shownTexts, setShownTexts] = useState<string[]>([])
     const supabase = createClient()
+    const { features, planName, planId, loading: planLoading } = useUserPlan()
+    const [todayAnsweredCount, setTodayAnsweredCount] = useState(0)
 
   useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -42,15 +46,18 @@ function QuestoesContent() {
   }, [])
 
   const loadStats = async (uid: string) => {
+        const today = new Date().toISOString().split('T')[0]
         const { data } = await supabase
           .from('question_answers')
-          .select('is_correct')
+          .select('is_correct, created_at')
           .eq('user_id', uid)
         if (data) {
                 setStats({
                           answered: data.length,
                           correct: data.filter(d => d.is_correct).length
                 })
+                const todayCount = data.filter(d => d.created_at && d.created_at.startsWith(today)).length
+                setTodayAnsweredCount(todayCount)
         }
   }
 
@@ -95,6 +102,7 @@ function QuestoesContent() {
                           difficulty: currentQuestion.difficulty
                 })
                 loadStats(userId)
+                setTodayAnsweredCount(prev => prev + 1)
         }
   }
 
