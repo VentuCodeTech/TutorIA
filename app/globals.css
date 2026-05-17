@@ -3,3 +3,13 @@
 @tailwind utilities;
 
 body { margin: 0; }
+
+/* Sidebar collapse/expand transitions */
+.sidebar-collapsed .ml-64 {
+  margin-left: 0 !important;
+  transition: margin-left 0.3s ease;
+}
+
+.ml-64 {
+  transition: margin-left 0.3s ease;
+}
