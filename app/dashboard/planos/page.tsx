@@ -103,9 +103,14 @@ function PlanosContent() {
                 <span className="text-gray-500 mb-1">/mês</span>
               </div>
               <ul className="space-y-3 flex-1">
-                {['Questões ilimitadas','Todas as matérias','Simulados ilimitados','Assistente IA (100 msgs/dia)','Análise de desempenho completa','Plano de estudos personalizado','Anotações sincronizadas','Suporte prioritário'].map(f => (
+                {['Questões ilimitadas','Todas as matérias','Simulados ilimitados','Assistente IA (50 msgs/dia)','Análise de desempenho completa','Anotações sincronizadas'].map(f => (
                   <li key={f} className="flex items-center gap-2 text-sm text-gray-700">
                     <span className="text-green-500">✅</span> {f}
+                  </li>
+                ))}
+                {['Plano de estudos personalizado'].map(f => (
+                  <li key={f} className="flex items-center gap-2 text-sm text-gray-400">
+                    <span className="text-red-400">❌</span> {f}
                   </li>
                 ))}
               </ul>
@@ -131,7 +136,7 @@ function PlanosContent() {
                 <span className="text-gray-500 mb-1">/mês</span>
               </div>
               <ul className="space-y-3 flex-1">
-                {['Tudo do plano Standard','Assistente IA ilimitado','Mentoria em grupo semanal','Redação corrigida por IA','Acesso antecipado a novidades','Relatórios semanais por email','Integração com Google Calendar','Suporte 24/7 via chat'].map(f => (
+                {['Tudo do plano Standard','Assistente IA ilimitado','Redação corrigida por IA','Acesso antecipado a novidades','Relatórios semanais por email','Integração com Google Calendar','Suporte via chat'].map(f => (
                   <li key={f} className="flex items-center gap-2 text-sm text-gray-700">
                     <span className="text-green-500">✅</span> {f}
                   </li>
@@ -162,11 +167,9 @@ function PlanosContent() {
                 {[
                   'Tudo do plano Student',
                   'Assistente IA sem limites com GPT-4',
-                  'Mentoria individual semanal',
                   'Redações corrigidas ilimitadas',
                   'Simulados personalizados por IA',
                   'Plano de estudos adaptativo',
-                  'Acesso a professores especialistas',
                   'Relatórios detalhados de evolução',
                   'Prioridade máxima no suporte',
                   'Badge exclusivo de Elite',
