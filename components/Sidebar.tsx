@@ -29,6 +29,13 @@ export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
 
   useEffect(() => {
+    // Restore collapsed state from localStorage
+    const stored = localStorage.getItem('sidebar_collapsed');
+    if (stored === 'true') {
+      setCollapsed(true);
+      document.body.classList.add('sidebar-collapsed');
+    }
+
     const getUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
@@ -40,6 +47,17 @@ export default function Sidebar() {
     getUser();
   }, []);
 
+  const toggleSidebar = () => {
+    const next = !collapsed;
+    setCollapsed(next);
+    localStorage.setItem('sidebar_collapsed', String(next));
+    if (next) {
+      document.body.classList.add('sidebar-collapsed');
+    } else {
+      document.body.classList.remove('sidebar-collapsed');
+    }
+  };
+
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     window.location.href = '/login';
@@ -47,13 +65,14 @@ export default function Sidebar() {
 
   return (
     <>
+      {/* Toggle button — always visible, floats beside sidebar */}
       <button
-        onClick={() => setCollapsed(!collapsed)}
+        onClick={toggleSidebar}
         aria-label={collapsed ? 'Expandir menu' : 'Retrair menu'}
-        style={{ left: collapsed ? '8px' : '248px' }}
         className="fixed top-4 z-50 bg-white border border-gray-200 rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-indigo-50 hover:border-indigo-300 transition-all duration-300"
+        style={{ left: collapsed ? '8px' : '248px' }}
       >
-        <span className="text-gray-600 text-base leading-none select-none">
+        <span className="text-gray-600 text-sm font-bold leading-none select-none">
           {collapsed ? '›' : '‹'}
         </span>
       </button>
@@ -64,8 +83,8 @@ export default function Sidebar() {
       >
         <div className="p-6 border-b border-gray-100 flex-shrink-0">
           <Link href="/dashboard">
-            <h1 className="text-2xl font-bold text-indigo-600">TutorIA</h1>
-            <p className="text-xs text-gray-400">Powered by Gemini AI</p>
+            <h1 className="text-2xl font-bold text-indigo-600 whitespace-nowrap">TutorIA</h1>
+            <p className="text-xs text-gray-400 whitespace-nowrap">Powered by Gemini AI</p>
           </Link>
         </div>
         <nav className="flex-1 overflow-y-auto py-4">
