@@ -565,7 +565,7 @@ export default function SimuladosPage() {
             )}
           </div>
           <div className="flex gap-2 flex-wrap">
-            {!filterActive && vestibularPref && (
+            {!filterActive && vestibularPref && !vestibularPref.toLowerCase().includes('militar') && (
               <button
                 onClick={() => {
                   const filtered = vestibularSimulados.filter(s =>
