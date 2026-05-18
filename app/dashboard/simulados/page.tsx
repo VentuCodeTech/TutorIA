@@ -144,6 +144,20 @@ const vestibularSimulados: SimuladoConfig[] = [
     icon: '🏥',
     institution: 'FAMERP/SANTA CASA'
   },
+  {
+    id: 'carreiras_militares',
+    title: 'Carreiras Militares - EsMCEx/ESPCEX/AFA',
+    vestibular: 'Carreiras Militares',
+    questions: 120,
+    timeMinutes: 300,
+    difficulty: 'Difícil',
+    areas: ['Matemática', 'Física', 'Química', 'Português', 'História', 'Geografia', 'Inglês'],
+    color: 'military',
+    tag: 'Militares',
+    description: 'Simulado baseado em provas reais das Carreiras Militares (EsMCEx, ESPCEX, AFA, EFOMM)',
+    icon: '⭐',
+    institution: 'EsMCEx/ESPCEX/AFA/EFOMM'
+  },
 ];
 
 const colorMap: Record<string, {bg: string, border: string, text: string, badge: string}> = {
@@ -155,6 +169,7 @@ const colorMap: Record<string, {bg: string, border: string, text: string, badge:
   teal: { bg: 'bg-teal-50', border: 'border-teal-200', text: 'text-teal-700', badge: 'bg-teal-100 text-teal-700' },
   yellow: { bg: 'bg-yellow-50', border: 'border-yellow-200', text: 'text-yellow-700', badge: 'bg-yellow-100 text-yellow-700' },
   red: { bg: 'bg-red-50', border: 'border-red-200', text: 'text-red-700', badge: 'bg-red-100 text-red-700' },
+  military: { bg: 'bg-slate-50', border: 'border-slate-300', text: 'text-slate-700', badge: 'bg-slate-200 text-slate-700' },
 };
 
 export default function SimuladosPage() {
@@ -175,6 +190,7 @@ export default function SimuladosPage() {
   const [vestibularPref, setVestibularPref] = useState<string | null>(null);
   const [filteredSimulados, setFilteredSimulados] = useState<SimuladoConfig[]>(vestibularSimulados);
   const [filterActive, setFilterActive] = useState(false);
+  const [militaryFilterActive, setMilitaryFilterActive] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const supabase = createClient();
 
@@ -231,6 +247,21 @@ export default function SimuladosPage() {
     }
   };
 
+  const toggleMilitaryFilter = () => {
+    if (militaryFilterActive) {
+      setFilteredSimulados(vestibularSimulados);
+      setMilitaryFilterActive(false);
+      setFilterActive(false);
+    } else {
+      const militarySimulados = vestibularSimulados.filter(s =>
+        s.vestibular === 'Carreiras Militares'
+      );
+      setFilteredSimulados(militarySimulados);
+      setMilitaryFilterActive(true);
+      setFilterActive(true);
+    }
+  };
+
   const startSimulado = async (sim: SimuladoConfig) => {
     setGeneratingQuestions(true);
     setActiveSimulado(sim);
@@ -244,10 +275,8 @@ export default function SimuladosPage() {
     const questions: Question[] = [];
     const usedTexts = new Set<string>();
 
-    // Generate questions one by one with progress
     for (let i = 0; i < sim.questions; i++) {
       try {
-        // Rotate through areas for variety
         const areaIndex = i % sim.areas.length;
         const area = sim.areas[areaIndex];
 
@@ -294,7 +323,6 @@ export default function SimuladosPage() {
     }, 1000);
   };
 
-  // Auto-finish when time runs out
   useEffect(() => {
     if (timeLeft === 0 && activeSimulado && !simFinished && simQuestions.length > 0) {
       finishSimulado(simQuestions, answers);
@@ -513,7 +541,7 @@ export default function SimuladosPage() {
           <div>
             <h1 className="text-3xl font-bold text-gray-800">🎯 Simulados</h1>
             <p className="text-gray-500 mt-1">Provas completas baseadas em vestibulares e concursos reais</p>
-            {vestibularPref && filterActive && (
+            {vestibularPref && filterActive && !militaryFilterActive && (
               <p className="text-indigo-600 text-sm mt-1">
                 📌 Filtrando por: <strong>{vestibularPref}</strong>
                 <button
@@ -524,21 +552,40 @@ export default function SimuladosPage() {
                 </button>
               </p>
             )}
+            {militaryFilterActive && (
+              <p className="text-slate-600 text-sm mt-1">
+                ⭐ Filtrando por: <strong>Carreiras Militares</strong>
+                <button
+                  onClick={() => { setFilteredSimulados(vestibularSimulados); setMilitaryFilterActive(false); setFilterActive(false); }}
+                  className="ml-2 text-gray-400 hover:text-gray-600 text-xs underline"
+                >
+                  Ver todos
+                </button>
+              </p>
+            )}
           </div>
-          {!filterActive && vestibularPref && (
+          <div className="flex gap-2 flex-wrap">
+            {!filterActive && vestibularPref && (
+              <button
+                onClick={() => {
+                  const filtered = vestibularSimulados.filter(s =>
+                    s.vestibular.toLowerCase().includes(vestibularPref.toLowerCase()) ||
+                    vestibularPref.toLowerCase().includes(s.vestibular.toLowerCase())
+                  );
+                  if (filtered.length > 0) { setFilteredSimulados(filtered); setFilterActive(true); }
+                }}
+                className="text-sm bg-indigo-50 text-indigo-600 border border-indigo-200 px-4 py-2 rounded-xl hover:bg-indigo-100 transition"
+              >
+                🎯 Filtrar por {vestibularPref}
+              </button>
+            )}
             <button
-              onClick={() => {
-                const filtered = vestibularSimulados.filter(s =>
-                  s.vestibular.toLowerCase().includes(vestibularPref.toLowerCase()) ||
-                  vestibularPref.toLowerCase().includes(s.vestibular.toLowerCase())
-                );
-                if (filtered.length > 0) { setFilteredSimulados(filtered); setFilterActive(true); }
-              }}
-              className="text-sm bg-indigo-50 text-indigo-600 border border-indigo-200 px-4 py-2 rounded-xl hover:bg-indigo-100 transition"
+              onClick={toggleMilitaryFilter}
+              className={`text-sm border px-4 py-2 rounded-xl transition ${militaryFilterActive ? 'bg-slate-700 text-white border-slate-700' : 'bg-slate-50 text-slate-700 border-slate-300 hover:bg-slate-100'}`}
             >
-              🎯 Filtrar por {vestibularPref}
+              ⭐ {militaryFilterActive ? 'Ver todos' : 'Filtrar por militares'}
             </button>
-          )}
+          </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
