@@ -5,6 +5,21 @@ import { useRouter } from 'next/navigation'
 import Sidebar from '@/components/Sidebar'
 import Chatbot from '@/components/Chatbot'
 import { createClient } from '@/lib/supabase/client'
+import { useUserPlan } from '@/lib/useUserPlan'
+
+const planColors: Record<string, { bg: string; text: string; border: string }> = {
+  free: { bg: 'bg-gray-100', text: 'text-gray-700', border: 'border-gray-300' },
+  standard: { bg: 'bg-blue-100', text: 'text-blue-700', border: 'border-blue-300' },
+  student: { bg: 'bg-purple-100', text: 'text-purple-700', border: 'border-purple-300' },
+  advanced_pro: { bg: 'bg-amber-100', text: 'text-amber-700', border: 'border-amber-300' },
+};
+
+const planIcons: Record<string, string> = {
+  free: '🆓',
+  standard: '⭐',
+  student: '🎓',
+  advanced_pro: '💎',
+};
 
 export default function Dashboard() {
   const router = useRouter()
@@ -18,6 +33,7 @@ export default function Dashboard() {
   })
   const [dailyProgress, setDailyProgress] = useState(0)
   const supabase = createClient()
+  const { planId, planName, loading: planLoading } = useUserPlan()
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -31,14 +47,14 @@ export default function Dashboard() {
 
   const loadStats = async (uid: string) => {
     const today = new Date().toISOString().split('T')[0]
-    
+
     const { data: allAnswers } = await supabase
       .from('question_answers')
       .select('is_correct, created_at')
       .eq('user_id', uid)
-    
+
     if (allAnswers && allAnswers.length > 0) {
-      const todayAnswers = allAnswers.filter(a => 
+      const todayAnswers = allAnswers.filter(a =>
         a.created_at && a.created_at.startsWith(today)
       )
       const correct = allAnswers.filter(a => a.is_correct).length
@@ -73,15 +89,36 @@ export default function Dashboard() {
     { emoji: '🗣️', subject: 'Espanhol', path: '/dashboard/questoes?area=Espanhol', color: 'red' },
   ]
 
+  const planColor = planColors[planId] || planColors.free;
+  const planIcon = planIcons[planId] || '🆓';
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50 to-purple-50">
       <Sidebar />
       <main className="ml-64 p-8">
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-800">
-            Olá, {userName}! 👋
-          </h1>
-          <p className="text-gray-500 mt-1">Vamos continuar seus estudos de hoje?</p>
+        <div className="mb-8 flex items-start justify-between flex-wrap gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-800">
+              Olá, {userName}! 👋
+            </h1>
+            <p className="text-gray-500 mt-1">Vamos continuar seus estudos de hoje?</p>
+          </div>
+          {/* Plan Badge */}
+          {!planLoading && (
+            <div className="flex items-center gap-2">
+              <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold border ${planColor.bg} ${planColor.text} ${planColor.border}`}>
+                {planIcon} Plano {planName}
+              </span>
+              {planId === 'free' && (
+                <a
+                  href="/dashboard/planos"
+                  className="text-xs text-indigo-600 hover:text-indigo-800 underline"
+                >
+                  Fazer upgrade →
+                </a>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Stats Cards */}
@@ -132,6 +169,32 @@ export default function Dashboard() {
           </div>
         </div>
 
+        {/* Plan Features Summary */}
+        {!planLoading && planId === 'free' && (
+          <div className="bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-200 rounded-2xl p-6 mb-8">
+            <div className="flex items-start justify-between flex-wrap gap-4">
+              <div>
+                <h3 className="font-bold text-indigo-900 mb-1">🔓 Desbloqueie mais recursos</h3>
+                <p className="text-sm text-indigo-700 mb-2">
+                  Você está no plano <strong>Gratuito</strong>. Faça upgrade para acessar o Assistente IA, simulados ilimitados, suporte via chat e muito mais!
+                </p>
+                <div className="flex gap-2 flex-wrap text-xs text-indigo-600">
+                  <span className="bg-white rounded-lg px-2 py-1 border border-indigo-200">✨ Assistente IA</span>
+                  <span className="bg-white rounded-lg px-2 py-1 border border-indigo-200">📊 Análise avançada</span>
+                  <span className="bg-white rounded-lg px-2 py-1 border border-indigo-200">🎯 Simulados ilimitados</span>
+                  <span className="bg-white rounded-lg px-2 py-1 border border-indigo-200">📅 Google Calendar</span>
+                </div>
+              </div>
+              <a
+                href="/dashboard/planos"
+                className="bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-indigo-700 transition-colors text-sm whitespace-nowrap"
+              >
+                Ver Planos →
+              </a>
+            </div>
+          </div>
+        )}
+
         {/* Study Areas */}
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-8">
           <h2 className="text-xl font-bold text-gray-800 mb-5">📚 Áreas de Estudo</h2>
@@ -155,7 +218,7 @@ export default function Dashboard() {
           <div>
             <h3 className="font-semibold text-indigo-900 mb-1">TutorIA está pronto para te ajudar!</h3>
             <p className="text-sm text-indigo-700">
-              Clique no botão de chat no canto inferior direito para tirar qualquer dúvida com nossa IA powered by Claude Sonnet 4.6. 
+              Clique no botão de chat no canto inferior direito para tirar qualquer dúvida com nossa IA.
               Disponível 24/7 para te ajudar com ENEM, OAB, Concursos e muito mais!
             </p>
           </div>
