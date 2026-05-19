@@ -8,7 +8,6 @@ import { createClient } from '@/lib/supabase/client';
 import {
   type PlanId,
   type PlanFeatures,
-  getPlanIdFromSubscription,
   getFeatures,
   getPlanName,
 } from '@/lib/planFeatures';
@@ -19,6 +18,22 @@ interface UserPlanState {
   features: PlanFeatures;
   loading: boolean;
   error: string | null;
+}
+
+// Maps the 'plan' field from Supabase to PlanId
+function getPlanIdFromPlanField(plan: string | null | undefined, status: string | null | undefined): PlanId {
+  if (!plan || !status) return 'free';
+  const activeStatuses = ['active', 'trialing'];
+  if (!activeStatuses.includes(status)) return 'free';
+  const planMap: Record<string, PlanId> = {
+    'gratuito': 'free',
+    'free': 'free',
+    'standard': 'standard',
+    'student': 'student',
+    'advanced_pro': 'advanced_pro',
+    'advanced pro': 'advanced_pro',
+  };
+  return planMap[plan.toLowerCase()] ?? 'free';
 }
 
 export function useUserPlan(): UserPlanState {
@@ -44,7 +59,7 @@ export function useUserPlan(): UserPlanState {
 
         const { data: subscription, error: subError } = await supabase
           .from('subscriptions')
-          .select('stripe_price_id, status')
+          .select('plan, status')
           .eq('user_id', user.id)
           .maybeSingle();
 
@@ -54,8 +69,8 @@ export function useUserPlan(): UserPlanState {
           return;
         }
 
-        const planId = getPlanIdFromSubscription(
-          subscription?.stripe_price_id,
+        const planId = getPlanIdFromPlanField(
+          subscription?.plan,
           subscription?.status
         );
         const features = getFeatures(planId);
