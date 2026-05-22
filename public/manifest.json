@@ -1,0 +1,23 @@
+{
+  "name": "Tirei10 - Plataforma de Estudos com IA",
+  "short_name": "Tirei10",
+  "description": "Prepare-se para ENEM, OAB, Concursos e CPA-20 com IA Adaptativa",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#6B21A8",
+  "icons": [
+    {
+      "src": "/tirei10-icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/tirei10-icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["education"],
+  "lang": "pt-BR"
+}
