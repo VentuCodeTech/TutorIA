@@ -24,6 +24,8 @@ interface SimuladoConfig {
   timeMinutes: number;
   difficulty: string;
   areas: string[];
+  // Ordem das areas conforme prova real (questoes distribuidas nessa ordem)
+  areaOrder: { area: string; count: number }[];
   color: string;
   tag: string;
   description: string;
@@ -31,6 +33,7 @@ interface SimuladoConfig {
   institution: string;
 }
 
+// Configuracoes dos simulados com ordem real das materias nas provas
 const vestibularSimulados: SimuladoConfig[] = [
   {
     id: 'enem_completo',
@@ -39,7 +42,17 @@ const vestibularSimulados: SimuladoConfig[] = [
     questions: 45,
     timeMinutes: 330,
     difficulty: 'Médio',
-    areas: ['Linguagens e Códigos', 'Ciências Humanas', 'Redação'],
+    areas: ['Linguagens', 'Ciências Humanas', 'Redacao'],
+    // ENEM Dia 1: Linguagens (45q), Ciencias Humanas (45q) + Redacao
+    // Aqui simulamos com 45 questoes: 20 Linguagens, 20 Humanas, 5 Redacao
+    areaOrder: [
+      { area: 'Portugues', count: 13 },
+      { area: 'Ingles', count: 5 },
+      { area: 'Espanhol', count: 2 },
+      { area: 'Historia', count: 12 },
+      { area: 'Geografia', count: 8 },
+      { area: 'Redacao', count: 5 },
+    ],
     color: 'blue',
     tag: 'ENEM',
     description: 'Baseado no modelo ENEM: Linguagens, Ciências Humanas e Redação',
@@ -53,7 +66,15 @@ const vestibularSimulados: SimuladoConfig[] = [
     questions: 45,
     timeMinutes: 330,
     difficulty: 'Médio',
-    areas: ['Ciências da Natureza', 'Matemática e suas Tecnologias'],
+    areas: ['Ciências da Natureza', 'Matemática'],
+    // ENEM Dia 2: Ciencias da Natureza (45q), Matematica (45q)
+    // Aqui: 15 Bio, 15 Fisica, 15 Quimica, mais Matematica
+    areaOrder: [
+      { area: 'Biologia', count: 10 },
+      { area: 'Fisica', count: 10 },
+      { area: 'Quimica', count: 10 },
+      { area: 'Matematica', count: 15 },
+    ],
     color: 'indigo',
     tag: 'ENEM',
     description: 'Baseado no modelo ENEM: Ciências da Natureza e Matemática',
@@ -64,10 +85,20 @@ const vestibularSimulados: SimuladoConfig[] = [
     id: 'fuvest_fase1',
     title: 'FUVEST - 1ª Fase',
     vestibular: 'FUVEST',
-    questions: 90,
+    questions: 45,
     timeMinutes: 360,
     difficulty: 'Difícil',
     areas: ['Português', 'Matemática', 'Ciências', 'Humanidades'],
+    // FUVEST fase 1: 90 questoes, ordem: Port, Lit, Historia, Geo, Ciencias, Mat
+    areaOrder: [
+      { area: 'Portugues', count: 12 },
+      { area: 'Historia', count: 8 },
+      { area: 'Geografia', count: 5 },
+      { area: 'Biologia', count: 6 },
+      { area: 'Quimica', count: 6 },
+      { area: 'Fisica', count: 5 },
+      { area: 'Matematica', count: 3 },
+    ],
     color: 'purple',
     tag: 'FUVEST',
     description: 'Simulado baseado na primeira fase da FUVEST (USP)',
@@ -78,13 +109,21 @@ const vestibularSimulados: SimuladoConfig[] = [
     id: 'oab_primeira',
     title: 'OAB - 1ª Fase',
     vestibular: 'OAB',
-    questions: 80,
+    questions: 40,
     timeMinutes: 300,
     difficulty: 'Difícil',
-    areas: ['Direito Constitucional', 'Direito Civil', 'Direito Penal', 'Direito Processual', 'Ética Profissional'],
+    areas: ['Direito Constitucional', 'Direito Civil', 'Direito Penal', 'Direito Processual'],
+    // OAB 1a fase: 80 questoes objetivas, distribuicao por materia
+    areaOrder: [
+      { area: 'Direito Constitucional', count: 12 },
+      { area: 'Direito Civil', count: 10 },
+      { area: 'Direito Penal', count: 8 },
+      { area: 'Direito Trabalhista', count: 6 },
+      { area: 'Portugues', count: 4 },
+    ],
     color: 'green',
     tag: 'OAB',
-    description: 'Simulado baseado no Exame da OAB - 1ª Fase (80 questões reais)',
+    description: 'Simulado baseado no Exame da OAB - 1ª Fase',
     icon: '⚖️',
     institution: 'OAB/FGV'
   },
@@ -92,10 +131,17 @@ const vestibularSimulados: SimuladoConfig[] = [
     id: 'concurso_federal',
     title: 'Concurso Federal - Nível Médio',
     vestibular: 'Concurso Federal',
-    questions: 100,
+    questions: 50,
     timeMinutes: 300,
     difficulty: 'Médio',
-    areas: ['Língua Portuguesa', 'Matemática', 'Raciocínio Lógico', 'Direito Administrativo', 'Atualidades'],
+    areas: ['Língua Portuguesa', 'Matemática', 'Raciocínio Lógico', 'Atualidades'],
+    // CESPE/CEBRASPE: Por. - Mat - Informatica - Conhecimentos Especificos
+    areaOrder: [
+      { area: 'Portugues', count: 15 },
+      { area: 'Matematica', count: 15 },
+      { area: 'Historia', count: 10 },
+      { area: 'Geografia', count: 10 },
+    ],
     color: 'orange',
     tag: 'Concursos',
     description: 'Perfil INSS, Receita Federal, CGU e outros federais',
@@ -106,10 +152,18 @@ const vestibularSimulados: SimuladoConfig[] = [
     id: 'unicamp',
     title: 'UNICAMP - Vestibular',
     vestibular: 'UNICAMP',
-    questions: 90,
+    questions: 45,
     timeMinutes: 360,
     difficulty: 'Difícil',
     areas: ['Português', 'Matemática', 'Ciências', 'Humanidades'],
+    areaOrder: [
+      { area: 'Portugues', count: 12 },
+      { area: 'Historia', count: 8 },
+      { area: 'Matematica', count: 10 },
+      { area: 'Biologia', count: 5 },
+      { area: 'Quimica', count: 5 },
+      { area: 'Fisica', count: 5 },
+    ],
     color: 'teal',
     tag: 'UNICAMP',
     description: 'Simulado no estilo do vestibular da UNICAMP',
@@ -120,10 +174,15 @@ const vestibularSimulados: SimuladoConfig[] = [
     id: 'cpa20',
     title: 'CPA-20 - Certificação ANBIMA',
     vestibular: 'CPA-20',
-    questions: 60,
+    questions: 30,
     timeMinutes: 120,
     difficulty: 'Médio',
-    areas: ['Mercado Financeiro', 'Fundos de Investimento', 'Renda Fixa', 'Renda Variável', 'Derivativos'],
+    areas: ['Investimentos', 'Mercado Financeiro'],
+    areaOrder: [
+      { area: 'Investimentos', count: 15 },
+      { area: 'Matematica Financeira', count: 10 },
+      { area: 'Financas Pessoais', count: 5 },
+    ],
     color: 'yellow',
     tag: 'Finanças',
     description: 'Simulado baseado na certificação CPA-20 ANBIMA',
@@ -134,10 +193,17 @@ const vestibularSimulados: SimuladoConfig[] = [
     id: 'medicina',
     title: 'Vestibular de Medicina',
     vestibular: 'Medicina',
-    questions: 90,
+    questions: 45,
     timeMinutes: 360,
     difficulty: 'Difícil',
     areas: ['Biologia', 'Química', 'Física', 'Matemática', 'Português'],
+    areaOrder: [
+      { area: 'Biologia', count: 15 },
+      { area: 'Quimica', count: 12 },
+      { area: 'Fisica', count: 10 },
+      { area: 'Matematica', count: 5 },
+      { area: 'Portugues', count: 3 },
+    ],
     color: 'red',
     tag: 'Medicina',
     description: 'Simulado para vestibulares de medicina (FAMERP, Santa Casa, etc.)',
@@ -148,10 +214,18 @@ const vestibularSimulados: SimuladoConfig[] = [
     id: 'carreiras_militares',
     title: 'Carreiras Militares - EsMCEx/ESPCEX/AFA',
     vestibular: 'Carreiras Militares',
-    questions: 120,
+    questions: 50,
     timeMinutes: 300,
     difficulty: 'Difícil',
-    areas: ['Matemática', 'Física', 'Química', 'Português', 'História', 'Geografia', 'Inglês'],
+    areas: ['Matemática', 'Física', 'Química', 'Português', 'História', 'Geografia'],
+    areaOrder: [
+      { area: 'Matematica', count: 15 },
+      { area: 'Fisica', count: 10 },
+      { area: 'Quimica', count: 8 },
+      { area: 'Portugues', count: 10 },
+      { area: 'Historia', count: 4 },
+      { area: 'Geografia', count: 3 },
+    ],
     color: 'military',
     tag: 'Militares',
     description: 'Simulado baseado em provas reais das Carreiras Militares (EsMCEx, ESPCEX, AFA, EFOMM)',
@@ -207,38 +281,20 @@ export default function SimuladosPage() {
 
   const loadVestibularPref = async (uid: string) => {
     try {
-      const { data } = await supabase
-        .from('user_preferences')
-        .select('vestibular')
-        .eq('user_id', uid)
-        .single();
+      const { data } = await supabase.from('user_preferences').select('vestibular').eq('user_id', uid).single();
       if (data?.vestibular) {
         setVestibularPref(data.vestibular);
         const filtered = vestibularSimulados.filter(s =>
           s.vestibular.toLowerCase().includes(data.vestibular.toLowerCase()) ||
           data.vestibular.toLowerCase().includes(s.vestibular.toLowerCase())
         );
-        if (filtered.length > 0) {
-          setFilteredSimulados(filtered);
-          setFilterActive(true);
-        }
-      } else {
-        const local = localStorage.getItem('vestibular_selecionado');
-        if (local) {
-          const parsed = JSON.parse(local);
-          if (parsed.vestibular) {
-            setVestibularPref(parsed.vestibular);
-          }
-        }
+        if (filtered.length > 0) { setFilteredSimulados(filtered); setFilterActive(true); }
       }
     } catch {}
   };
 
   const loadStats = async (uid: string) => {
-    const { data } = await supabase
-      .from('simulado_results')
-      .select('score, time_spent, total_questions, simulado_name')
-      .eq('user_id', uid);
+    const { data } = await supabase.from('simulado_results').select('score, time_spent, total_questions').eq('user_id', uid);
     if (data && data.length > 0) {
       const best = Math.max(...data.map(d => Math.round((d.score / d.total_questions) * 100)));
       const total = data.reduce((acc, d) => acc + (d.time_spent || 0), 0);
@@ -249,19 +305,14 @@ export default function SimuladosPage() {
 
   const toggleMilitaryFilter = () => {
     if (militaryFilterActive) {
-      setFilteredSimulados(vestibularSimulados);
-      setMilitaryFilterActive(false);
-      setFilterActive(false);
+      setFilteredSimulados(vestibularSimulados); setMilitaryFilterActive(false); setFilterActive(false);
     } else {
-      const militarySimulados = vestibularSimulados.filter(s =>
-        s.vestibular === 'Carreiras Militares'
-      );
-      setFilteredSimulados(militarySimulados);
-      setMilitaryFilterActive(true);
-      setFilterActive(true);
+      const mil = vestibularSimulados.filter(s => s.vestibular === 'Carreiras Militares');
+      setFilteredSimulados(mil); setMilitaryFilterActive(true); setFilterActive(true);
     }
   };
 
+  // Gera questoes em ordem das materias conforme a prova real
   const startSimulado = async (sim: SimuladoConfig) => {
     setGeneratingQuestions(true);
     setActiveSimulado(sim);
@@ -275,11 +326,23 @@ export default function SimuladosPage() {
     const questions: Question[] = [];
     const usedTexts = new Set<string>();
 
-    for (let i = 0; i < sim.questions; i++) {
-      try {
-        const areaIndex = i % sim.areas.length;
-        const area = sim.areas[areaIndex];
+    // Construir a sequencia de areas conforme a ordem real da prova
+    const areaSequence: string[] = [];
+    const order = sim.areaOrder && sim.areaOrder.length > 0 ? sim.areaOrder : sim.areas.map((a, i) => ({ area: a, count: Math.ceil(sim.questions / sim.areas.length) }));
+    
+    for (const entry of order) {
+      for (let j = 0; j < entry.count && areaSequence.length < sim.questions; j++) {
+        areaSequence.push(entry.area);
+      }
+    }
+    // Complementar com a primeira area se faltar
+    while (areaSequence.length < sim.questions) {
+      areaSequence.push(order[0]?.area || sim.areas[0]);
+    }
 
+    for (let i = 0; i < Math.min(sim.questions, areaSequence.length); i++) {
+      try {
+        const area = areaSequence[i];
         const res = await fetch('/api/generate-question', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -288,7 +351,7 @@ export default function SimuladosPage() {
             difficulty: sim.difficulty,
             excludeTexts: Array.from(usedTexts),
             vestibular: sim.vestibular,
-            context: `Questão no estilo ${sim.vestibular} - ${sim.institution}`
+            context: `Questão ${i+1} no estilo ${sim.vestibular} - ${sim.institution} - materia: ${area}`
           })
         });
         const data = await res.json();
@@ -303,21 +366,15 @@ export default function SimuladosPage() {
     }
 
     if (questions.length === 0) {
-      setGeneratingQuestions(false);
-      setActiveSimulado(null);
-      return;
+      setGeneratingQuestions(false); setActiveSimulado(null); return;
     }
 
     setSimQuestions(questions);
     setTimeLeft(sim.timeMinutes * 60);
     setGeneratingQuestions(false);
-
     timerRef.current = setInterval(() => {
       setTimeLeft(prev => {
-        if (prev <= 1) {
-          if (timerRef.current) clearInterval(timerRef.current);
-          return 0;
-        }
+        if (prev <= 1) { if (timerRef.current) clearInterval(timerRef.current); return 0; }
         return prev - 1;
       });
     }, 1000);
@@ -336,18 +393,13 @@ export default function SimuladosPage() {
     const newAnswers = [...answers, { correct, questionId: q.id }];
     setAnswers(newAnswers);
     setShowResult(true);
-
     if (currentQIndex + 1 >= simQuestions.length) {
       if (timerRef.current) clearInterval(timerRef.current);
       setTimeout(() => finishSimulado(simQuestions, newAnswers), 1500);
     }
   };
 
-  const nextQuestion = () => {
-    setSelectedAnswer(null);
-    setShowResult(false);
-    setCurrentQIndex(prev => prev + 1);
-  };
+  const nextQuestion = () => { setSelectedAnswer(null); setShowResult(false); setCurrentQIndex(prev => prev + 1); };
 
   const finishSimulado = async (questions: Question[], finalAnswers: {correct: boolean; questionId: string}[]) => {
     setSimFinished(true);
@@ -356,12 +408,8 @@ export default function SimuladosPage() {
       const score = finalAnswers.filter(a => a.correct).length;
       const timeSpent = (activeSimulado.timeMinutes * 60) - timeLeft;
       await supabase.from('simulado_results').insert({
-        user_id: userId,
-        simulado_name: activeSimulado.title,
-        score,
-        total_questions: questions.length,
-        time_spent: Math.max(timeSpent, 0),
-        difficulty: activeSimulado.difficulty,
+        user_id: userId, simulado_name: activeSimulado.title, score,
+        total_questions: questions.length, time_spent: Math.max(timeSpent, 0), difficulty: activeSimulado.difficulty,
       });
       loadStats(userId);
     }
@@ -373,9 +421,7 @@ export default function SimuladosPage() {
     return `${m}:${s}`;
   };
 
-  if (loading) {
-    return <div className="min-h-screen flex items-center justify-center"><div className="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div></div>;
-  }
+  if (loading) return <div className="min-h-screen flex items-center justify-center"><div className="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div></div>;
 
   if (generatingQuestions && activeSimulado) {
     return (
@@ -390,7 +436,7 @@ export default function SimuladosPage() {
             <div className="w-full bg-gray-200 rounded-full h-3 mb-2">
               <div className="bg-indigo-600 h-3 rounded-full transition-all duration-300" style={{width: `${generateProgress}%`}}></div>
             </div>
-            <p className="text-sm text-gray-400">{generateProgress}% concluído - Preparando questões exclusivas baseadas em provas reais</p>
+            <p className="text-sm text-gray-400">{generateProgress}% concluído - Gerando questões na ordem correta da prova</p>
           </div>
         </main>
       </div>
@@ -408,37 +454,15 @@ export default function SimuladosPage() {
           <div className="max-w-2xl mx-auto bg-white rounded-2xl p-8 shadow-sm border border-gray-100 text-center">
             <div className="text-6xl mb-4">{approved ? '🏆' : '📚'}</div>
             <h2 className="text-3xl font-bold text-gray-800 mb-2">Simulado Concluído!</h2>
-            <p className="text-gray-500 mb-2">{activeSimulado.title}</p>
-            <p className="text-xs text-gray-400 mb-6">Instituição: {activeSimulado.institution}</p>
+            <p className="text-gray-500 mb-6">{activeSimulado.title}</p>
             <div className="grid grid-cols-3 gap-4 mb-8">
-              <div className="bg-indigo-50 rounded-xl p-4">
-                <div className="text-3xl font-bold text-indigo-600">{pct}%</div>
-                <div className="text-xs text-gray-500">Nota Final</div>
-              </div>
-              <div className="bg-green-50 rounded-xl p-4">
-                <div className="text-3xl font-bold text-green-600">{score}/{simQuestions.length}</div>
-                <div className="text-xs text-gray-500">Acertos</div>
-              </div>
-              <div className={`${approved ? 'bg-green-50' : 'bg-red-50'} rounded-xl p-4`}>
-                <div className={`text-xl font-bold ${approved ? 'text-green-600' : 'text-red-500'}`}>
-                  {approved ? '✅ Aprovado' : '❌ Reprovado'}
-                </div>
-                <div className="text-xs text-gray-500">Resultado</div>
-              </div>
+              <div className="bg-indigo-50 rounded-xl p-4"><div className="text-3xl font-bold text-indigo-600">{pct}%</div><div className="text-xs text-gray-500">Nota Final</div></div>
+              <div className="bg-green-50 rounded-xl p-4"><div className="text-3xl font-bold text-green-600">{score}/{simQuestions.length}</div><div className="text-xs text-gray-500">Acertos</div></div>
+              <div className={`${approved ? 'bg-green-50' : 'bg-red-50'} rounded-xl p-4`}><div className={`text-xl font-bold ${approved ? 'text-green-600' : 'text-red-500'}`}>{approved ? '✅ Aprovado' : '❌ Reprovado'}</div><div className="text-xs text-gray-500">Resultado</div></div>
             </div>
             <div className="flex gap-4 justify-center flex-wrap">
-              <button
-                onClick={() => { setActiveSimulado(null); setSimFinished(false); }}
-                className="bg-gray-100 text-gray-700 px-6 py-3 rounded-xl font-medium hover:bg-gray-200 transition-colors"
-              >
-                ← Voltar aos Simulados
-              </button>
-              <button
-                onClick={() => startSimulado(activeSimulado)}
-                className="bg-indigo-600 text-white px-6 py-3 rounded-xl font-medium hover:bg-indigo-700 transition-colors"
-              >
-                🔄 Novo Simulado
-              </button>
+              <button onClick={() => { setActiveSimulado(null); setSimFinished(false); }} className="bg-gray-100 text-gray-700 px-6 py-3 rounded-xl font-medium hover:bg-gray-200 transition-colors">← Voltar</button>
+              <button onClick={() => startSimulado(activeSimulado)} className="bg-indigo-600 text-white px-6 py-3 rounded-xl font-medium hover:bg-indigo-700 transition-colors">🔄 Novo Simulado</button>
             </div>
           </div>
         </main>
@@ -448,7 +472,7 @@ export default function SimuladosPage() {
 
   if (activeSimulado && simQuestions.length > 0 && !simFinished) {
     const currentQ = simQuestions[currentQIndex];
-    const progress = Math.round(((currentQIndex) / simQuestions.length) * 100);
+    const progress = Math.round((currentQIndex / simQuestions.length) * 100);
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50 to-purple-50 flex">
         <Sidebar />
@@ -457,25 +481,14 @@ export default function SimuladosPage() {
             <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 mb-4 flex items-center justify-between">
               <div>
                 <h2 className="font-bold text-gray-800">{activeSimulado.icon} {activeSimulado.title}</h2>
-                <p className="text-sm text-gray-500">Questão {currentQIndex + 1} de {simQuestions.length} • {activeSimulado.institution}</p>
+                <p className="text-sm text-gray-500">Questão {currentQIndex + 1} de {simQuestions.length} • {currentQ.subject}</p>
               </div>
               <div className="flex items-center gap-4">
-                <div className={`text-xl font-bold font-mono ${timeLeft < 120 ? 'text-red-500 animate-pulse' : 'text-gray-700'}`}>
-                  ⏱ {formatTime(timeLeft)}
-                </div>
-                <button
-                  onClick={() => { if (timerRef.current) clearInterval(timerRef.current); finishSimulado(simQuestions, answers); }}
-                  className="text-sm text-red-500 hover:text-red-700 border border-red-200 px-3 py-1 rounded-lg"
-                >
-                  Encerrar
-                </button>
+                <div className={`text-xl font-bold font-mono ${timeLeft < 120 ? 'text-red-500 animate-pulse' : 'text-gray-700'}`}>⏱ {formatTime(timeLeft)}</div>
+                <button onClick={() => { if (timerRef.current) clearInterval(timerRef.current); finishSimulado(simQuestions, answers); }} className="text-sm text-red-500 hover:text-red-700 border border-red-200 px-3 py-1 rounded-lg">Encerrar</button>
               </div>
             </div>
-
-            <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
-              <div className="bg-indigo-500 h-2 rounded-full transition-all" style={{width: `${progress}%`}}></div>
-            </div>
-
+            <div className="w-full bg-gray-200 rounded-full h-2 mb-4"><div className="bg-indigo-500 h-2 rounded-full transition-all" style={{width: `${progress}%`}}></div></div>
             <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
               <div className="flex gap-2 mb-4 flex-wrap">
                 <span className="bg-indigo-100 text-indigo-700 text-xs px-2 py-1 rounded-full">{currentQ.subject}</span>
@@ -491,40 +504,21 @@ export default function SimuladosPage() {
                     else if (idx === selectedAnswer) cls += 'border-red-500 bg-red-50 text-red-700';
                     else cls += 'border-gray-200 text-gray-400';
                   } else {
-                    cls += idx === selectedAnswer
-                      ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
-                      : 'border-gray-200 hover:border-indigo-300 hover:bg-indigo-50 text-gray-700';
+                    cls += idx === selectedAnswer ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-gray-200 hover:border-indigo-300 hover:bg-indigo-50 text-gray-700';
                   }
-                  return (
-                    <button key={idx} className={cls} onClick={() => !showResult && setSelectedAnswer(idx)}>
-                      <span className="font-semibold mr-2">{String.fromCharCode(65 + idx)}.</span> {opt}
-                    </button>
-                  );
+                  return <button key={idx} className={cls} onClick={() => !showResult && setSelectedAnswer(idx)}><span className="font-semibold mr-2">{String.fromCharCode(65+idx)}.</span>{opt}</button>;
                 })}
               </div>
-
               {showResult && (
-                <div className={`p-4 rounded-xl mb-4 ${answers[answers.length - 1]?.correct ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
-                  <p className="font-semibold mb-1">{answers[answers.length - 1]?.correct ? '✅ Correto!' : '❌ Incorreto'}</p>
+                <div className={`p-4 rounded-xl mb-4 ${answers[answers.length-1]?.correct ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
+                  <p className="font-semibold mb-1">{answers[answers.length-1]?.correct ? '✅ Correto!' : '❌ Incorreto'}</p>
                   <p className="text-sm text-gray-600">{currentQ.explanation}</p>
                 </div>
               )}
-
               {!showResult ? (
-                <button
-                  onClick={handleAnswer}
-                  disabled={selectedAnswer === null}
-                  className="w-full bg-indigo-600 text-white py-3 rounded-xl font-medium hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  Confirmar Resposta
-                </button>
+                <button onClick={handleAnswer} disabled={selectedAnswer === null} className="w-full bg-indigo-600 text-white py-3 rounded-xl font-medium hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">Confirmar Resposta</button>
               ) : currentQIndex + 1 < simQuestions.length ? (
-                <button
-                  onClick={nextQuestion}
-                  className="w-full bg-indigo-600 text-white py-3 rounded-xl font-medium hover:bg-indigo-700 transition-colors"
-                >
-                  Próxima Questão →
-                </button>
+                <button onClick={nextQuestion} className="w-full bg-indigo-600 text-white py-3 rounded-xl font-medium hover:bg-indigo-700 transition-colors">Próxima Questão →</button>
               ) : null}
             </div>
           </div>
@@ -540,67 +534,24 @@ export default function SimuladosPage() {
         <div className="mb-8 flex items-center justify-between flex-wrap gap-4">
           <div>
             <h1 className="text-3xl font-bold text-gray-800">🎯 Simulados</h1>
-            <p className="text-gray-500 mt-1">Provas completas baseadas em vestibulares e concursos reais</p>
+            <p className="text-gray-500 mt-1">Provas completas com questões na ordem real de cada vestibular e concurso</p>
             {vestibularPref && filterActive && !militaryFilterActive && (
-              <p className="text-indigo-600 text-sm mt-1">
-                📌 Filtrando por: <strong>{vestibularPref}</strong>
-                <button
-                  onClick={() => { setFilteredSimulados(vestibularSimulados); setFilterActive(false); }}
-                  className="ml-2 text-gray-400 hover:text-gray-600 text-xs underline"
-                >
-                  Ver todos
-                </button>
-              </p>
+              <p className="text-indigo-600 text-sm mt-1">📌 Filtrando por: <strong>{vestibularPref}</strong><button onClick={() => { setFilteredSimulados(vestibularSimulados); setFilterActive(false); }} className="ml-2 text-gray-400 hover:text-gray-600 text-xs underline">Ver todos</button></p>
             )}
-            {militaryFilterActive && (
-              <p className="text-slate-600 text-sm mt-1">
-                ⭐ Filtrando por: <strong>Carreiras Militares</strong>
-                <button
-                  onClick={() => { setFilteredSimulados(vestibularSimulados); setMilitaryFilterActive(false); setFilterActive(false); }}
-                  className="ml-2 text-gray-400 hover:text-gray-600 text-xs underline"
-                >
-                  Ver todos
-                </button>
-              </p>
-            )}
+            {militaryFilterActive && <p className="text-slate-600 text-sm mt-1">⭐ Filtrando: <strong>Carreiras Militares</strong><button onClick={() => { setFilteredSimulados(vestibularSimulados); setMilitaryFilterActive(false); setFilterActive(false); }} className="ml-2 text-gray-400 text-xs underline">Ver todos</button></p>}
           </div>
           <div className="flex gap-2 flex-wrap">
             {!filterActive && vestibularPref && !vestibularPref.toLowerCase().includes('militar') && (
-              <button
-                onClick={() => {
-                  const filtered = vestibularSimulados.filter(s =>
-                    s.vestibular.toLowerCase().includes(vestibularPref.toLowerCase()) ||
-                    vestibularPref.toLowerCase().includes(s.vestibular.toLowerCase())
-                  );
-                  if (filtered.length > 0) { setFilteredSimulados(filtered); setFilterActive(true); }
-                }}
-                className="text-sm bg-indigo-50 text-indigo-600 border border-indigo-200 px-4 py-2 rounded-xl hover:bg-indigo-100 transition"
-              >
-                🎯 Filtrar por {vestibularPref}
-              </button>
+              <button onClick={() => { const f = vestibularSimulados.filter(s => s.vestibular.toLowerCase().includes(vestibularPref.toLowerCase())); if(f.length>0){setFilteredSimulados(f);setFilterActive(true);} }} className="text-sm bg-indigo-50 text-indigo-600 border border-indigo-200 px-4 py-2 rounded-xl hover:bg-indigo-100 transition">🎯 Filtrar por {vestibularPref}</button>
             )}
-            <button
-              onClick={toggleMilitaryFilter}
-              className={`text-sm border px-4 py-2 rounded-xl transition ${militaryFilterActive ? 'bg-slate-700 text-white border-slate-700' : 'bg-slate-50 text-slate-700 border-slate-300 hover:bg-slate-100'}`}
-            >
-              ⭐ {militaryFilterActive ? 'Ver todos' : 'Filtrar por militares'}
-            </button>
+            <button onClick={toggleMilitaryFilter} className={`text-sm border px-4 py-2 rounded-xl transition ${militaryFilterActive ? 'bg-slate-700 text-white border-slate-700' : 'bg-slate-50 text-slate-700 border-slate-300 hover:bg-slate-100'}`}>⭐ {militaryFilterActive ? 'Ver todos' : 'Carreiras Militares'}</button>
           </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          {[
-            { label: 'Simulados Feitos', value: stats.done.toString(), icon: '📋' },
-            { label: 'Melhor Nota', value: stats.done > 0 ? `${stats.bestNote}%` : '-', icon: '⭐' },
-            { label: 'Tempo Total', value: `${stats.totalTime}min`, icon: '⏱️' },
-            { label: 'Aprovações', value: stats.approved.toString(), icon: '✅' },
-          ].map((stat, i) => (
+          {[{label:'Simulados Feitos',value:stats.done.toString(),icon:'📋'},{label:'Melhor Nota',value:stats.done>0?`${stats.bestNote}%`:'-',icon:'⭐'},{label:'Tempo Total',value:`${stats.totalTime}min`,icon:'⏱️'},{label:'Aprovações',value:stats.approved.toString(),icon:'✅'}].map((stat,i)=>(
             <div key={i} className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex items-center gap-3">
-              <span className="text-2xl">{stat.icon}</span>
-              <div>
-                <p className="text-xl font-bold text-gray-800">{stat.value}</p>
-                <p className="text-xs text-gray-500">{stat.label}</p>
-              </div>
+              <span className="text-2xl">{stat.icon}</span><div><p className="text-xl font-bold text-gray-800">{stat.value}</p><p className="text-xs text-gray-500">{stat.label}</p></div>
             </div>
           ))}
         </div>
@@ -611,30 +562,17 @@ export default function SimuladosPage() {
             return (
               <div key={sim.id} className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition-all flex flex-col">
                 <div className="flex items-start justify-between mb-3">
-                  <div className={`inline-block px-2 py-1 rounded-lg text-xs font-medium border ${colors.bg} ${colors.border} ${colors.text}`}>
-                    {sim.icon} {sim.tag}
-                  </div>
+                  <div className={`inline-block px-2 py-1 rounded-lg text-xs font-medium border ${colors.bg} ${colors.border} ${colors.text}`}>{sim.icon} {sim.tag}</div>
                   <span className="text-xs text-gray-400">{sim.institution}</span>
                 </div>
                 <h3 className="font-bold text-gray-800 mb-2 leading-tight">{sim.title}</h3>
                 <p className="text-xs text-gray-500 mb-3 flex-1">{sim.description}</p>
-                <div className="space-y-1.5 mb-4">
-                  <div className="flex items-center gap-2 text-sm text-gray-500">
-                    <span>📝</span><span>{sim.questions} questões</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-gray-500">
-                    <span>⏱️</span><span>{sim.timeMinutes} min</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-gray-500">
-                    <span>📚</span><span className="truncate">{sim.areas.slice(0, 2).join(', ')}{sim.areas.length > 2 ? '...' : ''}</span>
-                  </div>
+                <div className="space-y-1.5 mb-3">
+                  <div className="flex items-center gap-2 text-sm text-gray-500"><span>📝</span><span>{sim.questions} questões</span></div>
+                  <div className="flex items-center gap-2 text-sm text-gray-500"><span>⏱️</span><span>{sim.timeMinutes} min</span></div>
+                  <div className="flex items-center gap-2 text-sm text-gray-500"><span>📚</span><span className="truncate">{sim.areaOrder.slice(0,2).map(a=>a.area).join(', ')}{sim.areaOrder.length>2?'...':''}</span></div>
                 </div>
-                <button
-                  onClick={() => startSimulado(sim)}
-                  className="w-full bg-indigo-600 text-white py-2.5 rounded-xl font-medium hover:bg-indigo-700 transition-colors text-sm"
-                >
-                  Iniciar Simulado →
-                </button>
+                <button onClick={()=>startSimulado(sim)} className="w-full bg-indigo-600 text-white py-2.5 rounded-xl font-medium hover:bg-indigo-700 transition-colors text-sm">Iniciar Simulado →</button>
               </div>
             );
           })}
@@ -642,25 +580,11 @@ export default function SimuladosPage() {
 
         <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-6 text-white">
           <h2 className="text-xl font-bold mb-2">🤖 Simulado Adaptativo com IA</h2>
-          <p className="text-indigo-100 mb-4">Nossa IA cria um simulado 100% personalizado baseado no seu histórico, vestibular escolhido e pontos fracos.</p>
-          <button
-            onClick={() => {
-              const pref = vestibularPref || 'ENEM';
-              const match = vestibularSimulados.find(s => s.vestibular.toLowerCase().includes(pref.toLowerCase())) || vestibularSimulados[0];
-              startSimulado({
-                ...match,
-                id: `adaptativo_${Date.now()}`,
-                title: `Simulado Adaptativo IA - ${pref}`,
-                tag: 'IA Adaptativo'
-              });
-            }}
-            className="bg-white text-indigo-600 px-5 py-2 rounded-xl font-semibold hover:bg-indigo-50 transition-colors"
-          >
-            Criar Simulado Adaptativo
-          </button>
+          <p className="text-indigo-100 mb-4">Nossa IA cria um simulado 100% personalizado baseado no seu histórico e vestibular escolhido.</p>
+          <button onClick={()=>{const pref=vestibularPref||'ENEM';const match=vestibularSimulados.find(s=>s.vestibular.toLowerCase().includes(pref.toLowerCase()))||vestibularSimulados[0];startSimulado({...match,id:`adaptativo_${Date.now()}`,title:`Simulado Adaptativo IA - ${pref}`,tag:'IA Adaptativo'});}} className="bg-white text-indigo-600 px-5 py-2 rounded-xl font-semibold hover:bg-indigo-50 transition-colors">Criar Simulado Adaptativo</button>
         </div>
         <Chatbot />
       </main>
     </div>
   );
-}
+        }
