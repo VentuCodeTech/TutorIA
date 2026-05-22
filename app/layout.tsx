@@ -10,13 +10,13 @@ export const metadata: Metadata = {
   keywords: 'ENEM, OAB, Concursos, CPA-20, Estudo, IA, Inteligência Artificial, Tirei10',
   icons: {
     icon: [
-      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/tirei10-icon.png', type: 'image/png', sizes: '512x512' },
       { url: '/favicon.ico', sizes: 'any' },
     ],
     apple: [
-      { url: '/tirei10-logo.png', sizes: '180x180', type: 'image/png' },
+      { url: '/tirei10-icon.png', sizes: '180x180', type: 'image/png' },
     ],
-    shortcut: '/favicon.svg',
+    shortcut: '/tirei10-icon.png',
   },
   manifest: '/manifest.json',
 };
@@ -29,9 +29,8 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <head>
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-        <link rel="icon" href="/tirei10-logo.png" type="image/png" sizes="192x192" />
-        <link rel="apple-touch-icon" href="/tirei10-logo.png" />
+        <link rel="icon" href="/tirei10-icon.png" type="image/png" sizes="512x512" />
+        <link rel="apple-touch-icon" href="/tirei10-icon.png" />
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#6B21A8" />
       </head>
