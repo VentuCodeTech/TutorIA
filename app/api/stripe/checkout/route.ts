@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid plan' }, { status: 400 });
     }
 
-    const origin = req.headers.get('origin') || 'https://tutoria-eight.vercel.app';
+    const origin = req.headers.get('origin') || 'https://Tirei10-eight.vercel.app';
 
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',

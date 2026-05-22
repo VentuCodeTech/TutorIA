@@ -6,7 +6,7 @@ export default function HomePage() {
       {/* Navbar */}
       <nav className="fixed top-0 left-0 right-0 z-40 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="text-2xl font-bold text-indigo-600">TutorIA</Link>
+          <Link href="/" className="text-2xl font-bold text-indigo-600">Tirei10</Link>
           <div className="flex items-center gap-4">
             <Link href="/login" className="text-gray-600 hover:text-indigo-600 font-medium transition-colors text-sm">Login</Link>
             <Link href="/pricing" className="text-gray-600 hover:text-indigo-600 font-medium transition-colors text-sm">Preços</Link>
@@ -19,7 +19,7 @@ export default function HomePage() {
         <div className="max-w-4xl mx-auto px-6 py-16">
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">
-              Bem-vindo ao <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">TutorIA</span>
+              Bem-vindo ao <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">Tirei10</span>
             </h1>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               A plataforma de estudos com IA adaptativa mais completa do Brasil para ENEM, OAB, Concursos Públicos e CPA-20.
@@ -29,9 +29,9 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
             <div className="bg-white rounded-2xl p-8 shadow-md border border-gray-100">
               <div className="text-4xl mb-4">🎓</div>
-              <h2 className="text-2xl font-bold text-gray-800 mb-3">O que é o TutorIA?</h2>
+              <h2 className="text-2xl font-bold text-gray-800 mb-3">O que é o Tirei10?</h2>
               <p className="text-gray-600 leading-relaxed">
-                O TutorIA é uma plataforma educacional que utiliza inteligência artificial (Gemini AI) para criar uma experiência de estudo personalizada. 
+                O Tirei10 é uma plataforma educacional que utiliza inteligência artificial (Gemini AI) para criar uma experiência de estudo personalizada. 
                 Oferecemos questões adaptativas, simulados completos, assistente de IA e análise detalhada de desempenho.
               </p>
             </div>
@@ -81,7 +81,7 @@ export default function HomePage() {
 
       <footer className="bg-gray-900 text-white py-10">
         <div className="max-w-7xl mx-auto px-6 text-center">
-          <p className="text-gray-400 text-sm">© 2026 TutorIA. Todos os direitos reservados.</p>
+          <p className="text-gray-400 text-sm">© 2026 Tirei10. Todos os direitos reservados.</p>
           <div className="flex justify-center gap-6 mt-4 text-sm text-gray-400">
             <Link href="/home" className="hover:text-white transition-colors">Home</Link>
             <Link href="/politicas" className="hover:text-white transition-colors">Políticas da Comunidade</Link>

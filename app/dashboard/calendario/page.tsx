@@ -195,10 +195,10 @@ export default function CalendarioPage() {
           <h2 className="font-bold text-gray-800 mb-4">Ações Rápidas</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {[
-              { icon: '📚', label: 'Agendar Sessão de Estudo', desc: 'Criar evento de estudo', href: 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=Sess%C3%A3o+de+Estudos+-+TutorIA&details=Sess%C3%A3o+de+estudos+com+TutorIA' },
-              { icon: '🎯', label: 'Agendar Simulado', desc: 'Marcar data de simulado', href: 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=Simulado+-+TutorIA&details=Realizar+simulado+na+plataforma+TutorIA' },
+              { icon: '📚', label: 'Agendar Sessão de Estudo', desc: 'Criar evento de estudo', href: 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=Sess%C3%A3o+de+Estudos+-+Tirei10&details=Sess%C3%A3o+de+estudos+com+Tirei10' },
+              { icon: '🎯', label: 'Agendar Simulado', desc: 'Marcar data de simulado', href: 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=Simulado+-+Tirei10&details=Realizar+simulado+na+plataforma+Tirei10' },
               { icon: '📅', label: 'Ver Minha Agenda', desc: 'Abrir Google Calendar', href: 'https://calendar.google.com' },
-              { icon: '⏰', label: 'Lembrete de Revisão', desc: 'Criar lembrete de revisão', href: 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=Revis%C3%A3o+-+TutorIA&details=Revis%C3%A3o+do+conte%C3%BAdo+estudado' },
+              { icon: '⏰', label: 'Lembrete de Revisão', desc: 'Criar lembrete de revisão', href: 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=Revis%C3%A3o+-+Tirei10&details=Revis%C3%A3o+do+conte%C3%BAdo+estudado' },
             ].map((action, i) => (
               <a
                 key={i}

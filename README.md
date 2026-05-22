@@ -1,4 +1,4 @@
-# TutorIA 🎓
+# Tirei10 🎓
 
 **Plataforma de estudo com IA adaptativa para ENEM, OAB, concursos públicos e CPA-20**
 
@@ -38,8 +38,8 @@ Desenvolvido com Next.js 14, Supabase, Claude AI e Stripe.
               ### 1. Clonar o repositório
 
               ```bash
-              git clone https://github.com/VentuCodeTech/TutorIA.git
-              cd TutorIA
+              git clone https://github.com/VentuCodeTech/Tirei10.git
+              cd Tirei10
               npm install
               ```
 

@@ -119,7 +119,7 @@ function LoginForm() {
         {/* Logo */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-block">
-            <h1 className="text-3xl font-bold text-indigo-600">TutorIA</h1>
+            <img src="/tirei10-logo.png" alt="Tirei10" className="h-12 w-auto mx-auto" />>
             <p className="text-gray-500 text-sm mt-1">Plataforma de Estudos com IA</p>
           </Link>
         </div>

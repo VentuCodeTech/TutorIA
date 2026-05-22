@@ -4,7 +4,7 @@ import Sidebar from '@/components/Sidebar';
 const novidades = [
   {
     id: 1,
-    title: '🚀 TutorIA 2.0 - Nova Interface Lançada!',
+    title: '🚀 Tirei10 2.0 - Nova Interface Lançada!',
     category: 'Atualização',
     date: '14 Mai 2026',
     description: 'Lançamos uma interface completamente redesenhada com Sidebar melhorado, novas páginas de Comunidade, Anotações, Desempenho e muito mais!',
@@ -66,7 +66,7 @@ export default function NovidadesPage() {
         <div className="max-w-4xl mx-auto">
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-gray-900">🔔 Novidades</h1>
-            <p className="text-gray-600 mt-1">Fique por dentro de todas as atualizações e novos recursos do TutorIA</p>
+            <p className="text-gray-600 mt-1">Fique por dentro de todas as atualizações e novos recursos do Tirei10</p>
           </div>
 
           <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-6 text-white mb-8">
@@ -74,7 +74,7 @@ export default function NovidadesPage() {
               <span className="text-3xl">🚀</span>
               <span className="bg-white/20 text-white text-xs px-3 py-1 rounded-full font-medium">Mais Recente</span>
             </div>
-            <h2 className="text-2xl font-bold mb-2">TutorIA 2.0 chegou!</h2>
+            <h2 className="text-2xl font-bold mb-2">Tirei10 2.0 chegou!</h2>
             <p className="text-indigo-100">
               Nova interface, novos recursos, mesma missão: ajudar você a conquistar seus objetivos.
               Explore todas as novidades e aproveite ao máximo a plataforma!
@@ -103,7 +103,7 @@ export default function NovidadesPage() {
           </div>
 
           <div className="mt-8 bg-indigo-50 rounded-2xl p-6 text-center">
-            <p className="text-indigo-700 font-medium">💡 Tem uma sugestão para o TutorIA?</p>
+            <p className="text-indigo-700 font-medium">💡 Tem uma sugestão para o Tirei10?</p>
             <p className="text-indigo-600 text-sm mt-1">Compartilhe suas ideias na Comunidade! Sua opinião é muito importante para nós.</p>
             <a href="/dashboard/comunidade" className="inline-block mt-4 bg-indigo-600 text-white px-6 py-2 rounded-xl text-sm font-medium hover:bg-indigo-700 transition-colors">
               Ir para Comunidade

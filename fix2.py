@@ -232,7 +232,7 @@ import Chatbot from '@/components/Chatbot'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'TutorIA - Plataforma de Estudos com IA',
+  title: 'Tirei10 - Plataforma de Estudos com IA',
   description: 'Prepare-se para ENEM, OAB, Concursos Publicos e CPA-20 com inteligencia artificial adaptativa',
 }
 

@@ -7,7 +7,7 @@ export default function CookieConsent() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const consent = localStorage.getItem('tutoria_cookie_consent');
+    const consent = localStorage.getItem('Tirei10_cookie_consent');
     if (!consent) {
       // Show with a small delay for better UX
       const timer = setTimeout(() => setVisible(true), 1500);
@@ -16,12 +16,12 @@ export default function CookieConsent() {
   }, []);
 
   const handleAccept = () => {
-    localStorage.setItem('tutoria_cookie_consent', 'accepted');
+    localStorage.setItem('Tirei10_cookie_consent', 'accepted');
     setVisible(false);
   };
 
   const handleRefuse = () => {
-    localStorage.setItem('tutoria_cookie_consent', 'refused');
+    localStorage.setItem('Tirei10_cookie_consent', 'refused');
     setVisible(false);
   };
 

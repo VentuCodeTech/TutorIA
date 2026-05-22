@@ -6,7 +6,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 // Modelos a tentar em ordem
 const MODELS = ['gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-flash', 'gemini-1.5-flash-8b'];
 
-const SYSTEM_PROMPT = `Você é o TutorIA, um assistente de estudos inteligente e especializado.
+const SYSTEM_PROMPT = `Você é o Tirei10, um assistente de estudos inteligente e especializado.
 Você ajuda estudantes a se prepararem para ENEM, OAB, Concursos Públicos e CPA-20.
 Responda sempre em português brasileiro de forma clara, didática e motivadora.
 Quando explicar conceitos, use exemplos práticos e relevantes.

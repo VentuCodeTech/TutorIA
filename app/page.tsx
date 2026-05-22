@@ -7,8 +7,8 @@ return (
 {/* Navbar */}
 <nav className="fixed top-0 left-0 right-0 z-40 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
 <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-<Link href="/" className="text-2xl font-bold text-indigo-600">
-TutorIA
+<Link href="/" className="flex items-center">
+<img src="/tirei10-logo.png" alt="Tirei10" className="h-10 w-auto" />>
 </Link>
 <div className="flex items-center gap-4">
 <Link
@@ -119,7 +119,7 @@ desc: 'Simulados, questões e planos de estudo otimizados para maximizar suas ch
 <div className="max-w-7xl mx-auto px-6">
 <div className="flex flex-col md:flex-row items-center justify-between gap-6">
 <div>
-<Link href="/" className="text-2xl font-bold text-white">TutorIA</Link>
+<Link href="/" className="text-2xl font-bold text-white">Tirei10</Link>
 <p className="text-gray-400 text-sm mt-1">Plataforma de estudos com IA adaptativa</p>
 </div>
 <div className="flex flex-wrap justify-center gap-6 text-sm text-gray-400">
@@ -131,7 +131,7 @@ desc: 'Simulados, questões e planos de estudo otimizados para maximizar suas ch
 </div>
 </div>
 <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-500 text-sm">
-<p>© 2026 TutorIA. Todos os direitos reservados. Plataforma de estudos com IA adaptativa.</p>
+<p>© 2026 Tirei10. Todos os direitos reservados. Plataforma de estudos com IA adaptativa.</p>
 </div>
 </div>
 </footer>

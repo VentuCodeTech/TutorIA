@@ -84,7 +84,7 @@ export default function Sidebar() {
       >
         <div className="p-6 border-b border-gray-100 flex-shrink-0">
           <Link href="/dashboard">
-            <h1 className="text-2xl font-bold text-indigo-600 whitespace-nowrap">TutorIA</h1>
+            <img src="/tirei10-logo.png" alt="Tirei10" className="h-9 w-auto" />>
             <p className="text-xs text-gray-400 whitespace-nowrap">Powered by Gemini AI</p>
           </Link>
         </div>

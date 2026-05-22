@@ -15,7 +15,7 @@ export default function Chatbot() {
       {
               id: '1',
               role: 'assistant',
-              content: 'Olá! Sou o TutorIA, seu assistente de estudos inteligente! 🎓\n\nPosso te ajudar com:\n• ENEM, OAB, Concursos Públicos e CPA-20\n• Dúvidas de qualquer matéria\n• Dicas de estudo e revisão\n\nComo posso te ajudar hoje?',
+              content: 'Olá! Sou o Tirei10, seu assistente de estudos inteligente! 🎓\n\nPosso te ajudar com:\n• ENEM, OAB, Concursos Públicos e CPA-20\n• Dúvidas de qualquer matéria\n• Dicas de estudo e revisão\n\nComo posso te ajudar hoje?',
               timestamp: new Date(),
       }
         ]);
@@ -122,7 +122,7 @@ export default function Chatbot() {
                                                                       <span className="text-white text-lg">🎓</span>
                                                       </div>
                                                       <div>
-                                                                      <p className="text-white font-bold text-sm">TutorIA</p>
+                                                                      <p className="text-white font-bold text-sm">Tirei10</p>
                                                                       <div className="flex items-center gap-1">
                                                                                         <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
                                                                                         <p className="text-indigo-200 text-xs">IA Online • Gemini</p>

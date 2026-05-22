@@ -37,7 +37,7 @@ export default function AnotacoesPage() {
     setLoading(true);
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
-      const stored = localStorage.getItem(`tutoria_notes_${user.id}`);
+      const stored = localStorage.getItem(`Tirei10_notes_${user.id}`);
       if (stored) {
         setNotes(JSON.parse(stored));
       }
@@ -48,7 +48,7 @@ export default function AnotacoesPage() {
   const saveNotes = async (newNotes: Note[]) => {
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
-      localStorage.setItem(`tutoria_notes_${user.id}`, JSON.stringify(newNotes));
+      localStorage.setItem(`Tirei10_notes_${user.id}`, JSON.stringify(newNotes));
     }
   };
 

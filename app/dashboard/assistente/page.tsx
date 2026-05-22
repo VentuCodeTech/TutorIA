@@ -27,7 +27,7 @@ export default function AssistentePage() {
     {
       id: '1',
       role: 'assistant',
-      content: 'Olá! Sou o Assistente IA do TutorIA. Estou aqui para te ajudar com seus estudos! 🎓\n\nPosso te ajudar com:\n• Explicações de matérias e conteúdos\n• Resolução de dúvidas específicas\n• Dicas de estudo e memorização\n• Preparação para vestibulares e concursos\n\nComo posso te ajudar hoje?',
+      content: 'Olá! Sou o Assistente IA do Tirei10. Estou aqui para te ajudar com seus estudos! 🎓\n\nPosso te ajudar com:\n• Explicações de matérias e conteúdos\n• Resolução de dúvidas específicas\n• Dicas de estudo e memorização\n• Preparação para vestibulares e concursos\n\nComo posso te ajudar hoje?',
       timestamp: new Date(),
     }
   ]);

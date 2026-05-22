@@ -161,7 +161,7 @@ return (
 
 <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-8 text-white text-center">
 <h3 className="text-2xl font-bold mb-2">🎓 Garanta seu futuro hoje!</h3>
-<p className="text-indigo-100 mb-4">Mais de 10.000 estudantes já passaram no vestibular com o TutorIA.</p>
+<p className="text-indigo-100 mb-4">Mais de 10.000 estudantes já passaram no vestibular com o Tirei10.</p>
 <div className="flex flex-wrap justify-center gap-6 text-sm">
 <span>✅ Cancele quando quiser</span>
 <span>✅ Sem fidelidade</span>

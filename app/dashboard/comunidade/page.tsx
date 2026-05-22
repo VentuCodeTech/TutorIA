@@ -16,7 +16,7 @@ interface Post {
 const mockPosts: Post[] = [
   { id: '1', user_id: 'u1', user_name: 'Ana Silva', content: 'Alguém tem dicas para estudar Matemática para o ENEM? Estou com dificuldade em logaritmos!', category: 'ENEM', likes: 12, created_at: '2024-01-10' },
   { id: '2', user_id: 'u2', user_name: 'Carlos Mendes', content: 'Compartilhando minha rotina de estudos: 2h de manhã e 2h à noite. Resultados incríveis em 3 meses!', category: 'Dicas', likes: 34, created_at: '2024-01-09' },
-  { id: '3', user_id: 'u3', user_name: 'Beatriz Costa', content: 'Consegui passar na FUVEST! Obrigada TutorIA pela ajuda com as questões de Redação!', category: 'Conquistas', likes: 89, created_at: '2024-01-08' },
+  { id: '3', user_id: 'u3', user_name: 'Beatriz Costa', content: 'Consegui passar na FUVEST! Obrigada Tirei10 pela ajuda com as questões de Redação!', category: 'Conquistas', likes: 89, created_at: '2024-01-08' },
   { id: '4', user_id: 'u4', user_name: 'Rafael Lima', content: 'Quem mais está estudando para concursos da área policial? Vamos criar um grupo de estudos?', category: 'Concursos', likes: 23, created_at: '2024-01-07' },
   { id: '5', user_id: 'u5', user_name: 'Juliana Ferreira', content: 'Dica: A técnica Pomodoro funciona muito bem! 25 min estudando, 5 min de pausa. Testei e aprovei!', category: 'Dicas', likes: 45, created_at: '2024-01-06' },
 ];
@@ -91,11 +91,11 @@ export default function ComunidadePage() {
 
   const handleShare = async (post: Post) => {
     const url = `${window.location.origin}/dashboard/comunidade?post=${post.id}`;
-    const text = `${post.user_name} na TutorIA: "${post.content.substring(0, 100)}..." - Confira!`;
+    const text = `${post.user_name} na Tirei10: "${post.content.substring(0, 100)}..." - Confira!`;
     
     if (navigator.share) {
       try {
-        await navigator.share({ title: 'TutorIA - Comunidade', text, url });
+        await navigator.share({ title: 'Tirei10 - Comunidade', text, url });
       } catch {}
     } else {
       // Fallback: copiar link

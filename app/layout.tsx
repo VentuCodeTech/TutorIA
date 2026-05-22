@@ -5,7 +5,7 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'TutorIA - Plataforma de Estudos com IA',
+  title: 'Tirei10 - Plataforma de Estudos com IA',
   description: 'Prepare-se para ENEM, OAB, Concursos Públicos e CPA-20 com IA Adaptativa powered by Claude AI',
   keywords: 'ENEM, OAB, Concursos, CPA-20, Estudo, IA, Inteligência Artificial',
 };

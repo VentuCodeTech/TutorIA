@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
     const supabase = createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
-    const origin = request.headers.get('origin') || process.env.NEXT_PUBLIC_APP_URL || 'https://tutoria-eight.vercel.app'
+    const origin = request.headers.get('origin') || process.env.NEXT_PUBLIC_APP_URL || 'https://Tirei10-eight.vercel.app'
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -386,7 +386,7 @@ export default function LoginPage() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center px-4">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-8">
         <div className="text-center mb-8">
-          <Link href="/" className="text-2xl font-bold text-indigo-600">TutorIA</Link>
+          <Link href="/" className="text-2xl font-bold text-indigo-600">Tirei10</Link>
           <p className="text-gray-600 mt-2">
             {isSignUp ? 'Crie sua conta' : 'Bem-vindo de volta'}
           </p>
@@ -497,8 +497,8 @@ const FAQ_RESPONSES: Record<string, string> = {
   'senha': 'Para redefinir sua senha, clique em "Esqueci minha senha" na pagina de login. Voce recebera um email com instrucoes.',
   'enem': 'Sim! Temos questoes e simulados especificos para ENEM, OAB, Concursos Publicos e CPA-20.',
   'ia': 'Nossa IA adapta as questoes ao seu nivel, gera explicacoes personalizadas e acompanha seu progresso de forma inteligente.',
-  'suporte': 'Estou aqui para ajudar! Voce pode me perguntar sobre planos, pagamentos, funcionalidades ou qualquer duvida sobre o TutorIA.',
-  'funcionalidade': 'O TutorIA oferece: questoes adaptativas por IA, explicacoes personalizadas, simulados cronometrados, historico de desempenho, planejamento de estudos e muito mais!',
+  'suporte': 'Estou aqui para ajudar! Voce pode me perguntar sobre planos, pagamentos, funcionalidades ou qualquer duvida sobre o Tirei10.',
+  'funcionalidade': 'O Tirei10 oferece: questoes adaptativas por IA, explicacoes personalizadas, simulados cronometrados, historico de desempenho, planejamento de estudos e muito mais!',
 }
 
 function getBotResponse(message: string): string {
@@ -511,7 +511,7 @@ function getBotResponse(message: string): string {
   }
   
   if (lowerMsg.includes('ola') || lowerMsg.includes('oi') || lowerMsg.includes('bom dia') || lowerMsg.includes('boa tarde')) {
-    return 'Ola! Bem-vindo ao TutorIA! Como posso ajudar voce hoje? Posso responder perguntas sobre planos, pagamentos, funcionalidades e muito mais.'
+    return 'Ola! Bem-vindo ao Tirei10! Como posso ajudar voce hoje? Posso responder perguntas sobre planos, pagamentos, funcionalidades e muito mais.'
   }
   
   if (lowerMsg.includes('obrigad') || lowerMsg.includes('valeu')) {
@@ -526,7 +526,7 @@ export default function Chatbot() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: 'Ola! Sou o assistente do TutorIA. Como posso ajudar voce hoje?'
+      content: 'Ola! Sou o assistente do Tirei10. Como posso ajudar voce hoje?'
     }
   ])
   const [input, setInput] = useState('')
@@ -574,7 +574,7 @@ export default function Chatbot() {
                 </svg>
               </div>
               <div>
-                <p className="text-white font-semibold text-sm">Suporte TutorIA</p>
+                <p className="text-white font-semibold text-sm">Suporte Tirei10</p>
                 <p className="text-indigo-200 text-xs">Online agora</p>
               </div>
             </div>

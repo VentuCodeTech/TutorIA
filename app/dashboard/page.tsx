@@ -216,7 +216,7 @@ export default function Dashboard() {
         <div className="bg-indigo-50 border border-indigo-100 rounded-2xl p-6 flex items-start gap-4">
           <div className="text-3xl">🎓</div>
           <div>
-            <h3 className="font-semibold text-indigo-900 mb-1">TutorIA está pronto para te ajudar!</h3>
+            <h3 className="font-semibold text-indigo-900 mb-1">Tirei10 está pronto para te ajudar!</h3>
             <p className="text-sm text-indigo-700">
               Clique no botão de chat no canto inferior direito para tirar qualquer dúvida com nossa IA.
               Disponível 24/7 para te ajudar com ENEM, OAB, Concursos e muito mais!

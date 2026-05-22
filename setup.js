@@ -10,7 +10,7 @@ function writeFile(filePath, content) {
 
 // package.json
 writeFile('package.json', JSON.stringify({
-  name: "tutoria",
+  name: "Tirei10",
   version: "0.1.0",
   private: true,
   scripts: { dev: "next dev", build: "next build", start: "next start", lint: "next lint" },

@@ -1,5 +1,5 @@
 -- ============================================================
--- TutorIA — Database Schema v1
+-- Tirei10 — Database Schema v1
 -- Run this in the Supabase SQL Editor
 -- ============================================================
 
