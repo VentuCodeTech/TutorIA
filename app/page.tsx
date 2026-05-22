@@ -118,7 +118,7 @@ export default function Home() {
       <nav className="fixed top-0 left-0 right-0 z-40 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
         <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <img src="/tirei10-login-logo.png" alt="Tirei10" className="h-9 w-auto" />
+            <img src="/tirei10-logo.png" alt="Tirei10" className="h-9 w-auto" />
           </Link>
           <div className="flex items-center gap-4">
             <Link href="/login" className="text-gray-600 hover:text-indigo-600 font-medium transition-colors text-sm">Login</Link>
@@ -274,7 +274,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div>
-              <img src="/tirei10-logo.png" alt="Tirei10" className="h-8 w-auto mb-2 brightness-0 invert" />
+              <img src="/tirei10-logo-white.png" alt="Tirei10" className="h-8 w-auto mb-2" />
               <p className="text-gray-400 text-sm">Plataforma de estudos com IA adaptativa</p>
             </div>
             <div className="flex flex-wrap justify-center gap-6 text-sm text-gray-400">
