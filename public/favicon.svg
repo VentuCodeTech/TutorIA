@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2favicon.svg000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#7B2FBE;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#5B21B6;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <!-- Background rounded square -->
+  <rect width="512" height="512" rx="100" ry="100" fill="url(#bgGrad)"/>
+  <!-- T letter -->
+  <text x="60" y="360" font-family="Arial Black, sans-serif" font-weight="900" font-size="280" fill="white" opacity="0.95">T</text>
+  <!-- 1 letter (lighter purple) -->
+  <text x="200" y="360" font-family="Arial Black, sans-serif" font-weight="900" font-size="280" fill="#C084FC" opacity="0.9">1</text>
+  <!-- O letter -->
+  <text x="295" y="360" font-family="Arial Black, sans-serif" font-weight="900" font-size="280" fill="white" opacity="0.95">0</text>
+  <!-- Star sparkle top right -->
+  <g transform="translate(410, 80)" filter="url(#glow)">
+    <path d="M0,-20 L5,-5 L20,0 L5,5 L0,20 L-5,5 L-20,0 L-5,-5 Z" fill="white" opacity="0.9"/>
+  </g>
+  <!-- Underline arc -->
+  <path d="M90 420 Q256 460 422 420" stroke="#A855F7" stroke-width="12" fill="none" stroke-linecap="round"/>
+</svg>
