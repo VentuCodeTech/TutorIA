@@ -119,7 +119,7 @@ function LoginForm() {
         {/* Logo */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-block">
-            <img src="/tirei10-logo.png" alt="Tirei10" className="h-12 w-auto mx-auto" />>
+            <img src="/tirei10-logo.png" alt="Tirei10" className="h-12 w-auto mx-auto" />
             <p className="text-gray-500 text-sm mt-1">Plataforma de Estudos com IA</p>
           </Link>
         </div>
