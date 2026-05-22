@@ -36,7 +36,7 @@ export default function SuportePage() {
             <div className="bg-white rounded-2xl p-6 shadow-md border border-gray-100 text-center">
               <div className="text-4xl mb-3">📚</div>
               <h3 className="font-bold text-gray-800 mb-2">Base de Conhecimento</h3>
-              <p className="text-gray-600 text-sm mb-3">Artigos e Tirei10is detalhados</p>
+              <p className="text-gray-600 text-sm mb-3">Artigos e tutoriais detalhados</p>
               <span className="text-gray-400 text-sm">Em breve</span>
             </div>
           </div>
