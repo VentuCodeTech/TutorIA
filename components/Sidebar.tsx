@@ -84,7 +84,7 @@ export default function Sidebar() {
       >
         <div className="p-6 border-b border-gray-100 flex-shrink-0">
           <Link href="/dashboard">
-            <img src="/tirei10-logo.png" alt="Tirei10" className="h-9 w-auto" />
+            <img src="/tirei10-header-logo.png" alt="Tirei10" className="h-9 w-auto" />
             <p className="text-xs text-gray-400 whitespace-nowrap">Powered by Gemini AI</p>
           </Link>
         </div>
