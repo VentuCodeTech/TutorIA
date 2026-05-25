@@ -5,82 +5,82 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
 function AuthCallbackContent() {
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const supabase = createClient()
+    const router = useRouter()
+    const searchParams = useSearchParams()
+    const supabase = createClient()
 
   useEffect(() => {
-    const code = searchParams.get('code')
-    const next = searchParams.get('next') ?? '/dashboard'
+        const code = searchParams.get('code')
+        const next = searchParams.get('next') ?? '/dashboard'
 
-    const handleAuth = async () => {
-      if (code) {
-        // PKCE flow: exchange code for session
-        try {
-          const { data, error } = await supabase.auth.exchangeCodeForSession(code)
-          if (data?.session) {
-            router.replace(next)
-            return
-          }
-          if (error) {
-            console.error('Code exchange failed:', error.message)
-          }
-        } catch (err) {
-          console.error('Code exchange exception:', err)
-        }
-      }
+                const handleAuth = async () => {
+                        if (code) {
+                                  // PKCE flow: exchange code for session
+                          try {
+                                      const { data, error } = await supabase.auth.exchangeCodeForSession(code)
+                                      if (data?.session) {
+                                                    router.replace(next)
+                                                    return
+                                      }
+                                      if (error) {
+                                                    console.error('Code exchange failed:', error.message)
+                                      }
+                          } catch (err) {
+                                      console.error('Code exchange exception:', err)
+                          }
+                        }
 
-      // Implicit flow: wait for Supabase to process hash fragment
-      // The client library auto-processes #access_token on init
-      // Give it a moment then check session
-      await new Promise(resolve => setTimeout(resolve, 500))
-      
-      const { data: { session } } = await supabase.auth.getSession()
-      if (session) {
-        router.replace(next)
-        return
-      }
+                        // Implicit flow: wait for Supabase to process hash/cookie
+                        // Try multiple times with increasing delays
+                        for (let attempt = 0; attempt < 5; attempt++) {
+                                  await new Promise(resolve => setTimeout(resolve, 500 + attempt * 300))
+                                  const { data: { session } } = await supabase.auth.getSession()
+                                  if (session) {
+                                              router.replace(next)
+                                              return
+                                  }
+                        }
 
-      // Last resort: listen for auth state change
-      const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-        if (session) {
-          subscription.unsubscribe()
-          router.replace(next)
-        }
-      })
+                        // Last resort: listen for auth state change
+                        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+                                  if (event === 'SIGNED_IN' && session) {
+                                              subscription.unsubscribe()
+                                              router.replace(next)
+                                  }
+                        })
 
-      // If still no session after 3 seconds, redirect to login
-      setTimeout(async () => {
-        const { data: { session: finalSession } } = await supabase.auth.getSession()
-        if (!finalSession) {
-          subscription.unsubscribe()
-          router.replace('/login?error=auth_callback_failed')
-        }
-      }, 3000)
-    }
+                        // If still no session after 5 seconds, redirect to login
+                        setTimeout(async () => {
+                                  const { data: { session: finalSession } } = await supabase.auth.getSession()
+                                  if (!finalSession) {
+                                              subscription.unsubscribe()
+                                              router.replace('/login?error=auth_callback_failed')
+                                  }
+                        }, 5000)
+                }
 
-    handleAuth()
+                handleAuth()
   }, [searchParams, router, supabase])
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-purple-50">
-      <div className="text-center">
-        <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-        <p className="text-gray-600 font-medium">Autenticando...</p>
-        <p className="text-gray-400 text-sm mt-1">Por favor aguarde</p>
-      </div>
-    </div>
-  )
+        <div className="min-h-screen flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #0f0f0f 0%, #1a0a2e 30%, #16213e 60%, #0f0f0f 100%)' }}>
+                <div className="text-center">
+                        <div className="w-14 h-14 border-4 border-t-transparent rounded-full animate-spin mx-auto mb-6" style={{ borderColor: 'rgba(168,85,247,0.8)', borderTopColor: 'transparent' }}></div>div>
+                        <p className="font-semibold text-lg mb-1" style={{ color: '#f1f5f9' }}>Autenticando...</p>p>
+                        <p className="text-sm" style={{ color: '#94a3b8' }}>Por favor aguarde</p>p>
+                </div>div>
+        </div>div>
+      )
 }
 
 export default function AuthCallbackPage() {
-  return (
-    <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    }>
-      <AuthCallbackContent />
-    </Suspense>
-  )
-}
+    return (
+          <Suspense fallback={
+                  <div className="min-h-screen flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #0f0f0f 0%, #1a0a2e 30%, #16213e 60%, #0f0f0f 100%)' }}>
+                          <div className="w-12 h-12 border-4 border-t-transparent rounded-full animate-spin" style={{ borderColor: 'rgba(168,85,247,0.8)', borderTopColor: 'transparent' }}></div>div>
+                  </div>div>
+            }>
+                <AuthCallbackContent />
+          </Suspense>Suspense>
+        )
+}</div>
