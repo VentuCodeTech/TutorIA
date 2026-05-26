@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Sidebar from '@/components/Sidebar'
 import Chatbot from '@/components/Chatbot'
@@ -57,32 +57,198 @@ const PERGUNTAS_PADRAO = [
   { materia: 'Dedicação', pergunta: 'Quantas horas por dia você consegue estudar?', opcoes: ['Menos de 1 hora', '1 a 2 horas', '3 a 4 horas', 'Mais de 4 horas'] },
 ]
 
+interface StudyPlan {
+  id: string
+  vestibular: string
+  materias_fracas: string[]
+  materias_fortes: string[]
+  ordem_estudo: string[]
+  updated_at: string
+  diagnostico_score: Record<string, number>
+}
+
+interface PerformanceData {
+  materia: string
+  total: number
+  corretas: number
+  taxa: number
+}
+
 function gerarRoteiro(vestibular: string, respostas: number[], perguntas: {materia:string;pergunta:string;opcoes:string[]}[]) {
   const materiasFracas: string[] = []
   const materiasFortes: string[] = []
+  const score: Record<string, number> = {}
   respostas.forEach((resp, i) => {
     const mat = perguntas[i]?.materia || ''
+    score[mat] = resp
     if (resp <= 1) materiasFracas.push(mat)
     else materiasFortes.push(mat)
   })
-  return { materiasFracas, materiasFortes, ordemEstudo: [...materiasFracas, ...materiasFortes.filter(m => !materiasFracas.includes(m))] }
+  return { materiasFracas, materiasFortes, ordemEstudo: [...materiasFracas, ...materiasFortes.filter(m => !materiasFracas.includes(m))], score }
+}
+
+function mergeWithPerformance(
+  materiasFracas: string[],
+  materiasFortes: string[],
+  performance: PerformanceData[]
+): { materiasFracas: string[]; materiasFortes: string[]; ordemEstudo: string[] } {
+  const updatedFracas = new Set(materiasFracas)
+  const updatedFortes = new Set(materiasFortes)
+
+  performance.forEach(({ materia, taxa }) => {
+    const norm = materia.trim()
+    if (taxa < 50) {
+      updatedFracas.add(norm)
+      updatedFortes.delete(norm)
+    } else if (taxa >= 70) {
+      updatedFortes.add(norm)
+      updatedFracas.delete(norm)
+    }
+  })
+
+  const allMaterias = [...new Set([...updatedFracas, ...updatedFortes])]
+  const ordemEstudo = [...updatedFracas, ...allMaterias.filter(m => !updatedFracas.has(m))]
+  return { materiasFracas: [...updatedFracas], materiasFortes: [...updatedFortes], ordemEstudo }
 }
 
 export default function PlanoEstudosPage() {
   const router = useRouter()
   const supabase = createClient()
-  const [etapa, setEtapa] = useState<'selecao'|'perguntas'|'resultado'>('selecao')
+  const [etapa, setEtapa] = useState<'loading'|'selecao'|'perguntas'|'resultado'>('loading')
   const [vestibularSelecionado, setVestibularSelecionado] = useState('')
   const [perguntaAtual, setPerguntaAtual] = useState(0)
   const [respostas, setRespostas] = useState<number[]>([])
   const [resultado, setResultado] = useState<{materiasFracas:string[];materiasFortes:string[];ordemEstudo:string[]}|null>(null)
   const [loadingResult, setLoadingResult] = useState(false)
+  const [savedPlan, setSavedPlan] = useState<StudyPlan|null>(null)
+  const [performance, setPerformance] = useState<PerformanceData[]>([])
+  const [savingPlan, setSavingPlan] = useState(false)
+  const [lastUpdated, setLastUpdated] = useState<string|null>(null)
+  const [hasPerformanceUpdates, setHasPerformanceUpdates] = useState(false)
+
+  const loadPlanAndPerformance = useCallback(async () => {
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) { window.location.href = '/login'; return }
+
+    const userId = session.user.id
+
+    const [planResult, qaResult, simResult] = await Promise.all([
+      supabase.from('study_plans').select('*').eq('user_id', userId).order('updated_at', { ascending: false }).limit(1).maybeSingle(),
+      supabase.from('question_answers').select('question_id, is_correct, questions(area)').eq('user_id', userId).not('question_id', 'is', null),
+      supabase.from('simulado_results').select('simulado_name, score, total_questions').eq('user_id', userId).order('created_at', { ascending: false }).limit(50),
+    ])
+
+    const perfMap: Record<string, { total: number; corretas: number }> = {}
+
+    if (qaResult.data) {
+      qaResult.data.forEach((qa: any) => {
+        const area = qa.questions?.area
+        if (area) {
+          if (!perfMap[area]) perfMap[area] = { total: 0, corretas: 0 }
+          perfMap[area].total++
+          if (qa.is_correct) perfMap[area].corretas++
+        }
+      })
+    }
+
+    if (simResult.data) {
+      simResult.data.forEach((sim: any) => {
+        const area = sim.simulado_name
+        if (area && sim.total_questions > 0) {
+          if (!perfMap[area]) perfMap[area] = { total: 0, corretas: 0 }
+          perfMap[area].total += sim.total_questions
+          perfMap[area].corretas += sim.score
+        }
+      })
+    }
+
+    const perfData: PerformanceData[] = Object.entries(perfMap)
+      .filter(([, v]) => v.total >= 3)
+      .map(([materia, v]) => ({ materia, total: v.total, corretas: v.corretas, taxa: Math.round((v.corretas / v.total) * 100) }))
+
+    setPerformance(perfData)
+
+    if (planResult.data) {
+      const plan = planResult.data as StudyPlan
+      setSavedPlan(plan)
+      setLastUpdated(new Date(plan.updated_at).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }))
+
+      if (perfData.length > 0) {
+        const merged = mergeWithPerformance(plan.materias_fracas, plan.materias_fortes, perfData)
+        const changed = JSON.stringify(merged.materiasFracas.sort()) !== JSON.stringify([...plan.materias_fracas].sort()) ||
+          JSON.stringify(merged.materiasFortes.sort()) !== JSON.stringify([...plan.materias_fortes].sort())
+        setHasPerformanceUpdates(changed)
+        setResultado({ materiasFracas: merged.materiasFracas, materiasFortes: merged.materiasFortes, ordemEstudo: merged.ordemEstudo })
+      } else {
+        setResultado({ materiasFracas: plan.materias_fracas, materiasFortes: plan.materias_fortes, ordemEstudo: plan.ordem_estudo })
+      }
+      setVestibularSelecionado(plan.vestibular)
+      setEtapa('resultado')
+    } else {
+      setEtapa('selecao')
+    }
+  }, [supabase])
 
   useEffect(() => {
-    supabase.auth.getSession().then(({data:{session}}) => {
-      if (!session) window.location.href = '/login'
-    })
-  }, [])
+    loadPlanAndPerformance()
+  }, [loadPlanAndPerformance])
+
+  const savePlan = async (
+    vestibular: string,
+    resps: number[],
+    perguntas: {materia:string;pergunta:string;opcoes:string[]}[],
+    roteiro: { materiasFracas: string[]; materiasFortes: string[]; ordemEstudo: string[]; score: Record<string, number> }
+  ) => {
+    setSavingPlan(true)
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) return
+
+    const payload = {
+      user_id: session.user.id,
+      vestibular,
+      answers: resps,
+      materias_fracas: roteiro.materiasFracas,
+      materias_fortes: roteiro.materiasFortes,
+      ordem_estudo: roteiro.ordemEstudo,
+      perguntas,
+      diagnostico_score: roteiro.score,
+      updated_at: new Date().toISOString(),
+    }
+
+    const existingPlan = await supabase.from('study_plans').select('id').eq('user_id', session.user.id).eq('vestibular', vestibular).maybeSingle()
+
+    let error
+    if (existingPlan.data?.id) {
+      const result = await supabase.from('study_plans').update(payload).eq('id', existingPlan.data.id)
+      error = result.error
+    } else {
+      const result = await supabase.from('study_plans').insert(payload)
+      error = result.error
+    }
+
+    if (!error) {
+      setLastUpdated(new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }))
+    }
+    setSavingPlan(false)
+  }
+
+  const applyPerformanceUpdates = async () => {
+    if (!savedPlan || !resultado) return
+    setSavingPlan(true)
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) return
+
+    await supabase.from('study_plans').update({
+      materias_fracas: resultado.materiasFracas,
+      materias_fortes: resultado.materiasFortes,
+      ordem_estudo: resultado.ordemEstudo,
+      updated_at: new Date().toISOString(),
+    }).eq('id', savedPlan.id)
+
+    setHasPerformanceUpdates(false)
+    setLastUpdated(new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }))
+    setSavingPlan(false)
+  }
 
   const perguntas = PERGUNTAS[vestibularSelecionado] || PERGUNTAS_PADRAO
   const vestibularLabel = VESTIBULARES.find(v => v.id === vestibularSelecionado)?.label || vestibularSelecionado
@@ -98,7 +264,13 @@ export default function PlanoEstudosPage() {
       setPerguntaAtual(perguntaAtual + 1)
     } else {
       setLoadingResult(true)
-      setTimeout(() => { setResultado(gerarRoteiro(vestibularSelecionado, novas, perguntas)); setEtapa('resultado'); setLoadingResult(false) }, 1500)
+      setTimeout(async () => {
+        const roteiro = gerarRoteiro(vestibularSelecionado, novas, perguntas)
+        setResultado({ materiasFracas: roteiro.materiasFracas, materiasFortes: roteiro.materiasFortes, ordemEstudo: roteiro.ordemEstudo })
+        setEtapa('resultado')
+        setLoadingResult(false)
+        await savePlan(vestibularSelecionado, novas, perguntas, roteiro)
+      }, 1500)
     }
   }
 
@@ -115,8 +287,18 @@ export default function PlanoEstudosPage() {
             <span className="text-indigo-700 font-medium">🗺️ Plano de Estudos</span>
           </div>
           <h1 className="text-3xl font-bold text-gray-800">🗺️ Plano de Estudos Personalizado</h1>
-          <p className="text-gray-500 mt-1">Responda algumas perguntas para criarmos o melhor roteiro de estudos para você</p>
+          <p className="text-gray-500 mt-1">Seu roteiro de estudos baseado no seu perfil e desempenho real</p>
         </div>
+
+        {etapa === 'loading' && (
+          <div className="max-w-2xl">
+            <div className="bg-white rounded-2xl p-12 shadow-sm border border-gray-100 text-center">
+              <div className="w-16 h-16 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-6"></div>
+              <h2 className="text-xl font-bold text-gray-800 mb-2">Carregando seu plano...</h2>
+              <p className="text-gray-500">Buscando seu perfil de estudos</p>
+            </div>
+          </div>
+        )}
 
         {etapa === 'selecao' && (
           <div className="max-w-4xl">
@@ -135,7 +317,7 @@ export default function PlanoEstudosPage() {
             </div>
             <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-6 text-white">
               <h3 className="font-bold text-lg mb-2">💡 Como funciona?</h3>
-              <p className="text-indigo-100 text-sm">Após selecionar seu objetivo, você responderá <strong>5 perguntas rápidas</strong> sobre seu nível em cada matéria. Com base nas suas respostas, montaremos um <strong>roteiro personalizado</strong> com a ordem ideal de estudo.</p>
+              <p className="text-indigo-100 text-sm">Você responderá <strong>5 perguntas rápidas</strong> sobre seu nível em cada matéria. Com base nas suas respostas e no seu <strong>desempenho real</strong> nas questões e simulados, montaremos um <strong>roteiro personalizado</strong> que se atualiza automaticamente.</p>
             </div>
           </div>
         )}
@@ -172,7 +354,7 @@ export default function PlanoEstudosPage() {
             <div className="bg-white rounded-2xl p-12 shadow-sm border border-gray-100 text-center">
               <div className="w-16 h-16 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-6"></div>
               <h2 className="text-xl font-bold text-gray-800 mb-2">🤖 Analisando seu perfil...</h2>
-              <p className="text-gray-500">Criando o roteiro de estudos personalizado para você</p>
+              <p className="text-gray-500">Criando e salvando seu roteiro de estudos personalizado</p>
             </div>
           </div>
         )}
@@ -180,13 +362,56 @@ export default function PlanoEstudosPage() {
         {etapa === 'resultado' && resultado && (
           <div className="max-w-4xl">
             <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 mb-6">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center text-2xl">✅</div>
-                <div>
-                  <h2 className="text-xl font-bold text-gray-800">Seu Roteiro de Estudos está pronto!</h2>
-                  <p className="text-gray-500 text-sm">Preparado para: <strong>{vestibularLabel}</strong></p>
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center text-2xl">✅</div>
+                  <div>
+                    <h2 className="text-xl font-bold text-gray-800">Seu Roteiro de Estudos</h2>
+                    <p className="text-gray-500 text-sm">
+                      Para: <strong>{vestibularLabel}</strong>
+                      {lastUpdated && <span className="ml-2 text-gray-400">· Atualizado: {lastUpdated}</span>}
+                      {savingPlan && <span className="ml-2 text-indigo-500 text-xs">💾 Salvando...</span>}
+                    </p>
+                  </div>
                 </div>
+                <button onClick={handleReiniciar} className="text-sm text-gray-500 hover:text-indigo-600 border border-gray-200 hover:border-indigo-300 px-3 py-1.5 rounded-lg transition-colors">
+                  🔄 Refazer
+                </button>
               </div>
+
+              {hasPerformanceUpdates && (
+                <div className="mb-6 bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-center justify-between">
+                  <div>
+                    <p className="font-semibold text-amber-800 text-sm">📊 Atualização disponível!</p>
+                    <p className="text-amber-700 text-xs mt-0.5">Seu desempenho real nas questões e simulados sugere ajustes no seu plano.</p>
+                  </div>
+                  <button onClick={applyPerformanceUpdates} disabled={savingPlan}
+                    className="bg-amber-500 hover:bg-amber-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors disabled:opacity-50 whitespace-nowrap ml-4">
+                    Aplicar
+                  </button>
+                </div>
+              )}
+
+              {performance.length > 0 && (
+                <div className="mb-6 bg-blue-50 border border-blue-100 rounded-xl p-4">
+                  <h3 className="font-bold text-blue-800 text-sm mb-3">📈 Seu desempenho real nas questões</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                    {performance.slice(0, 6).map((p, i) => (
+                      <div key={i} className="bg-white rounded-lg p-2.5 border border-blue-100">
+                        <p className="text-xs text-gray-600 font-medium truncate">{p.materia}</p>
+                        <div className="flex items-center gap-2 mt-1">
+                          <div className="flex-1 bg-gray-200 rounded-full h-1.5">
+                            <div className={`h-1.5 rounded-full ${p.taxa >= 70 ? 'bg-green-500' : p.taxa >= 50 ? 'bg-yellow-500' : 'bg-red-500'}`} style={{width: `${p.taxa}%`}}></div>
+                          </div>
+                          <span className={`text-xs font-bold ${p.taxa >= 70 ? 'text-green-600' : p.taxa >= 50 ? 'text-yellow-600' : 'text-red-600'}`}>{p.taxa}%</span>
+                        </div>
+                        <p className="text-xs text-gray-400 mt-0.5">{p.corretas}/{p.total} questões</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {resultado.materiasFracas.length > 0 && (
                 <div className="mb-6">
                   <h3 className="font-bold text-gray-700 mb-3">⚠️ Áreas que precisam de mais atenção</h3>
@@ -208,12 +433,14 @@ export default function PlanoEstudosPage() {
                 <div className="space-y-3">
                   {resultado.ordemEstudo.map((materia, i) => {
                     const isFraca = resultado.materiasFracas.includes(materia)
+                    const perf = performance.find(p => p.materia.toLowerCase().includes(materia.toLowerCase()) || materia.toLowerCase().includes(p.materia.toLowerCase()))
                     return (
                       <div key={i} className={`flex items-center gap-4 p-4 rounded-xl border ${isFraca?'border-red-200 bg-red-50':'border-green-200 bg-green-50'}`}>
                         <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-white flex-shrink-0 ${isFraca?'bg-red-500':'bg-green-500'}`}>{i+1}</div>
                         <div className="flex-1">
                           <p className="font-semibold text-gray-800">{materia}</p>
                           <p className="text-xs text-gray-500">{isFraca?'🔥 Prioridade alta - foque nessa matéria primeiro':'✨ Mantenha e aprofunde seus conhecimentos'}</p>
+                          {perf && <p className="text-xs text-blue-600 mt-0.5">📊 Taxa de acerto: {perf.taxa}% ({perf.corretas}/{perf.total} questões)</p>}
                         </div>
                         <button onClick={() => router.push(`/dashboard/questoes?area=${encodeURIComponent(materia)}`)}
                           className={`text-sm font-medium px-4 py-2 rounded-lg ${isFraca?'bg-red-500 hover:bg-red-600':'bg-green-500 hover:bg-green-600'} text-white transition-colors`}>Estudar</button>
@@ -228,12 +455,12 @@ export default function PlanoEstudosPage() {
                   <li>• Estude as matérias difíceis nas primeiras horas do dia</li>
                   <li>• Faça revisões semanais das matérias já estudadas para fixar o conteúdo</li>
                   <li>• Use a seção de Questões para praticar cada matéria após estudar</li>
-                  <li>• Acompanhe seu progresso no Dashboard para ver sua evolução</li>
+                  <li>• Seu plano é atualizado automaticamente com base no seu desempenho</li>
                 </ul>
               </div>
             </div>
             <div className="flex gap-4">
-              <button onClick={handleReiniciar} className="flex-1 py-3 rounded-xl border-2 border-gray-300 text-gray-600 font-semibold hover:bg-gray-50 transition-colors">🔄 Refazer Diagnóstico</button>
+              <button onClick={handleReiniciar} className="flex-1 py-3 rounded-xl border-2 border-gray-300 text-gray-600 font-semibold hover:bg-gray-50 transition-colors">🔄 Novo Diagnóstico</button>
               <button onClick={() => router.push('/dashboard/questoes')} className="flex-1 py-3 rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition-colors">📝 Começar a Estudar</button>
             </div>
           </div>
