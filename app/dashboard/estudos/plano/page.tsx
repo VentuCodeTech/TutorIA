@@ -139,32 +139,23 @@ export default function PlanoEstudosPage() {
 
     const userId = session.user.id
 
-    const [planResult, qaResult, simResult] = await Promise.all([
+    // FIX: Use subject column directly from question_answers (no join needed for AI-generated questions)
+    // FIX: Removed simulado_results from per-subject performance (simulado_name is not a study subject)
+    const [planResult, qaResult] = await Promise.all([
       supabase.from('study_plans').select('*').eq('user_id', userId).order('updated_at', { ascending: false }).limit(1).maybeSingle(),
-      supabase.from('question_answers').select('question_id, is_correct, questions(area)').eq('user_id', userId).not('question_id', 'is', null),
-      supabase.from('simulado_results').select('simulado_name, score, total_questions').eq('user_id', userId).order('created_at', { ascending: false }).limit(50),
+      supabase.from('question_answers').select('subject, is_correct').eq('user_id', userId),
     ])
 
     const perfMap: Record<string, { total: number; corretas: number }> = {}
 
     if (qaResult.data) {
       qaResult.data.forEach((qa: any) => {
-        const area = qa.questions?.area
-        if (area) {
+        // FIX: use qa.subject directly
+        const area = qa.subject
+        if (area && area.trim() !== '' && area !== 'Teste') {
           if (!perfMap[area]) perfMap[area] = { total: 0, corretas: 0 }
           perfMap[area].total++
           if (qa.is_correct) perfMap[area].corretas++
-        }
-      })
-    }
-
-    if (simResult.data) {
-      simResult.data.forEach((sim: any) => {
-        const area = sim.simulado_name
-        if (area && sim.total_questions > 0) {
-          if (!perfMap[area]) perfMap[area] = { total: 0, corretas: 0 }
-          perfMap[area].total += sim.total_questions
-          perfMap[area].corretas += sim.score
         }
       })
     }
