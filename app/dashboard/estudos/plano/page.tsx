@@ -18,12 +18,25 @@ const VESTIBULARES = [
   { id: 'medicina', label: 'Medicina (Revalida)', emoji: '🏥' },
 ]
 
+// Matérias específicas por vestibular/concurso
+const MATERIAS_POR_VESTIBULAR: Record<string, string[]> = {
+  enem: ['Matemática', 'Português', 'Biologia', 'Física', 'Química', 'História', 'Geografia', 'Redação', 'Inglês', 'Espanhol'],
+  fuvest: ['Matemática', 'Português', 'Biologia', 'Física', 'Química', 'História', 'Geografia', 'Redação'],
+  unicamp: ['Matemática', 'Português', 'Biologia', 'Física', 'Química', 'História', 'Geografia', 'Redação'],
+  oab: ['Direito Constitucional', 'Direito Civil', 'Direito Penal', 'Direito Trabalhista', 'Ética Profissional', 'Peças Jurídicas', 'Português'],
+  concurso_federal: ['Português', 'Matemática', 'Direito Administrativo', 'Direito Constitucional', 'Atualidades', 'História', 'Geografia'],
+  concurso_estadual: ['Português', 'Matemática', 'Direito Administrativo', 'Direito Constitucional', 'Atualidades', 'História', 'Geografia'],
+  cpa20: ['Investimentos', 'Matemática Financeira', 'Finanças Pessoais', 'Mercado Financeiro'],
+  militar: ['Matemática', 'Física', 'Química', 'Português', 'História', 'Geografia', 'Biologia'],
+  medicina: ['Biologia', 'Química', 'Física', 'Matemática', 'Português'],
+}
+
 const PERGUNTAS: Record<string, { materia: string; pergunta: string; opcoes: string[] }[]> = {
   enem: [
     { materia: 'Matemática', pergunta: 'Como você se sente em relação a funções e equações?', opcoes: ['Tenho muita dificuldade', 'Entendo o básico', 'Domino bem', 'Sei muito bem'] },
     { materia: 'Português', pergunta: 'Qual sua habilidade em interpretação de textos?', opcoes: ['Preciso melhorar muito', 'Consigo entender textos simples', 'Interpreto bem a maioria', 'Excelente compreensão'] },
-    { materia: 'Ciências Naturais', pergunta: 'Como está seu conhecimento em Biologia, Física e Química?', opcoes: ['Muito básico', 'Conheço o fundamental', 'Tenho boa base', 'Domino as três áreas'] },
-    { materia: 'Ciências Humanas', pergunta: 'Qual seu nível em História, Geografia, Filosofia e Sociologia?', opcoes: ['Preciso estudar do zero', 'Conheço o básico', 'Tenho bom domínio', 'Excelente conhecimento'] },
+    { materia: 'Biologia', pergunta: 'Como está seu conhecimento em Biologia?', opcoes: ['Muito básico', 'Conheço o fundamental', 'Tenho boa base', 'Domino a matéria'] },
+    { materia: 'História', pergunta: 'Qual seu nível em História e Ciências Humanas?', opcoes: ['Preciso estudar do zero', 'Conheço o básico', 'Tenho bom domínio', 'Excelente conhecimento'] },
     { materia: 'Redação', pergunta: 'Com que frequência você pratica redação dissertativa?', opcoes: ['Nunca pratiquei', 'Raramente', 'Ocasionalmente', 'Pratico regularmente'] },
   ],
   oab: [
@@ -35,17 +48,31 @@ const PERGUNTAS: Record<string, { materia: string; pergunta: string; opcoes: str
   ],
   cpa20: [
     { materia: 'Mercado Financeiro', pergunta: 'Qual seu conhecimento sobre mercado financeiro?', opcoes: ['Nenhum', 'Básico', 'Intermediário', 'Avançado'] },
-    { materia: 'Fundos de Investimento', pergunta: 'Como você entende fundos de investimento?', opcoes: ['Nunca estudei', 'Conheço o básico', 'Tenho bom entendimento', 'Domino o assunto'] },
-    { materia: 'Renda Fixa e Variável', pergunta: 'Qual seu nível em produtos de renda fixa e variável?', opcoes: ['Iniciante', 'Básico', 'Intermediário', 'Avançado'] },
-    { materia: 'Compliance e Ética', pergunta: 'Como está seu conhecimento em compliance e ética?', opcoes: ['Preciso começar', 'Conheço superficialmente', 'Tenho bom domínio', 'Domino muito bem'] },
-    { materia: 'Tributação', pergunta: 'Qual seu nível em tributação de investimentos?', opcoes: ['Nunca estudei', 'Conheço o básico', 'Entendo bem', 'Domino completamente'] },
+    { materia: 'Investimentos', pergunta: 'Como você entende fundos de investimento?', opcoes: ['Nunca estudei', 'Conheço o básico', 'Tenho bom entendimento', 'Domino o assunto'] },
+    { materia: 'Matemática Financeira', pergunta: 'Qual seu nível em matemática financeira?', opcoes: ['Iniciante', 'Básico', 'Intermediário', 'Avançado'] },
+    { materia: 'Finanças Pessoais', pergunta: 'Como está seu conhecimento em compliance e ética financeira?', opcoes: ['Preciso começar', 'Conheço superficialmente', 'Tenho bom domínio', 'Domino muito bem'] },
+    { materia: 'Finanças Pessoais', pergunta: 'Qual seu nível em tributação de investimentos?', opcoes: ['Nunca estudei', 'Conheço o básico', 'Entendo bem', 'Domino completamente'] },
   ],
   concurso_federal: [
     { materia: 'Português', pergunta: 'Qual seu nível em Língua Portuguesa para concursos?', opcoes: ['Iniciante', 'Básico', 'Intermediário', 'Avançado'] },
-    { materia: 'Raciocínio Lógico', pergunta: 'Como está seu raciocínio lógico e matemático?', opcoes: ['Tenho muita dificuldade', 'Resolvo questões simples', 'Resolvo bem a maioria', 'Excelente performance'] },
+    { materia: 'Matemática', pergunta: 'Como está seu raciocínio lógico e matemático?', opcoes: ['Tenho muita dificuldade', 'Resolvo questões simples', 'Resolvo bem a maioria', 'Excelente performance'] },
     { materia: 'Direito Administrativo', pergunta: 'Qual seu conhecimento em Direito Administrativo?', opcoes: ['Nunca estudei', 'Conheço o básico', 'Tenho boa base', 'Domino o conteúdo'] },
-    { materia: 'Conhecimentos Específicos', pergunta: 'Como está seu preparo na área específica do concurso?', opcoes: ['Começando agora', 'Conheço superficialmente', 'Tenho boa base', 'Muito preparado'] },
+    { materia: 'Direito Constitucional', pergunta: 'Como está seu preparo em Direito Constitucional?', opcoes: ['Começando agora', 'Conheço superficialmente', 'Tenho boa base', 'Muito preparado'] },
     { materia: 'Atualidades', pergunta: 'Com que frequência você acompanha notícias e atualidades?', opcoes: ['Raramente', 'Às vezes', 'Frequentemente', 'Diariamente'] },
+  ],
+  militar: [
+    { materia: 'Matemática', pergunta: 'Como está seu nível em Matemática?', opcoes: ['Tenho muita dificuldade', 'Entendo o básico', 'Domino bem', 'Excelente desempenho'] },
+    { materia: 'Física', pergunta: 'Qual seu nível em Física?', opcoes: ['Iniciante', 'Básico', 'Intermediário', 'Avançado'] },
+    { materia: 'Português', pergunta: 'Como está seu conhecimento em Língua Portuguesa?', opcoes: ['Preciso melhorar muito', 'Conheço o básico', 'Tenho boa base', 'Excelente habilidade'] },
+    { materia: 'História', pergunta: 'Qual seu nível em História e Geografia?', opcoes: ['Preciso estudar do zero', 'Conheço o básico', 'Tenho bom domínio', 'Excelente conhecimento'] },
+    { materia: 'Química', pergunta: 'Como está seu conhecimento em Química?', opcoes: ['Muito básico', 'Conheço o fundamental', 'Tenho boa base', 'Domino a matéria'] },
+  ],
+  medicina: [
+    { materia: 'Biologia', pergunta: 'Qual seu nível em Biologia?', opcoes: ['Iniciante', 'Básico', 'Intermediário', 'Avançado'] },
+    { materia: 'Química', pergunta: 'Como está seu conhecimento em Química?', opcoes: ['Tenho muita dificuldade', 'Entendo o básico', 'Domino bem', 'Excelente'] },
+    { materia: 'Física', pergunta: 'Qual seu nível em Física?', opcoes: ['Preciso começar', 'Básico', 'Intermediário', 'Avançado'] },
+    { materia: 'Matemática', pergunta: 'Como está seu nível em Matemática?', opcoes: ['Tenho dificuldade', 'Entendo o básico', 'Domino bem', 'Excelente'] },
+    { materia: 'Português', pergunta: 'Qual sua habilidade em interpretação de textos?', opcoes: ['Preciso melhorar', 'Consigo entender', 'Interpreto bem', 'Excelente'] },
   ],
 }
 
@@ -53,10 +80,9 @@ const PERGUNTAS_PADRAO = [
   { materia: 'Matemática', pergunta: 'Como você se sente em relação à Matemática?', opcoes: ['Tenho muita dificuldade', 'Entendo o básico', 'Domino bem', 'Excelente desempenho'] },
   { materia: 'Português', pergunta: 'Qual sua habilidade em Língua Portuguesa?', opcoes: ['Preciso melhorar muito', 'Conheço o básico', 'Tenho boa base', 'Excelente habilidade'] },
   { materia: 'Ciências', pergunta: 'Como está seu conhecimento em Ciências?', opcoes: ['Muito básico', 'Conheço o fundamental', 'Tenho boa base', 'Domino as disciplinas'] },
-  { materia: 'Humanidades', pergunta: 'Qual seu nível em História e Geografia?', opcoes: ['Preciso começar do zero', 'Conheço o básico', 'Tenho bom domínio', 'Excelente conhecimento'] },
+  { materia: 'História', pergunta: 'Qual seu nível em História e Geografia?', opcoes: ['Preciso começar do zero', 'Conheço o básico', 'Tenho bom domínio', 'Excelente conhecimento'] },
   { materia: 'Dedicação', pergunta: 'Quantas horas por dia você consegue estudar?', opcoes: ['Menos de 1 hora', '1 a 2 horas', '3 a 4 horas', 'Mais de 4 horas'] },
 ]
-
 interface StudyPlan {
   id: string
   vestibular: string
@@ -87,15 +113,57 @@ function gerarRoteiro(vestibular: string, respostas: number[], perguntas: {mater
   return { materiasFracas, materiasFortes, ordemEstudo: [...materiasFracas, ...materiasFortes.filter(m => !materiasFracas.includes(m))], score }
 }
 
+// Filter performance data to only include subjects relevant to the vestibular
+function filterPerformanceByVestibular(performance: PerformanceData[], vestibular: string): PerformanceData[] {
+  const allowedMaterias = MATERIAS_POR_VESTIBULAR[vestibular]
+  if (!allowedMaterias) return performance
+  return performance.filter(p => 
+    allowedMaterias.some(m => 
+      m.toLowerCase() === p.materia.toLowerCase() ||
+      m.toLowerCase().includes(p.materia.toLowerCase()) ||
+      p.materia.toLowerCase().includes(m.toLowerCase())
+    )
+  )
+}
+
+// Normalize subject names to match vestibular subjects
+function normalizeSubject(subject: string, vestibular: string): string | null {
+  const allowedMaterias = MATERIAS_POR_VESTIBULAR[vestibular]
+  if (!allowedMaterias) return subject
+  // Try exact match first
+  const exact = allowedMaterias.find(m => m.toLowerCase() === subject.toLowerCase())
+  if (exact) return exact
+  // Try partial match
+  const partial = allowedMaterias.find(m => 
+    m.toLowerCase().includes(subject.toLowerCase()) || 
+    subject.toLowerCase().includes(m.toLowerCase())
+  )
+  return partial || null
+}
+
 function mergeWithPerformance(
   materiasFracas: string[],
   materiasFortes: string[],
-  performance: PerformanceData[]
+  performance: PerformanceData[],
+  vestibular: string
 ): { materiasFracas: string[]; materiasFortes: string[]; ordemEstudo: string[] } {
-  const updatedFracas = materiasFracas.slice()
-  const updatedFortes = materiasFortes.slice()
+  const allowedMaterias = MATERIAS_POR_VESTIBULAR[vestibular]
+  
+  // Filter existing plan subjects to only include allowed ones
+  const filteredFracas = allowedMaterias ? materiasFracas.filter(m => 
+    allowedMaterias.some(a => a.toLowerCase() === m.toLowerCase() || a.toLowerCase().includes(m.toLowerCase()) || m.toLowerCase().includes(a.toLowerCase()))
+  ) : materiasFracas
+  const filteredFortes = allowedMaterias ? materiasFortes.filter(m => 
+    allowedMaterias.some(a => a.toLowerCase() === m.toLowerCase() || a.toLowerCase().includes(m.toLowerCase()) || m.toLowerCase().includes(a.toLowerCase()))
+  ) : materiasFortes
 
-  performance.forEach(({ materia, taxa }) => {
+  const updatedFracas = filteredFracas.slice()
+  const updatedFortes = filteredFortes.slice()
+
+  // Only process performance data for allowed subjects
+  const filteredPerf = filterPerformanceByVestibular(performance, vestibular)
+
+  filteredPerf.forEach(({ materia, taxa }) => {
     const norm = materia.trim()
     if (taxa < 50) {
       if (!updatedFracas.includes(norm)) updatedFracas.push(norm)
@@ -139,8 +207,6 @@ export default function PlanoEstudosPage() {
 
     const userId = session.user.id
 
-    // FIX: Use subject column directly from question_answers (no join needed for AI-generated questions)
-    // FIX: Removed simulado_results from per-subject performance (simulado_name is not a study subject)
     const [planResult, qaResult] = await Promise.all([
       supabase.from('study_plans').select('*').eq('user_id', userId).order('updated_at', { ascending: false }).limit(1).maybeSingle(),
       supabase.from('question_answers').select('subject, is_correct').eq('user_id', userId),
@@ -150,7 +216,6 @@ export default function PlanoEstudosPage() {
 
     if (qaResult.data) {
       qaResult.data.forEach((qa: any) => {
-        // FIX: use qa.subject directly
         const area = qa.subject
         if (area && area.trim() !== '' && area !== 'Teste') {
           if (!perfMap[area]) perfMap[area] = { total: 0, corretas: 0 }
@@ -172,7 +237,7 @@ export default function PlanoEstudosPage() {
       setLastUpdated(new Date(plan.updated_at).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }))
 
       if (perfData.length > 0) {
-        const merged = mergeWithPerformance(plan.materias_fracas, plan.materias_fortes, perfData)
+        const merged = mergeWithPerformance(plan.materias_fracas, plan.materias_fortes, perfData, plan.vestibular)
         const sortedMergedFracas = merged.materiasFracas.slice().sort()
         const sortedPlanFracas = plan.materias_fracas.slice().sort()
         const sortedMergedFortes = merged.materiasFortes.slice().sort()
@@ -182,7 +247,18 @@ export default function PlanoEstudosPage() {
         setHasPerformanceUpdates(changed)
         setResultado({ materiasFracas: merged.materiasFracas, materiasFortes: merged.materiasFortes, ordemEstudo: merged.ordemEstudo })
       } else {
-        setResultado({ materiasFracas: plan.materias_fracas, materiasFortes: plan.materias_fortes, ordemEstudo: plan.ordem_estudo })
+        // Even without performance data, filter existing plan subjects by vestibular
+        const allowed = MATERIAS_POR_VESTIBULAR[plan.vestibular]
+        if (allowed) {
+          const filteredFracas = plan.materias_fracas.filter(m => allowed.some(a => a.toLowerCase() === m.toLowerCase() || a.toLowerCase().includes(m.toLowerCase()) || m.toLowerCase().includes(a.toLowerCase())))
+          const filteredFortes = plan.materias_fortes.filter(m => allowed.some(a => a.toLowerCase() === m.toLowerCase() || a.toLowerCase().includes(m.toLowerCase()) || m.toLowerCase().includes(a.toLowerCase())))
+          const seen: string[] = []
+          const allM = filteredFracas.concat(filteredFortes).filter(m => { if (seen.includes(m)) return false; seen.push(m); return true; })
+          const ordemEstudo = filteredFracas.concat(allM.filter(m => !filteredFracas.includes(m)))
+          setResultado({ materiasFracas: filteredFracas, materiasFortes: filteredFortes, ordemEstudo })
+        } else {
+          setResultado({ materiasFracas: plan.materias_fracas, materiasFortes: plan.materias_fortes, ordemEstudo: plan.ordem_estudo })
+        }
       }
       setVestibularSelecionado(plan.vestibular)
       setEtapa('resultado')
@@ -255,6 +331,9 @@ export default function PlanoEstudosPage() {
   const perguntas = PERGUNTAS[vestibularSelecionado] || PERGUNTAS_PADRAO
   const vestibularLabel = VESTIBULARES.find(v => v.id === vestibularSelecionado)?.label || vestibularSelecionado
 
+  // Filter performance to relevant subjects for the selected vestibular
+  const filteredPerformance = filterPerformanceByVestibular(performance, vestibularSelecionado)
+
   const handleSelecionarVestibular = (id: string) => {
     setVestibularSelecionado(id); setEtapa('perguntas'); setPerguntaAtual(0); setRespostas([])
   }
@@ -277,7 +356,6 @@ export default function PlanoEstudosPage() {
   }
 
   const handleReiniciar = () => { setEtapa('selecao'); setVestibularSelecionado(''); setPerguntaAtual(0); setRespostas([]); setResultado(null) }
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50 to-purple-50">
       <Sidebar />
@@ -319,7 +397,7 @@ export default function PlanoEstudosPage() {
             </div>
             <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-6 text-white">
               <h3 className="font-bold text-lg mb-2">💡 Como funciona?</h3>
-              <p className="text-indigo-100 text-sm">Você responderá <strong>5 perguntas rápidas</strong> sobre seu nível em cada matéria. Com base nas suas respostas e no seu <strong>desempenho real</strong> nas questões e simulados, montaremos um <strong>roteiro personalizado</strong> que se atualiza automaticamente.</p>
+              <p className="text-indigo-100 text-sm">Você responderá <strong>5 perguntas rápidas</strong> sobre seu nível em cada matéria do vestibular escolhido. Com base nas suas respostas e no seu <strong>desempenho real</strong> nas questões, montaremos um <strong>roteiro personalizado</strong> que se atualiza automaticamente.</p>
             </div>
           </div>
         )}
@@ -385,7 +463,7 @@ export default function PlanoEstudosPage() {
                 <div className="mb-6 bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-center justify-between">
                   <div>
                     <p className="font-semibold text-amber-800 text-sm">📊 Atualização disponível!</p>
-                    <p className="text-amber-700 text-xs mt-0.5">Seu desempenho real nas questões e simulados sugere ajustes no seu plano.</p>
+                    <p className="text-amber-700 text-xs mt-0.5">Seu desempenho real nas questões sugere ajustes no seu plano.</p>
                   </div>
                   <button onClick={applyPerformanceUpdates} disabled={savingPlan}
                     className="bg-amber-500 hover:bg-amber-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors disabled:opacity-50 whitespace-nowrap ml-4">
@@ -394,11 +472,11 @@ export default function PlanoEstudosPage() {
                 </div>
               )}
 
-              {performance.length > 0 && (
+              {filteredPerformance.length > 0 && (
                 <div className="mb-6 bg-blue-50 border border-blue-100 rounded-xl p-4">
                   <h3 className="font-bold text-blue-800 text-sm mb-3">📈 Seu desempenho real nas questões</h3>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                    {performance.slice(0, 6).map((p, i) => (
+                    {filteredPerformance.slice(0, 6).map((p, i) => (
                       <div key={i} className="bg-white rounded-lg p-2.5 border border-blue-100">
                         <p className="text-xs text-gray-600 font-medium truncate">{p.materia}</p>
                         <div className="flex items-center gap-2 mt-1">
@@ -435,7 +513,7 @@ export default function PlanoEstudosPage() {
                 <div className="space-y-3">
                   {resultado.ordemEstudo.map((materia, i) => {
                     const isFraca = resultado.materiasFracas.includes(materia)
-                    const perf = performance.find(p => p.materia.toLowerCase().includes(materia.toLowerCase()) || materia.toLowerCase().includes(p.materia.toLowerCase()))
+                    const perf = filteredPerformance.find(p => p.materia.toLowerCase() === materia.toLowerCase() || p.materia.toLowerCase().includes(materia.toLowerCase()) || materia.toLowerCase().includes(p.materia.toLowerCase()))
                     return (
                       <div key={i} className={`flex items-center gap-4 p-4 rounded-xl border ${isFraca?'border-red-200 bg-red-50':'border-green-200 bg-green-50'}`}>
                         <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-white flex-shrink-0 ${isFraca?'bg-red-500':'bg-green-500'}`}>{i+1}</div>
