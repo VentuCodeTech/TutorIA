@@ -92,23 +92,30 @@ function mergeWithPerformance(
   materiasFortes: string[],
   performance: PerformanceData[]
 ): { materiasFracas: string[]; materiasFortes: string[]; ordemEstudo: string[] } {
-  const updatedFracas = new Set(materiasFracas)
-  const updatedFortes = new Set(materiasFortes)
+  const updatedFracas = materiasFracas.slice()
+  const updatedFortes = materiasFortes.slice()
 
   performance.forEach(({ materia, taxa }) => {
     const norm = materia.trim()
     if (taxa < 50) {
-      updatedFracas.add(norm)
-      updatedFortes.delete(norm)
+      if (!updatedFracas.includes(norm)) updatedFracas.push(norm)
+      const fi = updatedFortes.indexOf(norm)
+      if (fi >= 0) updatedFortes.splice(fi, 1)
     } else if (taxa >= 70) {
-      updatedFortes.add(norm)
-      updatedFracas.delete(norm)
+      if (!updatedFortes.includes(norm)) updatedFortes.push(norm)
+      const fi = updatedFracas.indexOf(norm)
+      if (fi >= 0) updatedFracas.splice(fi, 1)
     }
   })
 
-  const allMaterias = [...new Set([...updatedFracas, ...updatedFortes])]
-  const ordemEstudo = [...updatedFracas, ...allMaterias.filter(m => !updatedFracas.has(m))]
-  return { materiasFracas: [...updatedFracas], materiasFortes: [...updatedFortes], ordemEstudo }
+  const seen: string[] = []
+  const allMaterias = updatedFracas.concat(updatedFortes).filter(m => {
+    if (seen.includes(m)) return false
+    seen.push(m)
+    return true
+  })
+  const ordemEstudo = updatedFracas.concat(allMaterias.filter(m => !updatedFracas.includes(m)))
+  return { materiasFracas: updatedFracas, materiasFortes: updatedFortes, ordemEstudo }
 }
 
 export default function PlanoEstudosPage() {
@@ -175,8 +182,12 @@ export default function PlanoEstudosPage() {
 
       if (perfData.length > 0) {
         const merged = mergeWithPerformance(plan.materias_fracas, plan.materias_fortes, perfData)
-        const changed = JSON.stringify(merged.materiasFracas.sort()) !== JSON.stringify([...plan.materias_fracas].sort()) ||
-          JSON.stringify(merged.materiasFortes.sort()) !== JSON.stringify([...plan.materias_fortes].sort())
+        const sortedMergedFracas = merged.materiasFracas.slice().sort()
+        const sortedPlanFracas = plan.materias_fracas.slice().sort()
+        const sortedMergedFortes = merged.materiasFortes.slice().sort()
+        const sortedPlanFortes = plan.materias_fortes.slice().sort()
+        const changed = JSON.stringify(sortedMergedFracas) !== JSON.stringify(sortedPlanFracas) ||
+          JSON.stringify(sortedMergedFortes) !== JSON.stringify(sortedPlanFortes)
         setHasPerformanceUpdates(changed)
         setResultado({ materiasFracas: merged.materiasFracas, materiasFortes: merged.materiasFortes, ordemEstudo: merged.ordemEstudo })
       } else {
