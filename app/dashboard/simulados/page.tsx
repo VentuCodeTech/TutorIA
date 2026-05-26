@@ -24,7 +24,6 @@ interface SimuladoConfig {
   timeMinutes: number;
   difficulty: string;
   areas: string[];
-  // Ordem das areas conforme prova real (questoes distribuidas nessa ordem)
   areaOrder: { area: string; count: number }[];
   color: string;
   tag: string;
@@ -33,7 +32,6 @@ interface SimuladoConfig {
   institution: string;
 }
 
-// Configuracoes dos simulados com ordem real das materias nas provas
 const vestibularSimulados: SimuladoConfig[] = [
   {
     id: 'enem_completo',
@@ -43,8 +41,6 @@ const vestibularSimulados: SimuladoConfig[] = [
     timeMinutes: 330,
     difficulty: 'Médio',
     areas: ['Linguagens', 'Ciências Humanas', 'Redacao'],
-    // ENEM Dia 1: Linguagens (45q), Ciencias Humanas (45q) + Redacao
-    // Aqui simulamos com 45 questoes: 20 Linguagens, 20 Humanas, 5 Redacao
     areaOrder: [
       { area: 'Portugues', count: 13 },
       { area: 'Ingles', count: 5 },
@@ -67,8 +63,6 @@ const vestibularSimulados: SimuladoConfig[] = [
     timeMinutes: 330,
     difficulty: 'Médio',
     areas: ['Ciências da Natureza', 'Matemática'],
-    // ENEM Dia 2: Ciencias da Natureza (45q), Matematica (45q)
-    // Aqui: 15 Bio, 15 Fisica, 15 Quimica, mais Matematica
     areaOrder: [
       { area: 'Biologia', count: 10 },
       { area: 'Fisica', count: 10 },
@@ -89,7 +83,6 @@ const vestibularSimulados: SimuladoConfig[] = [
     timeMinutes: 360,
     difficulty: 'Difícil',
     areas: ['Português', 'Matemática', 'Ciências', 'Humanidades'],
-    // FUVEST fase 1: 90 questoes, ordem: Port, Lit, Historia, Geo, Ciencias, Mat
     areaOrder: [
       { area: 'Portugues', count: 12 },
       { area: 'Historia', count: 8 },
@@ -113,7 +106,6 @@ const vestibularSimulados: SimuladoConfig[] = [
     timeMinutes: 300,
     difficulty: 'Difícil',
     areas: ['Direito Constitucional', 'Direito Civil', 'Direito Penal', 'Direito Processual'],
-    // OAB 1a fase: 80 questoes objetivas, distribuicao por materia
     areaOrder: [
       { area: 'Direito Constitucional', count: 12 },
       { area: 'Direito Civil', count: 10 },
@@ -135,7 +127,6 @@ const vestibularSimulados: SimuladoConfig[] = [
     timeMinutes: 300,
     difficulty: 'Médio',
     areas: ['Língua Portuguesa', 'Matemática', 'Raciocínio Lógico', 'Atualidades'],
-    // CESPE/CEBRASPE: Por. - Mat - Informatica - Conhecimentos Especificos
     areaOrder: [
       { area: 'Portugues', count: 15 },
       { area: 'Matematica', count: 15 },
@@ -264,7 +255,6 @@ export default function SimuladosPage() {
   const [vestibularPref, setVestibularPref] = useState<string | null>(null);
   const [filteredSimulados, setFilteredSimulados] = useState<SimuladoConfig[]>(vestibularSimulados);
   const [filterActive, setFilterActive] = useState(false);
-  const [militaryFilterActive, setMilitaryFilterActive] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const supabase = createClient();
 
@@ -303,16 +293,6 @@ export default function SimuladosPage() {
     }
   };
 
-  const toggleMilitaryFilter = () => {
-    if (militaryFilterActive) {
-      setFilteredSimulados(vestibularSimulados); setMilitaryFilterActive(false); setFilterActive(false);
-    } else {
-      const mil = vestibularSimulados.filter(s => s.vestibular === 'Carreiras Militares');
-      setFilteredSimulados(mil); setMilitaryFilterActive(true); setFilterActive(true);
-    }
-  };
-
-  // Gera questoes em ordem das materias conforme a prova real
   const startSimulado = async (sim: SimuladoConfig) => {
     setGeneratingQuestions(true);
     setActiveSimulado(sim);
@@ -326,16 +306,14 @@ export default function SimuladosPage() {
     const questions: Question[] = [];
     const usedTexts = new Set<string>();
 
-    // Construir a sequencia de areas conforme a ordem real da prova
     const areaSequence: string[] = [];
-    const order = sim.areaOrder && sim.areaOrder.length > 0 ? sim.areaOrder : sim.areas.map((a, i) => ({ area: a, count: Math.ceil(sim.questions / sim.areas.length) }));
-    
+    const order = sim.areaOrder && sim.areaOrder.length > 0 ? sim.areaOrder : sim.areas.map((a) => ({ area: a, count: Math.ceil(sim.questions / sim.areas.length) }));
+
     for (const entry of order) {
       for (let j = 0; j < entry.count && areaSequence.length < sim.questions; j++) {
         areaSequence.push(entry.area);
       }
     }
-    // Complementar com a primeira area se faltar
     while (areaSequence.length < sim.questions) {
       areaSequence.push(order[0]?.area || sim.areas[0]);
     }
@@ -535,16 +513,14 @@ export default function SimuladosPage() {
           <div>
             <h1 className="text-3xl font-bold text-gray-800">🎯 Simulados</h1>
             <p className="text-gray-500 mt-1">Provas completas com questões na ordem real de cada vestibular e concurso</p>
-            {vestibularPref && filterActive && !militaryFilterActive && (
+            {vestibularPref && filterActive && (
               <p className="text-indigo-600 text-sm mt-1">📌 Filtrando por: <strong>{vestibularPref}</strong><button onClick={() => { setFilteredSimulados(vestibularSimulados); setFilterActive(false); }} className="ml-2 text-gray-400 hover:text-gray-600 text-xs underline">Ver todos</button></p>
             )}
-            {militaryFilterActive && <p className="text-slate-600 text-sm mt-1">⭐ Filtrando: <strong>Carreiras Militares</strong><button onClick={() => { setFilteredSimulados(vestibularSimulados); setMilitaryFilterActive(false); setFilterActive(false); }} className="ml-2 text-gray-400 text-xs underline">Ver todos</button></p>}
           </div>
           <div className="flex gap-2 flex-wrap">
-            {!filterActive && vestibularPref && !vestibularPref.toLowerCase().includes('militar') && (
+            {!filterActive && vestibularPref && (
               <button onClick={() => { const f = vestibularSimulados.filter(s => s.vestibular.toLowerCase().includes(vestibularPref.toLowerCase())); if(f.length>0){setFilteredSimulados(f);setFilterActive(true);} }} className="text-sm bg-indigo-50 text-indigo-600 border border-indigo-200 px-4 py-2 rounded-xl hover:bg-indigo-100 transition">🎯 Filtrar por {vestibularPref}</button>
             )}
-            <button onClick={toggleMilitaryFilter} className={`text-sm border px-4 py-2 rounded-xl transition ${militaryFilterActive ? 'bg-slate-700 text-white border-slate-700' : 'bg-slate-50 text-slate-700 border-slate-300 hover:bg-slate-100'}`}>⭐ {militaryFilterActive ? 'Ver todos' : 'Carreiras Militares'}</button>
           </div>
         </div>
 
@@ -587,4 +563,4 @@ export default function SimuladosPage() {
       </main>
     </div>
   );
-        }
+      }
