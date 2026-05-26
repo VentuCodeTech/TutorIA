@@ -52,6 +52,7 @@ export default function Dashboard() {
       .from('question_answers')
       .select('is_correct, created_at')
       .eq('user_id', uid)
+      .order('created_at', { ascending: false })
 
     if (allAnswers && allAnswers.length > 0) {
       const todayAnswers = allAnswers.filter(a =>
@@ -59,8 +60,31 @@ export default function Dashboard() {
       )
       const correct = allAnswers.filter(a => a.is_correct).length
       const accuracy = Math.round((correct / allAnswers.length) * 100)
+
+      // FIX: Calculate streak days (consecutive days with at least 1 question answered)
+      const seen: string[] = []
+      const uniqueDays = allAnswers
+        .filter(a => a.created_at)
+        .map(a => a.created_at.split('T')[0])
+        .filter(d => { if (seen.includes(d)) return false; seen.push(d); return true; })
+        .sort()
+        .reverse()
+      let streak = 0
+      const nowDate = new Date()
+      for (let i = 0; i < uniqueDays.length; i++) {
+        const expectedDate = new Date(nowDate)
+        expectedDate.setDate(nowDate.getDate() - i)
+        const expectedStr = expectedDate.toISOString().split('T')[0]
+        if (uniqueDays[i] === expectedStr) {
+          streak++
+        } else {
+          break
+        }
+      }
+
       setStats(prev => ({
         ...prev,
+        streakDays: streak,
         questionsToday: todayAnswers.length,
         accuracy
       }))
