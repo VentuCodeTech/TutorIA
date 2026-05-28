@@ -1,13 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from '@supabase/supabase-js';
 
 export async function POST(req: NextRequest) {
   try {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    // Get token from Authorization header
+    const authHeader = req.headers.get('authorization') || '';
+    const token = authHeader.replace('Bearer ', '').trim();
 
-    if (!user) {
+    if (!token) {
+      return NextResponse.json({ error: 'Token nao fornecido' }, { status: 401 });
+    }
+
+    // Create Supabase client authenticated with the user's JWT
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        global: {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      }
+    );
+
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+
+    if (authError || !user) {
       return NextResponse.json({ error: 'Nao autenticado' }, { status: 401 });
     }
 
@@ -31,7 +51,6 @@ export async function POST(req: NextRequest) {
       });
       customerId = customer.id;
 
-      // Save to profiles
       await supabase
         .from('profiles')
         .upsert({ id: user.id, stripe_customer_id: customerId });
