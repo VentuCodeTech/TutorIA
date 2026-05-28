@@ -18,18 +18,18 @@ interface Question {
 import { useUserPlan } from '@/lib/useUserPlan'
 
 // Map accented area names from URL params to dropdown option values
-const ÁREA_URL_MAP: Record<string, string> = {
-  'MatemÃ¡tica': 'Matematica',
-  'PortuguÃªs': 'Portugues',
-  'HistÃ³ria': 'Historia',
-  'FÃ­sica': 'Fisica',
-  'QuÃ­mica': 'Quimica',
+const AREA_URL_MAP: Record<string, string> = {
+  'Matemática': 'Matematica',
+  'Português': 'Portugues',
+  'História': 'Historia',
+  'Física': 'Fisica',
+  'Química': 'Quimica',
   'Biologia': 'Biologia',
-  'RedaÃ§Ã£o': 'Redacao',
-  'CiÃªncias': 'Ciencias',
-  'InglÃªs': 'Ingles',
+  'Redação': 'Redacao',
+  'Ciências': 'Ciencias',
+  'Inglês': 'Ingles',
   'Espanhol': 'Espanhol',
-  'FinanÃ§as Pessoais': 'Financas Pessoais',
+  'Finanças Pessoais': 'Financas Pessoais',
   'Investimentos': 'Investimentos',
   'Geografia': 'Geografia',
   'CPA-20': 'CPA-20',
@@ -61,7 +61,7 @@ function QuestoesContent() {
       if (area) {
         const decoded = decodeURIComponent(area)
         // Normalize accented names to match dropdown option values
-        const normalized = ÁREA_URL_MAP[decoded] || decoded
+        const normalized = AREA_URL_MAP[decoded] || decoded
         setSelectedArea(normalized)
       }
     }
@@ -145,7 +145,7 @@ function QuestoesContent() {
       <Sidebar />
       <main className="ml-64 p-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-800">Questoes</h1>
+          <h1 className="text-3xl font-bold text-gray-800">Questões</h1>
           <p className="text-gray-500 mt-1">Pratique com questões adaptativas geradas por IA</p>
         </div>
 
@@ -206,9 +206,9 @@ function QuestoesContent() {
           <div className="lg:col-span-3">
             {!currentQuestion && !loading ? (
               <div className="bg-white rounded-2xl p-12 shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center min-h-96">
-                <div className="text-6xl mb-4">ð</div>
+                <div className="text-6xl mb-4">📋</div>
                 <h3 className="text-xl font-bold text-gray-800 mb-2">Pronto para praticar?</h3>
-                <p className="text-gray-500 mb-6">Selecione os filtros e clique em Gerar Questão para começar.</p>
+                <p className="text-gray-500 mb-6">Selecione os filtros e clique em Gerar Questão para comecar.</p>
                 <button
                   onClick={() => generateQuestion()}
                   className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-xl font-medium hover:from-indigo-700 hover:to-purple-700 transition-all"
@@ -219,7 +219,7 @@ function QuestoesContent() {
             ) : loading ? (
               <div className="bg-white rounded-2xl p-12 shadow-sm border border-gray-100 flex flex-col items-center justify-center min-h-96">
                 <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-4"></div>
-                <p className="text-gray-500">Gerando questão...</p>
+                <p className="text-gray-500">Gerando questao...</p>
               </div>
             ) : currentQuestion && (
               <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
