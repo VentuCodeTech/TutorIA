@@ -411,7 +411,7 @@ export default function Home() {
             </div>
           </div>
           <div className="pt-8 text-center text-sm" style={{ borderTop: '1px solid rgba(139,92,246,0.15)', color: '#334155' }}>
-            <p>© 2026 Tirei10. Todos os direitos reservados. Desenvolvido com ❤️ por VentuCodeTech</p>
+            <p>© 2026 Tirei10. Todos os direitos reservados</p>
           </div>
         </div>
       </footer>
