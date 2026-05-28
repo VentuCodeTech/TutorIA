@@ -301,6 +301,7 @@ Retorne APENAS JSON valido sem markdown:
     const randomQ = filtered[Math.floor(Math.random() * filtered.length)];
     const question = {
       ...randomQ,
+      subject: area !== 'Todas' ? area : randomQ.subject,
       id: `bank_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
     };
 
