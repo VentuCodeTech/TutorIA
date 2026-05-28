@@ -282,14 +282,17 @@ Retorne APENAS JSON valido sem markdown:
     }
 
     // Fallback: local question bank
-    let filtered = questionBank.filter(q => !excluded.includes(q.text));
+    // First, get area-specific questions from full bank (maintaining area filter always)
+    let areaBank = area && area !== 'Todas'
+      ? questionBank.filter(q => matchesArea(q.subject, area))
+      : [...questionBank];
+    
+    // Filter by excluded texts (deduplication)
+    let filtered = areaBank.filter(q => !excluded.includes(q.text));
+    // If all area questions are excluded, reset and use all area questions (repeat is ok)
+    if (filtered.length === 0) filtered = [...areaBank];
+    // If no area questions at all, use whole bank
     if (filtered.length === 0) filtered = [...questionBank];
-
-    // Filter by area
-    if (area && area !== 'Todas') {
-      const byArea = filtered.filter(q => matchesArea(q.subject, area));
-      if (byArea.length > 0) filtered = byArea;
-    }
 
     // Filter by difficulty
     if (difficulty && difficulty !== 'Todas') {
