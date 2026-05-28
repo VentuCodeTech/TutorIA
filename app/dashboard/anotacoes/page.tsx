@@ -35,45 +35,63 @@ export default function AnotacoesPage() {
 
   const loadNotes = async () => {
     setLoading(true);
-    const { data: { user } } = await supabase.auth.getUser();
-    if (user) {
-      const stored = localStorage.getItem(`Tirei10_notes_${user.id}`);
-      if (stored) {
-        setNotes(JSON.parse(stored));
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data, error } = await supabase
+          .from('annotations')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false });
+        if (!error && data) {
+          setNotes(data.map((row: any) => ({
+            id: row.id,
+            title: row.title,
+            content: row.content,
+            subject: row.subject || 'Geral',
+            color: row.color || 'bg-yellow-100',
+            created_at: row.created_at,
+            updated_at: row.updated_at,
+          })));
+        }
       }
-    }
+    } catch (e) { console.error('loadNotes error:', e); }
     setLoading(false);
   };
 
-  const saveNotes = async (newNotes: Note[]) => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (user) {
-      localStorage.setItem(`Tirei10_notes_${user.id}`, JSON.stringify(newNotes));
-    }
+  const saveNotes = async (_newNotes: Note[]) => {
+    // Persistence handled by Supabase CRUD in handleSave/handleDelete
   };
 
   const handleSave = async () => {
     if (!title.trim() || !content.trim()) return;
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
     let updated: Note[];
     if (editingId) {
+      await supabase.from('annotations').update({
+        title, content, subject, color, updated_at: new Date().toISOString()
+      }).eq('id', editingId).eq('user_id', user.id);
       updated = notes.map(n => n.id === editingId
         ? { ...n, title, content, subject, color, updated_at: new Date().toISOString() }
         : n
       );
     } else {
+      const { data: inserted } = await supabase.from('annotations').insert({
+        user_id: user.id,
+        title, content, subject, color,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      }).select().single();
       const newNote: Note = {
-        id: Date.now().toString(),
-        title,
-        content,
-        subject,
-        color,
+        id: inserted?.id || Date.now().toString(),
+        title, content, subject, color,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       };
       updated = [newNote, ...notes];
     }
     setNotes(updated);
-    await saveNotes(updated);
     resetForm();
   };
 
@@ -87,9 +105,12 @@ export default function AnotacoesPage() {
   };
 
   const handleDelete = async (id: string) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      await supabase.from('annotations').delete().eq('id', id).eq('user_id', user.id);
+    }
     const updated = notes.filter(n => n.id !== id);
     setNotes(updated);
-    await saveNotes(updated);
   };
 
   const resetForm = () => {
