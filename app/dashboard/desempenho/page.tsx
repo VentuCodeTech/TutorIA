@@ -133,19 +133,19 @@ export default function DesempenhoPage() {
                         <Sidebar />
                         <main className="ml-64 p-8">
                                 <div className="mb-8">
-                                          <h1 className="text-3xl font-bold text-gray-800">Analise de Desempenho</h1>
-                                          <p className="text-gray-500 mt-1">Acompanhe sua evolucao e identifique pontos de melhoria</p>
+                                          <h1 className="text-3xl font-bold text-gray-800">Análise de Desempenho</h1>
+                                          <p className="text-gray-500 mt-1">Acompanhe sua evolução e identifique pontos de melhoria</p>
                                 </div>
                         
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                                           <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
                                                       <div className="text-3xl font-bold text-indigo-600">{overallRate}%</div>
                                                       <div className="text-sm text-gray-600 mt-1">Taxa de Acerto Geral</div>
-                                                      <div className="text-xs text-gray-400 mt-1">{totalAnswered} questoes respondidas</div>
+                                                      <div className="text-xs text-gray-400 mt-1">{totalAnswered} questões respondidas</div>
                                           </div>
                                           <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
                                                       <div className="text-3xl font-bold text-green-600">{totalCorrect}</div>
-                                                      <div className="text-sm text-gray-600 mt-1">Questoes Corretas</div>
+                                                      <div className="text-sm text-gray-600 mt-1">Questões Corretas</div>
                                                       <div className="text-xs text-gray-400 mt-1">de {totalAnswered} tentadas</div>
                                           </div>
                                           <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
@@ -156,7 +156,7 @@ export default function DesempenhoPage() {
                                                       </div>
                                           </div>
                                           <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-                                                      <div className="text-2xl font-bold text-red-400">Atencao</div>
+                                                      <div className="text-2xl font-bold text-red-400">Atenção</div>
                                                       <div className="text-sm font-medium text-gray-900 mt-1">{worst && worst !== best ? worst.subject : 'Continue!'}</div>
                                                       <div className="text-xs text-red-600 mt-1">
                                                             {worst && worst !== best && worst.total > 0 ? Math.round((worst.correct / worst.total) * 100) + '% acerto' : 'Bom trabalho!'}
@@ -176,7 +176,7 @@ export default function DesempenhoPage() {
                                 ) : (
                                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                                               <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                                                            <h3 className="font-semibold text-gray-900 mb-4">Desempenho por Materia</h3>
+                                                            <h3 className="font-semibold text-gray-900 mb-4">Desempenho por Matéria</h3>
                                                             <div className="space-y-3">
                                                                   {subjects.map(s => {
                                                           const pct = s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0;
@@ -201,7 +201,7 @@ export default function DesempenhoPage() {
                                   
                                               <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                                                             <div className="flex justify-between items-center mb-4">
-                                                                            <h3 className="font-semibold text-gray-900">Questoes por Dia</h3>
+                                                                            <h3 className="font-semibold text-gray-900">Questões por Dia</h3>
                                                                             <select value={period} onChange={e => setPeriod(e.target.value)} className="text-xs border border-gray-200 rounded-lg px-2 py-1 focus:outline-none">
                                                                                               <option value="semana">Esta semana</option>
                                                                                               <option value="mes">Este mes</option>
@@ -244,7 +244,7 @@ export default function DesempenhoPage() {
                                                         </div>
                                                             )}
                                                             <div className="bg-yellow-50 rounded-xl p-4 border border-yellow-100">
-                                                                            <div className="text-yellow-600 font-semibold text-sm mb-1">Atencao</div>
+                                                                            <div className="text-yellow-600 font-semibold text-sm mb-1">Atenção</div>
                                                                             <p className="text-sm text-gray-700 font-medium">Consistencia Diaria</p>
                                                                             <p className="text-xs text-gray-500 mt-1">Tente responder pelo menos 20 questoes por dia para manter o ritmo.</p>
                                                             </div>
