@@ -4,10 +4,70 @@ import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
 
+const APP_URL = 'https://www.tirei10.com.br';
+
 export const metadata: Metadata = {
-  title: 'Tirei10 - Plataforma de Estudos com IA',
-  description: 'Prepare-se para ENEM, OAB, Concursos Públicos e CPA-20 com IA Adaptativa powered by Gemini AI',
-  keywords: 'ENEM, OAB, Concursos, CPA-20, Estudo, IA, Inteligência Artificial, Tirei10',
+  metadataBase: new URL(APP_URL),
+  title: {
+    default: 'Tirei10 - Plataforma de Estudos com IA | ENEM, OAB, Concursos e CPA-20',
+    template: '%s | Tirei10',
+  },
+  description: 'Prepare-se para ENEM, OAB, Concursos Públicos e CPA-20 com IA Adaptativa. Questões personalizadas, simulados cronometrados, plano de estudos e assistente IA 24/7. Comece grátis!',
+  keywords: [
+    'ENEM', 'OAB', 'Concursos Públicos', 'CPA-20', 'Vestibular', 'FUVEST', 'UNICAMP',
+    'Plataforma de Estudos', 'IA Educacional', 'Inteligência Artificial', 'Tirei10',
+    'Preparatório ENEM', 'Questões ENEM', 'Simulado ENEM', 'Gabarito', 'Aprovação',
+    'Estudo Online', 'Revisão', 'Plano de Estudos', 'Assistente de Estudos',
+    'Gemini AI', 'Redação ENEM', 'Matemática', 'Português', 'Ciências',
+    'Concurso Federal', 'Exame OAB', 'CPA20', 'Mercado Financeiro'
+  ],
+  authors: [{ name: 'Tirei10', url: APP_URL }],
+  creator: 'Tirei10',
+  publisher: 'Tirei10',
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'pt_BR',
+    url: APP_URL,
+    siteName: 'Tirei10',
+    title: 'Tirei10 - Plataforma de Estudos com IA | ENEM, OAB, Concursos e CPA-20',
+    description: 'Prepare-se para ENEM, OAB, Concursos Públicos e CPA-20 com IA Adaptativa. Questões personalizadas, simulados cronometrados e assistente IA 24/7.',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'Tirei10 - Plataforma de Estudos com IA',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Tirei10 - Estude com IA e tire 10!',
+    description: 'Prepare-se para ENEM, OAB, Concursos Públicos e CPA-20 com IA Adaptativa. Comece grátis!',
+    images: ['/og-image.png'],
+    creator: '@tirei10',
+  },
+  alternates: {
+    canonical: APP_URL,
+    languages: {
+      'pt-BR': APP_URL,
+    },
+  },
+  verification: {
+    google: 'tirei10-google-site-verification',
+  },
+  category: 'education',
   icons: {
     icon: [
       { url: '/tirei10-icon.png', type: 'image/png', sizes: '512x512' },
@@ -33,6 +93,31 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/tirei10-icon.png" />
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#6B21A8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "EducationalOrganization",
+              "name": "Tirei10",
+              "url": APP_URL,
+              "logo": `${APP_URL}/tirei10-icon.png`,
+              "description": "Plataforma de estudos com IA adaptativa para ENEM, OAB, Concursos Públicos e CPA-20.",
+              "sameAs": [
+                "https://www.instagram.com/tirei10",
+              ],
+              "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "BRL",
+                "description": "Plano gratuito disponível"
+              }
+            })
+          }}
+        />
       </head>
       <body className={inter.className}>{children}</body>
     </html>
