@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 
@@ -21,10 +21,11 @@ const questions = [
     emoji: '🎯',
     options: [
       { label: 'Melhorar notas nas provas', value: 'melhorar_notas', emoji: '📈' },
-      { label: 'Passar em uma universidade', value: 'universidade', emoji: '🎓' },
+      { label: 'Passar em uma universidade (ENEM/Vestibular)', value: 'universidade', emoji: '🎓' },
       { label: 'Passar em um concurso público', value: 'concurso', emoji: '🏆' },
+      { label: 'Aprovação na OAB', value: 'oab', emoji: '⚖️' },
+      { label: 'Certificação CPA-20', value: 'cpa20', emoji: '📊' },
       { label: 'Ampliar meus conhecimentos', value: 'conhecimentos', emoji: '📚' },
-      { label: 'Avaliar a plataforma', value: 'avaliar', emoji: '🔍' },
     ],
   },
   {
@@ -91,32 +92,67 @@ function generateProfile(answers: Record<number, string>) {
   const role = answers[1];
   const goal = answers[2];
   const time = answers[5];
+  const level = answers[6];
+
   let profileName = 'Estudante Dedicado';
   let profileDescription = '';
   let tips: string[] = [];
+  let studyAreas: string[] = [];
+  let focusExam = '';
+
   if (goal === 'universidade') {
     profileName = 'Aspirante Universitário';
     profileDescription = 'Você está focado em ingressar no ensino superior. Nossa IA criará simulados personalizados para ENEM e vestibulares.';
-    tips = ['Pratique questões do ENEM diariamente', 'Use os simulados cronometrados', 'Acompanhe seu progresso no dashboard'];
+    tips = ['Pratique questões do ENEM diariamente', 'Use os simulados cronometrados', 'Acompanhe seu progresso no dashboard', 'Foque em Redação, Matemática e Linguagens'];
+    studyAreas = ['Matemática', 'Português', 'Redação', 'História', 'Geografia', 'Ciências', 'Física', 'Química', 'Biologia', 'Inglês'];
+    focusExam = 'ENEM/Vestibular';
   } else if (goal === 'concurso') {
     profileName = 'Concurseiro Estratégico';
     profileDescription = 'Você mira em concursos públicos. Vamos focar em matérias específicas para bancas e questões comentadas.';
-    tips = ['Resolva questões por banca examinadora', 'Use o plano de estudos personalizado', 'Revise seus pontos fracos com a IA'];
-  } else if (goal === 'conhecimentos' || goal === 'avaliar') {
+    tips = ['Resolva questões por banca examinadora', 'Use o plano de estudos personalizado', 'Revise seus pontos fracos com a IA', 'Foque em Português e Direito Constitucional'];
+    studyAreas = ['Português', 'Matemática', 'Direito Constitucional', 'Direito Administrativo', 'Raciocínio Lógico'];
+    focusExam = 'Concurso Público';
+  } else if (goal === 'oab') {
+    profileName = 'Futuro Advogado';
+    profileDescription = 'Você está se preparando para a OAB. Vamos focar nas disciplinas jurídicas essenciais para sua aprovação.';
+    tips = ['Foque em Direito Constitucional e Civil', 'Pratique questões da OAB por área', 'Use o assistente IA para tirar dúvidas jurídicas', 'Revise Ética Profissional regularmente'];
+    studyAreas = ['Direito Constitucional', 'Direito Civil', 'Direito Penal', 'Direito Trabalhista', 'Direito Processual'];
+    focusExam = 'OAB';
+  } else if (goal === 'cpa20') {
+    profileName = 'Especialista em Finanças';
+    profileDescription = 'Você está se preparando para a CPA-20. Vamos focar em finanças, investimentos e regulação do mercado financeiro.';
+    tips = ['Estude regulação do mercado financeiro', 'Pratique questões de produtos de investimento', 'Use simulados específicos para CPA-20', 'Revise análise de risco regularmente'];
+    studyAreas = ['CPA-20', 'Finanças Pessoais', 'Investimentos', 'Matemática'];
+    focusExam = 'CPA-20';
+  } else if (goal === 'conhecimentos') {
     profileName = 'Aprendiz Curioso';
     profileDescription = 'Você quer ampliar seus conhecimentos. A plataforma vai adaptar o conteúdo ao seu ritmo e interesses.';
-    tips = ['Explore diferentes áreas do conhecimento', 'Use o assistente IA para tirar dúvidas', 'Participe da comunidade de estudantes'];
+    tips = ['Explore diferentes áreas do conhecimento', 'Use o assistente IA para tirar dúvidas', 'Participe da comunidade de estudantes', 'Defina metas semanais de aprendizado'];
+    studyAreas = ['Matemática', 'Português', 'História', 'Ciências', 'Inglês'];
+    focusExam = 'Aprendizado Geral';
+  } else if (goal === 'melhorar_notas') {
+    profileName = 'Estudante em Evolução';
+    profileDescription = 'Você quer melhorar suas notas. Nossa IA vai identificar seus pontos fracos e criar um plano de estudos personalizado.';
+    tips = ['Identifique suas matérias mais difíceis', 'Use questões adaptativas por nível', 'Acompanhe sua evolução no dashboard', 'Pratique diariamente pelo menos 30 minutos'];
+    studyAreas = ['Matemática', 'Português', 'Ciências', 'História', 'Redação'];
+    focusExam = 'Melhora Escolar';
   } else if (role === 'professor' || role === 'diretor' || role === 'coordenador') {
     profileName = 'Educador Inovador';
     profileDescription = 'Como profissional da educação, você pode usar a plataforma para acompanhar tendências e metodologias de ensino.';
-    tips = ['Avalie o desempenho dos conteúdos', 'Use a plataforma como referência pedagógica', 'Explore os recursos de análise de desempenho'];
+    tips = ['Avalie o desempenho dos conteúdos', 'Use a plataforma como referência pedagógica', 'Explore os recursos de análise de desempenho', 'Utilize o banco de questões para criar avaliações'];
+    studyAreas = ['Pedagogia', 'Metodologias de Ensino', 'Avaliação Educacional'];
+    focusExam = 'Educação';
   } else {
     profileDescription = 'Perfil configurado com sucesso. A IA vai personalizar sua experiência de estudos com base nas suas respostas.';
     tips = ['Acesse as questões adaptativas diariamente', 'Monitore seu progresso no dashboard', 'Use o assistente IA para tirar dúvidas'];
+    studyAreas = ['Matemática', 'Português', 'Ciências'];
+    focusExam = 'Geral';
   }
+
   if (time === '45min') tips.push('Sessões curtas e focadas são ideais para você');
   else if (time === '1_2h' || time === '2_4h') tips.push('Você tem disciplina! Alterne entre matérias para manter o foco');
-  return { profileName, profileDescription, tips };
+
+  return { profileName, profileDescription, tips, studyAreas, focusExam, level: level || 'medio' };
 }
 
 export default function OnboardingPage() {
@@ -126,9 +162,39 @@ export default function OnboardingPage() {
   const [showProfile, setShowProfile] = useState(false);
   const [saving, setSaving] = useState(false);
   const [animating, setAnimating] = useState(false);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
   const supabase = createClient();
   const currentQuestion = questions[currentStep];
+
+  // KEY FIX: Check if onboarding already completed — redirect to dashboard on subsequent logins
+  useEffect(() => {
+    const checkOnboarding = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+          router.replace('/login');
+          return;
+        }
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('onboarding_completed')
+          .eq('id', user.id)
+          .single();
+
+        if (profile?.onboarding_completed === true) {
+          // Onboarding already done — go directly to dashboard
+          router.replace('/dashboard');
+          return;
+        }
+      } catch (err) {
+        console.error('Error checking onboarding:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    checkOnboarding();
+  }, []);
 
   const handleNext = async () => {
     if (!selectedOption) return;
@@ -151,6 +217,9 @@ export default function OnboardingPage() {
             onboarding_completed: true,
             onboarding_answers: newAnswers,
             student_profile: profile.profileName,
+            study_areas: profile.studyAreas,
+            focus_exam: profile.focusExam,
+            study_level: profile.level,
             updated_at: new Date().toISOString(),
           }, { onConflict: 'id' });
         }
@@ -162,6 +231,17 @@ export default function OnboardingPage() {
 
   const profile = generateProfile(answers);
 
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #f5f3ff 0%, #ede9fe 50%, #ddd6fe 100%)' }}>
+        <div className="text-center">
+          <div className="text-4xl mb-4 animate-spin">⏳</div>
+          <p className="text-purple-700 font-semibold">Carregando...</p>
+        </div>
+      </div>
+    );
+  }
+
   if (showProfile) {
     return (
       <div className="min-h-screen flex items-center justify-center px-4 py-8" style={{ background: 'linear-gradient(135deg, #f5f3ff 0%, #ede9fe 50%, #ddd6fe 100%)' }}>
@@ -169,10 +249,29 @@ export default function OnboardingPage() {
           <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-12 text-center" style={{ border: '2px solid #ede9fe' }}>
             <div className="text-6xl mb-4">🎉</div>
             <h1 className="text-3xl font-extrabold mb-2" style={{ color: '#5b21b6' }}>Perfil Gerado com Sucesso!</h1>
-            <div className="inline-flex items-center gap-2 px-6 py-2 rounded-full mb-6 font-bold text-lg" style={{ background: 'linear-gradient(135deg, #6d28d9, #9333ea)', color: 'white' }}>
+            <div className="inline-flex items-center gap-2 px-6 py-2 rounded-full mb-4 font-bold text-lg" style={{ background: 'linear-gradient(135deg, #6d28d9, #9333ea)', color: 'white' }}>
               🏅 {profile.profileName}
             </div>
-            <p className="text-gray-600 mb-8 leading-relaxed text-lg">{profile.profileDescription}</p>
+            {profile.focusExam && (
+              <div className="mb-4">
+                <span className="inline-flex items-center gap-1 px-4 py-1 rounded-full text-sm font-semibold" style={{ background: '#ede9fe', color: '#6d28d9' }}>
+                  🎯 Foco: {profile.focusExam}
+                </span>
+              </div>
+            )}
+            <p className="text-gray-600 mb-6 leading-relaxed text-lg">{profile.profileDescription}</p>
+            {profile.studyAreas && profile.studyAreas.length > 0 && (
+              <div className="rounded-2xl p-4 mb-6 text-left" style={{ background: '#f0fdf4', border: '1px solid #bbf7d0' }}>
+                <h3 className="font-bold mb-2 text-sm" style={{ color: '#166534' }}>📚 Suas Áreas de Estudo Personalizadas:</h3>
+                <div className="flex flex-wrap gap-2">
+                  {profile.studyAreas.map((area, i) => (
+                    <span key={i} className="px-3 py-1 rounded-full text-xs font-semibold" style={{ background: '#dcfce7', color: '#166534' }}>
+                      {area}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
             <div className="rounded-2xl p-6 mb-8 text-left" style={{ background: '#f5f3ff', border: '1px solid #ddd6fe' }}>
               <h3 className="font-bold mb-4 text-lg" style={{ color: '#5b21b6' }}>💡 Suas Dicas Personalizadas:</h3>
               <ul className="space-y-3">
