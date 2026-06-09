@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, Suspense } from 'react';
 import { createClient } from '@/lib/supabase/client';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
 function LoginForm() {
@@ -15,27 +15,11 @@ function LoginForm() {
   const [successMessage, setSuccessMessage] = useState('');
 
   const searchParams = useSearchParams();
-  const router = useRouter();
   const supabase = createClient();
 
-  useEffect(() => {
-    const errorParam = searchParams.get('error');
-    if (errorParam === 'auth_callback_failed') {
-      // Check if hash has access_token (implicit flow success)
-      const hash = window.location.hash;
-      if (hash && hash.includes('access_token=')) {
-        // Token is in hash - let Supabase client handle it
-        supabase.auth.getSession().then(({ data: { session } }) => {
-          if (session) {
-            router.replace('/dashboard');
-          }
-        });
-        return;
-      }
-      setError('Falha na autenticação. Tente novamente.');
-    }
-    // Note: redirect for logged-in users is handled by middleware
-  }, [searchParams]);
+  // Show error from URL params (e.g., auth_callback_failed)
+  const urlError = searchParams.get('error');
+  const displayError = error || (urlError === 'auth_callback_failed' ? 'Falha na autenticação. Tente novamente.' : urlError === 'no_session' ? 'Sessão não encontrada. Tente fazer login novamente.' : '');
 
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,7 +33,7 @@ function LoginForm() {
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/api/auth/callback`,
+            emailRedirectTo: `${window.location.origin}/auth/callback`,
             data: {
               created_at: new Date().toISOString(),
             }
@@ -113,6 +97,7 @@ function LoginForm() {
       setGoogleLoading(false);
     }
   };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex items-center justify-center px-4">
       <div className="w-full max-w-md">
@@ -134,12 +119,12 @@ function LoginForm() {
           </p>
 
           {/* Error Message */}
-          {error && (
+          {displayError && (
             <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2">
               <svg className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <p className="text-red-600 text-sm">{error}</p>
+              <p className="text-red-600 text-sm">{displayError}</p>
             </div>
           )}
 
@@ -224,7 +209,7 @@ function LoginForm() {
                     }
                     setLoading(true);
                     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-                      redirectTo: `${window.location.origin}/api/auth/callback?next=/reset-password`,
+                      redirectTo: `${window.location.origin}/auth/callback?next=/reset-password`,
                     });
                     setLoading(false);
                     if (error) {
