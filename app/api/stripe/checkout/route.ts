@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
       line_items: [{ price: priceId, quantity: 1 }],
-      success_url: `${origin}/dashboard/planos?success=true&plan=${body.planId || body.planName || ''}`,
+            success_url: `${origin}/auth/callback?next=${encodeURIComponent(`/dashboard/planos?success=true&plan=${body.planId || body.planName || ''}`)}`,
       cancel_url: `${origin}/pricing?canceled=true`,
       customer_email: user?.email,
       metadata: {
