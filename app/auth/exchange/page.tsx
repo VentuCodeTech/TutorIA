@@ -16,10 +16,13 @@ function ExchangePage() {
     const next = params.get('next') ?? '/dashboard';
     const safeNext = next.startsWith('/') ? next : '/dashboard';
 
-    async function handleExchange() {
+    async function handleAuth() {
+      // With implicit flow: the access_token is in the URL hash (#access_token=...)
+      // The @supabase/ssr createBrowserClient automatically detects the hash and
+      // processes it into a session when getSession() is called.
+      // With PKCE flow: we have a ?code= param that needs to be exchanged.
       if (code) {
-        // Exchange the PKCE code for a session
-        // createBrowserClient has access to the code_verifier stored in browser cookies
+        // PKCE flow fallback: exchange code for session
         const { error } = await supabase.auth.exchangeCodeForSession(code);
         if (error) {
           console.error('[auth/exchange] exchangeCodeForSession error:', error.message);
@@ -28,30 +31,40 @@ function ExchangePage() {
         }
       }
 
-      // Verify we have a valid session
-      const { data: { session } } = await supabase.auth.getSession();
+      // For implicit flow (or after PKCE exchange), verify we have a valid session.
+      // With implicit flow, getSession() triggers the client to process the hash fragment.
+      // We retry a few times to give the client time to process the hash.
+      let session = null;
+      for (let i = 0; i < 3; i++) {
+        const { data } = await supabase.auth.getSession();
+        session = data.session;
+        if (session) break;
+        // Small delay to allow the implicit flow hash processing
+        await new Promise(resolve => setTimeout(resolve, 300));
+      }
 
-      if (session) {
-        // Check onboarding status
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('onboarding_completed')
-          .eq('id', session.user.id)
-          .maybeSingle();
-
-        if (!profile?.onboarding_completed) {
-          router.replace('/onboarding');
-          return;
-        }
-
-        router.replace(safeNext);
+      if (!session) {
+        console.error('[auth/exchange] No session found after auth');
+        router.replace('/login?error=no_session');
         return;
       }
 
-      router.replace('/login?error=no_session');
+      // Check onboarding status
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('onboarding_completed')
+        .eq('id', session.user.id)
+        .maybeSingle();
+
+      if (!profile?.onboarding_completed) {
+        router.replace('/onboarding');
+        return;
+      }
+
+      router.replace(safeNext);
     }
 
-    handleExchange();
+    handleAuth();
   }, []);
 
   return (
