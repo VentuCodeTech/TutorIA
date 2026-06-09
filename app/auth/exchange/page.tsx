@@ -1,22 +1,25 @@
 'use client';
 
 import { useEffect, Suspense } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 
 function ExchangePage() {
-  const searchParams = useSearchParams();
   const router = useRouter();
-  const supabase = createClient();
 
   useEffect(() => {
-    const code = searchParams.get('code');
-    const next = searchParams.get('next') ?? '/dashboard';
+    const supabase = createClient();
+
+    // Read params directly from window.location to avoid SSR/ISR caching issues
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('code');
+    const next = params.get('next') ?? '/dashboard';
     const safeNext = next.startsWith('/') ? next : '/dashboard';
 
     async function handleExchange() {
       if (code) {
-        // Exchange the PKCE code for a session (browser client has access to code_verifier cookie)
+        // Exchange the PKCE code for a session
+        // createBrowserClient has access to the code_verifier stored in browser cookies
         const { error } = await supabase.auth.exchangeCodeForSession(code);
         if (error) {
           console.error('[auth/exchange] exchangeCodeForSession error:', error.message);
@@ -25,7 +28,7 @@ function ExchangePage() {
         }
       }
 
-      // Check if we have a valid session (either from exchange or existing cookies)
+      // Verify we have a valid session
       const { data: { session } } = await supabase.auth.getSession();
 
       if (session) {
@@ -45,7 +48,6 @@ function ExchangePage() {
         return;
       }
 
-      // No session found
       router.replace('/login?error=no_session');
     }
 
