@@ -60,12 +60,9 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: APP_URL,
-    languages: {
-      'pt-BR': APP_URL,
-    },
   },
   verification: {
-    google: 'tirei10-google-site-verification',
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || '',
   },
   category: 'education',
   icons: {
