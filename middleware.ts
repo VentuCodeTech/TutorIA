@@ -3,49 +3,49 @@ import { NextResponse, type NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
-      request,
-        })
+    request,
+  })
 
-          const supabase = createServerClient(
-              process.env.NEXT_PUBLIC_SUPABASE_URL!,
-                  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-                      {
-                            cookies: {
-                                    getAll() {
-                                              return request.cookies.getAll()
-                                                      },
-                                                              setAll(cookiesToSet: { name: string; value: string; options?: Record<string, unknown> }[]) {
-                                                                        cookiesToSet.forEach(({ name, value }: { name: string; value: string }) =>
-                                                                                    request.cookies.set(name, value)
-                                                                                              )
-                                                                                                        supabaseResponse = NextResponse.next({
-                                                                                                                    request,
-                                                                                                                              })
-                                                                                                                                        cookiesToSet.forEach(({ name, value, options }: { name: string; value: string; options?: Record<string, unknown> }) =>
-                                                                                                                                                    supabaseResponse.cookies.set(name, value, options as never)
-                                                                                                                                                              )
-                                                                                                                                                                      },
-                                                                                                                                                                            },
-                                                                                                                                                                                }
-                                                                                                                                                                                  )
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll()
+        },
+        setAll(cookiesToSet: { name: string; value: string; options?: Record<string, unknown> }[]) {
+          cookiesToSet.forEach(({ name, value }: { name: string; value: string }) =>
+            request.cookies.set(name, value)
+          )
+          supabaseResponse = NextResponse.next({
+            request,
+          })
+          cookiesToSet.forEach(({ name, value, options }: { name: string; value: string; options?: Record<string, unknown> }) =>
+            supabaseResponse.cookies.set(name, value, options as never)
+          )
+        },
+      },
+    }
+  )
 
-                                                                                                                                                                                    // Refresh session if needed - this updates the session cookie
-                                                                                                                                                                                      await supabase.auth.getSession()
+  // Refresh session if needed - this updates the session cookie
+  await supabase.auth.getSession()
 
-                                                                                                                                                                                        // IMPORTANT: Return the supabaseResponse to preserve cookies
-                                                                                                                                                                                          return supabaseResponse
-                                                                                                                                                                                          }
+  // IMPORTANT: Return the supabaseResponse to preserve cookies
+  return supabaseResponse
+}
 
-                                                                                                                                                                                          export const config = {
-                                                                                                                                                                                            matcher: [
-                                                                                                                                                                                                /*
-                                                                                                                                                                                                     * Match all request paths EXCEPT for the ones starting with:
-                                                                                                                                                                                                          * - api/auth/callback (OAuth callback - must not be intercepted)
-                                                                                                                                                                                                               * - _next/static (static files)
-                                                                                                                                                                                                                    * - _next/image (image optimization files)
-                                                                                                                                                                                                                         * - favicon.ico (favicon file)
-                                                                                                                                                                                                                              */
-                                                                                                                                                                                                                                  '/((?!api/auth/callback|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
-                                                                                                                                                                                                                                    ],
-                                                                                                                                                                                                                                    }
-                                                                                                                                                                                                                                    
+export const config = {
+  matcher: [
+    /*
+     * Match all request paths EXCEPT for the ones starting with:
+     * - auth/callback (OAuth/Stripe callback - must not be intercepted by middleware)
+     * - api/auth/callback (legacy callback path)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     */
+    '/((?!auth/callback|api/auth/callback|_next/static|_next/image|favicon.ico|.*\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+  ],
+}
