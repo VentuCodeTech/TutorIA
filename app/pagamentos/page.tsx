@@ -2,13 +2,13 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Meios de Pagamento | Tirei10',
+  title: 'Meios de Pagamento',
   description: 'Pagamentos seguros via Stripe. Aceitamos cartão de crédito e débito. Assine um plano Tirei10 e prepare-se para ENEM, OAB e Concursos Públicos.',
   alternates: {
     canonical: 'https://www.tirei10.com.br/pagamentos',
   },
   openGraph: {
-    title: 'Meios de Pagamento | Tirei10',
+    title: 'Meios de Pagamento',
     description: 'Saiba como funciona o pagamento no Tirei10. Stripe, cartões aceitos, política de reembolso e garantia de 7 dias.',
     url: 'https://www.tirei10.com.br/pagamentos',
   },
