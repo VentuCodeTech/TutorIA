@@ -2,13 +2,13 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Políticas da Comunidade | Tirei10',
+  title: 'Políticas da Comunidade',
   description: 'Conheça as políticas de uso, privacidade e conduta da comunidade Tirei10. Utilizamos seus dados com segurança para personalizar sua experiência de estudos.',
   alternates: {
     canonical: 'https://www.tirei10.com.br/politicas',
   },
   openGraph: {
-    title: 'Políticas da Comunidade | Tirei10',
+    title: 'Políticas da Comunidade',
     description: 'Conheça as políticas de uso e privacidade da plataforma Tirei10.',
     url: 'https://www.tirei10.com.br/politicas',
   },
