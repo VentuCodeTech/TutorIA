@@ -1,4 +1,18 @@
 import Link from 'next/link';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Central de Suporte | Tirei10',
+  description: 'Tire suas dúvidas, acesse o FAQ e entre em contato com a equipe Tirei10. Suporte via e-mail, chat ao vivo e base de conhecimento.',
+  alternates: {
+    canonical: 'https://www.tirei10.com.br/suporte',
+  },
+  openGraph: {
+    title: 'Central de Suporte | Tirei10',
+    description: 'Tire suas dúvidas sobre a plataforma Tirei10. Acesse o FAQ, chat ao vivo e suporte por e-mail.',
+    url: 'https://www.tirei10.com.br/suporte',
+  },
+};
 
 export default function SuportePage() {
   return (
