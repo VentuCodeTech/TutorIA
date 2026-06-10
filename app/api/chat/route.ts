@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import Anthropic from '@anthropic-ai/sdk';
+import { createClient } from '@/lib/supabase/server';
+import { getFeatures, getPlanIdFromSubscription } from '@/lib/planFeatures';
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
-
-// Modelos a tentar em ordem
-const MODELS = ['gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-flash', 'gemini-1.5-flash-8b'];
+const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! });
 
 const SYSTEM_PROMPT = `Você é o Tirei10, um assistente de estudos inteligente e especializado.
 Você ajuda estudantes a se prepararem para ENEM, OAB, Concursos Públicos e CPA-20.
@@ -12,77 +11,127 @@ Responda sempre em português brasileiro de forma clara, didática e motivadora.
 Quando explicar conceitos, use exemplos práticos e relevantes.
 Mantenha um tom amigável, encorajador e profissional.`;
 
-async function tryModel(modelName: string, messages: {role: string; content: string}[]): Promise<string> {
-  const model = genAI.getGenerativeModel({
-    model: modelName,
-    systemInstruction: SYSTEM_PROMPT,
-  });
+// Plan model routing
+function getModelForPlan(planId: string): string {
+    if (planId === 'advanced_pro') return 'claude-sonnet-4-5';
+    return 'claude-haiku-4-5';
+}
 
-  const rawHistory = messages.slice(0, -1).map((msg) => ({
-    role: msg.role === 'assistant' ? 'model' : 'user',
-    parts: [{ text: msg.content }],
-  }));
+// Get max tokens per plan
+function getMaxTokensForPlan(planId: string): number {
+    switch (planId) {
+      case 'advanced_pro': return 2000;
+      case 'student': return 1200;
+      case 'standard': return 600;
+      default: return 300;
+    }
+}
 
-  const firstUserIdx = rawHistory.findIndex((h) => h.role === 'user');
-  const history = firstUserIdx >= 0 ? rawHistory.slice(firstUserIdx) : [];
-
-  const lastMessage = messages[messages.length - 1];
-  const chat = model.startChat({ history });
-  const result = await chat.sendMessage(lastMessage.content);
-  return result.response.text();
+// Get daily message limit per plan (null = token-based, not message-based)
+function getDailyMsgLimit(planId: string): number | null {
+    switch (planId) {
+      case 'free': return 10;
+      case 'standard': return 50;
+      case 'student': return null; // token-based (500k tokens/day)
+      case 'advanced_pro': return null; // token-based (1M tokens/day)
+      default: return 10;
+    }
 }
 
 export async function POST(request: NextRequest) {
-  try {
-    const { messages } = await request.json();
+    try {
+          const { messages, planOverride } = await request.json();
 
-    if (!messages || !Array.isArray(messages)) {
-      return NextResponse.json(
-        { error: 'Messages array is required' },
-        { status: 400 }
-      );
-    }
-
-    let hadRateLimit = false;
-    
-    for (const modelName of MODELS) {
-      try {
-        const text = await tryModel(modelName, messages);
-        return NextResponse.json({ message: text });
-      } catch (err: unknown) {
-        const errMsg = (err as Error).message || '';
-        
-        if (errMsg.includes('429') || errMsg.includes('Too Many Requests') || errMsg.includes('quota')) {
-          hadRateLimit = true;
-          console.log(`Model ${modelName} rate limited, trying next...`);
-          continue;
-        }
-        
-        if (errMsg.includes('404') || errMsg.includes('not found') || errMsg.includes('INVALID_ARGUMENT')) {
-          console.log(`Model ${modelName} not available, trying next...`);
-          continue;
-        }
-        
-        // Unexpected error - log and continue
-        console.error(`Model ${modelName} error:`, errMsg.substring(0, 200));
-        continue;
+      if (!messages || !Array.isArray(messages)) {
+              return NextResponse.json(
+                { error: 'Messages array is required' },
+                { status: 400 }
+                      );
       }
-    }
 
-    // All models failed - return friendly message
-    if (hadRateLimit) {
+      // Get user plan from Supabase
+      let planId = 'free';
+          try {
+                  const supabase = await createClient();
+                  const { data: { user } } = await supabase.auth.getUser();
+                  if (user) {
+                            const { data: sub } = await supabase
+                              .from('subscriptions')
+                              .select('plan, status, stripe_price_id')
+                              .eq('user_id', user.id)
+                              .maybeSingle();
+
+                    if (sub) {
+                                // Try plan field first, fallback to price mapping
+                              if (sub.plan && ['standard','student','advanced_pro'].includes(sub.plan) &&
+                                                ['active','trialing'].includes(sub.status || '')) {
+                                            planId = sub.plan;
+                              } else if (sub.stripe_price_id) {
+                                            planId = getPlanIdFromSubscription(sub.stripe_price_id, sub.status);
+                              }
+                    }
+                  }
+          } catch {
+                  // If can't get plan, default to free
+          }
+
+      // Allow client-side plan override for testing (ignored in prod logic - server plan wins)
+      const effectivePlan = planId;
+
+      const features = getFeatures(effectivePlan as any);
+
+      // Check if AI assistant is enabled for this plan
+      if (!features.aiAssistantEnabled) {
+              return NextResponse.json({
+                        message: '❌ O Assistente IA está disponível apenas nos planos pagos (Standard, Student ou Advanced Pro). Faça upgrade para desbloquear esse recurso! 🚀',
+              });
+      }
+
+      const model = getModelForPlan(effectivePlan);
+          const maxTokens = getMaxTokensForPlan(effectivePlan);
+
+      // Build messages for Claude API
+      const claudeMessages = messages.map((msg: { role: string; content: string }) => ({
+              role: msg.role as 'user' | 'assistant',
+              content: msg.content,
+      }));
+
+      // Use prompt caching for standard/student/advanced_pro plans
+      const useCaching = effectivePlan !== 'free';
+
+      const systemContent = useCaching
+            ? [{ type: 'text' as const, text: SYSTEM_PROMPT, cache_control: { type: 'ephemeral' as const } }]
+              : SYSTEM_PROMPT;
+
+      const response = await client.messages.create({
+              model,
+              max_tokens: maxTokens,
+              system: systemContent as any,
+              messages: claudeMessages,
+      });
+
+      const text = response.content[0].type === 'text' ? response.content[0].text : '';
+
+      return NextResponse.json({ message: text });
+
+    } catch (error: unknown) {
+          console.error('Chatbot API error:', error);
+          const errMsg = (error as Error).message || '';
+
+      if (errMsg.includes('overloaded') || errMsg.includes('529')) {
+              return NextResponse.json({
+                        message: 'O assistente está temporariamente sobrecarregado. Por favor, aguarde 1-2 minutos e tente novamente. 🙏',
+              });
+      }
+
+      if (errMsg.includes('rate_limit') || errMsg.includes('429')) {
+              return NextResponse.json({
+                        message: 'Limite de requisições atingido. Por favor, aguarde alguns instantes e tente novamente.',
+              });
+      }
+
       return NextResponse.json({
-        message: 'O assistente está temporariamente sobrecarregado devido ao alto volume de uso. Por favor, aguarde 1-2 minutos e tente novamente. A API gratuita do Gemini tem limites de uso. 🙏',
+              message: 'Ocorreu um erro inesperado. Por favor, tente novamente.',
       });
     }
-
-    return NextResponse.json({
-      message: 'Serviço de IA temporariamente indisponível. Por favor, tente novamente em instantes.',
-    });
-  } catch (error) {
-    console.error('Chatbot API error:', error);
-    return NextResponse.json({
-      message: 'Ocorreu um erro inesperado. Por favor, tente novamente.',
-    });
-  }
 }
