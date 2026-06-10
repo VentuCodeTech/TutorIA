@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import Anthropic from '@anthropic-ai/sdk';
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! });
 
 const AREA_MAP: Record<string, string[]> = {
   'Matematica': ['Matematica', 'Matematica Financeira'],
   'Portugues': ['Portugues'],
-  'Historia': ['Historia'],
+  'Historia': ['Historia'],h
   'Ciencias': ['Biologia', 'Quimica', 'Fisica'],
   'Fisica': ['Fisica'],
   'Quimica': ['Quimica'],
@@ -249,24 +249,27 @@ export async function POST(request: NextRequest) {
     const { area, difficulty, excludeTexts, vestibular, context } = await request.json();
     const excluded: string[] = excludeTexts || [];
 
-    // Try Gemini AI first
+          // Try Claude AI first
     try {
       const areaText = area === 'Todas' ? 'qualquer area do ENEM, FUVEST, UNICAMP, OAB, CPA-20, INSS ou Concursos Federais' : area;
-      const diffText = difficulty === 'Todas' ? 'aleatoria' : difficulty;
+                    const diffText = difficulty === 'Todas' ? 'aleatoria' : difficulty;
       const excludeHint = excluded.length > 0 ? ` NAO repita: ${excluded.slice(-3).join(' | ')}` : '';
       const vestibularCtx = vestibular ? ` Estilo: ${vestibular}.` : '';
       const contextHint = context ? ` ${context}.` : '';
       const randomSeed = Math.floor(Math.random() * 10000);
-
-      const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+        // Claude API call
       const prompt = `Gere UMA questao NOVA e ORIGINAL de multipla escolha sobre ${areaText} com dificuldade ${diffText} para estudantes brasileiros.${excludeHint}${vestibularCtx}${contextHint}
 Baseie-se em questoes de vestibulares reais (ENEM 2005-2025, FUVEST, UNICAMP, OAB, CPA-20, CESPE, INSS, Concursos Federais e Militares). Randomizador: ${randomSeed}.
 IMPORTANTE: A questao deve ser EXCLUSIVAMENTE sobre a area "${area === 'Todas' ? 'qualquer materia' : area}". NAO gere questoes de outras areas.
 Retorne APENAS JSON valido sem markdown:
 {"text":"enunciado?","options":["A","B","C","D"],"correctAnswer":0,"explanation":"explicacao","subject":"${area === 'Todas' ? 'defina a materia' : area}","difficulty":"${difficulty === 'Todas' ? 'Medio' : difficulty}","source":"ENEM 2025 (adaptada)"}`;
 
-      const result = await model.generateContent(prompt);
-      const text = result.response.text();
+              const claudeResult = await anthropic.messages.create({
+                          model: 'claude-haiku-4-5',
+                          max_tokens: 1024,
+                          messages: [{ role: 'user', content: prompt }],
+              });
+              const text = claudeResult.content[0].type === 'text' ? claudeResult.content[0].text : '';
       const jsonMatch = text.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         const question = JSON.parse(jsonMatch[0]);
