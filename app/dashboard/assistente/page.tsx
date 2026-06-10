@@ -117,6 +117,7 @@ export default function AssistentePage() {
             role: m.role,
             content: m.content,
           })),
+                      planId,
         }),
       });
 
