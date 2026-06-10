@@ -86,7 +86,7 @@ export default function Sidebar() {
         <div className="p-6 border-b border-gray-100 flex-shrink-0">
           <Link href="/dashboard">
             <img src="/tirei10-header-logo.png" alt="Tirei10" className="h-9 w-auto" />
-            <p className="text-xs text-gray-400 whitespace-nowrap">Powered by Gemini AI</p>
+            <p className="text-xs text-gray-400 whitespace-nowrap">Powered by Claude AI</p>
           </Link>
         </div>
         <nav className="flex-1 overflow-y-auto py-4">
