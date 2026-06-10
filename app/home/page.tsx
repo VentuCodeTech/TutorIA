@@ -31,7 +31,7 @@ export default function HomePage() {
               <div className="text-4xl mb-4">🎓</div>
               <h2 className="text-2xl font-bold text-gray-800 mb-3">O que é o Tirei10?</h2>
               <p className="text-gray-600 leading-relaxed">
-                O Tirei10 é uma plataforma educacional que utiliza inteligência artificial (Gemini AI) para criar uma experiência de estudo personalizada. 
+                O Tirei10 é uma plataforma educacional que utiliza inteligência artificial (Claude AI) para criar uma experiência de estudo personalizada. 
                 Oferecemos questões adaptativas, simulados completos, assistente de IA e análise detalhada de desempenho.
               </p>
             </div>
@@ -51,7 +51,7 @@ export default function HomePage() {
               {[
                 { icon: '❓', title: 'Questões Adaptativas', desc: 'Banco com milhares de questões reais de vestibulares e concursos' },
                 { icon: '📝', title: 'Simulados Completos', desc: 'Provas completas no formato real dos exames' },
-                { icon: '🤖', title: 'Assistente IA', desc: 'Tire dúvidas a qualquer hora com nosso assistente powered by Gemini AI' },
+                { icon: '🤖', title: 'Assistente IA', desc: 'Tire dúvidas a qualquer hora com nosso assistente powered by Claude AI' },
                 { icon: '📊', title: 'Análise de Desempenho', desc: 'Acompanhe sua evolução com métricas detalhadas' },
                 { icon: '📅', title: 'Plano de Estudos', desc: 'Crie planos de estudo personalizados com IA' },
                 { icon: '📓', title: 'Anotações', desc: 'Organize suas anotações sincronizadas na nuvem' },
