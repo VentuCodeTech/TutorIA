@@ -6,7 +6,7 @@ const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! });
 const AREA_MAP: Record<string, string[]> = {
   'Matematica': ['Matematica', 'Matematica Financeira'],
   'Portugues': ['Portugues'],
-  'Historia': ['Historia'],h
+  'Historia': ['Historia'],
   'Ciencias': ['Biologia', 'Quimica', 'Fisica'],
   'Fisica': ['Fisica'],
   'Quimica': ['Quimica'],
