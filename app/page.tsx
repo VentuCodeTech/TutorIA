@@ -144,7 +144,7 @@ export default function Home() {
               <div>
                 <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold mb-8 border" style={{ background: 'rgba(109,40,217,0.06)', borderColor: 'rgba(109,40,217,0.2)', color: '#6D28D9' }}>
                   <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: '#6D28D9' }}></span>
-                  Powered by Gemini AI 2.0 Flash
+                  Powered by Claude AI
                 </div>
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight" style={{ color: '#111827' }}>
                   Estude com{' '}
@@ -240,7 +240,7 @@ export default function Home() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {[
-                { icon: '🤖', bg: '#F5F3FF', iconBg: '#6D28D9', title: 'IA Adaptativa', desc: 'Nosso assistente powered by Gemini AI aprende com seu estilo de estudo e adapta o conteúdo às suas necessidades específicas.' },
+                { icon: '🤖', bg: '#F5F3FF', iconBg: '#6D28D9', title: 'IA Adaptativa', desc: 'Nosso assistente powered by Claude AI aprende com seu estilo de estudo e adapta o conteúdo às suas necessidades específicas.' },
                 { icon: '📊', bg: '#F0FDFF', iconBg: '#0E7490', title: 'Analytics em Tempo Real', desc: 'Acompanhe seu progresso com métricas detalhadas, relatórios personalizados e insights gerados por inteligência artificial.' },
                 { icon: '🎯', bg: '#F0FDF4', iconBg: '#16a34a', title: 'Foco no Resultado', desc: 'Simulados cronometrados, questões adaptativas e planos de estudo otimizados para maximizar suas chances de aprovação.' },
               ].map((feature, i) => (
