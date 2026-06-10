@@ -125,7 +125,7 @@ export default function Chatbot() {
                                                                       <p className="text-white font-bold text-sm">Tirei10</p>
                                                                       <div className="flex items-center gap-1">
                                                                                         <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                                                                                        <p className="text-indigo-200 text-xs">IA Online • Gemini</p>
+                                                                                        <p className="text-indigo-200 text-xs">IA Online • Claude</p>
                                                                       </div>
                                                       </div>
                                         </div>
