@@ -4,50 +4,60 @@ import { questionBank, normalizeStr, matchesArea } from '@/lib/questionBank';
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! });
 
-// Vestibulares e concursos para referenciar no prompt
 const EXAM_SOURCES = 'ENEM (2005-2025), FUVEST (2005-2025), UNESP (2005-2025), UNICAMP (2005-2025), VUNESP (2005-2025), OAB (2006-2025), CPA-20 (2006-2025), CESPE/CEBRASPE, INSS, Concursos Federais, ESPCEX (2010-2025), AFA (2010-2025), EFOMM (2010-2025), ESA (2010-2025), EsFCEx, FN (2010-2025)';
+
+// All available subject areas - used for random selection when area='Todas'
+const ALL_AREAS = [
+  'Matematica','Portugues','Historia','Fisica','Quimica','Biologia',
+  'Geografia','Redacao','Direito Constitucional','Direito Civil',
+  'Direito Penal','Direito Trabalhista','Investimentos',
+  'Matematica Financeira','Financas Pessoais','Ingles','Espanhol'
+];
 
 export async function POST(request: NextRequest) {
   try {
     const { area, difficulty, excludeTexts, vestibular, context } = await request.json();
     const excluded: string[] = excludeTexts || [];
 
+    // If area is "Todas", pick a RANDOM area server-side for genuine randomization
+    const effectiveArea = area === 'Todas'
+      ? ALL_AREAS[Math.floor(Math.random() * ALL_AREAS.length)]
+      : area;
+
     // Try Claude AI first - primary source for unlimited unique questions
     try {
-      const areaDisplay = area === 'Todas' ? 'qualquer matéria' : area;
       const diffDisplay = difficulty === 'Todas' ? 'aleatória (Facil, Medio ou Dificil)' : difficulty;
       const excludeHint = excluded.length > 0
-        ? `\n\nNAO repita estas questoes (já foram geradas):\n${excluded.slice(-5).map((t,i) => `${i+1}. ${t.substring(0,80)}...`).join('\n')}`
+        ? `\n\nNAO repita estas questões já exibidas:\n${excluded.slice(-5).map((t,i) => `${i+1}. ${t.substring(0,80)}`).join('\n')}`
         : '';
-      const vestibularCtx = vestibular ? ` Priorize questões no estilo ${vestibular}.` : '';
-      const contextHint = context ? ` Contexto adicional: ${context}.` : '';
+      const vestibularCtx = vestibular ? ` Priorize estilo ${vestibular}.` : '';
+      const contextHint = context ? ` Contexto: ${context}.` : '';
       const randomSeed = Math.floor(Math.random() * 999999);
 
-      const areaRule = area !== 'Todas'
-        ? `REGRA ABSOLUTA DE ÁREA: Gere EXCLUSIVAMENTE questões de "${area}". Isso significa:\n- Se área = "Física", gere SOMENTE sobre Física (mecânica, termodinâmica, eletricidade, óptica, etc.)\n- Se área = "Direito Constitucional", gere SOMENTE sobre Direito Constitucional\n- Se área = "História", gere SOMENTE sobre História\n- NUNCA misture áreas. Uma questão de Matemática para Física ou de Português para História é INACEITÁVEL.\n- O campo "subject" deve ser EXATAMENTE "${area}"`
-        : 'Escolha ALEATORIAMENTE uma matéria entre: Matemática, Português, História, Geografia, Física, Química, Biologia, Redação, Direito Constitucional, Direito Civil, Direito Penal, Direito Trabalhista, Investimentos, Matemática Financeira, Finanças Pessoais, Inglês, Espanhol.';
+      const prompt = `Você é um gerador especializado em questões de vestibular e concurso público brasileiro. Gere UMA questão ORIGINAL e INÉDITA de múltipla escolha (4 alternativas: A, B, C, D).
 
-      const prompt = `Você é um gerador de questões de vestibular e concurso público brasileiro. Gere UMA questão ORIGINAL de múltipla escolha (4 alternativas: A, B, C, D).
-
-ÁREA: ${areaDisplay}
+MATÉRIA OBRIGATÓRIA: "${effectiveArea}"
 DIFICULDADE: ${diffDisplay}
-FONTES DE REFERÊNCIA: ${EXAM_SOURCES}
-SEED (para garantir unicidade): ${randomSeed}
+FONTES: ${EXAM_SOURCES}
+SEED ÚNICO: ${randomSeed}
+${excludeHint}${vestibularCtx}${contextHint}
 
-${areaRule}
-${excludeHint}
-${vestibularCtx}
-${contextHint}
+REGRA ABSOLUTA: A questão deve ser EXCLUSIVAMENTE sobre "${effectiveArea}".
+- "Física" → apenas Física (mecânica, termodinâmica, eletricidade, óptica, ondas, física moderna)
+- "Química" → apenas Química (orgânica, inorgânica, físico-química, bioquímica)
+- "Direito Constitucional" → apenas Direito Constitucional (CF/88, direitos fundamentais, organização do Estado)
+- "Inglês" → apenas língua inglesa (gramática, compreensão textual, vocabulário)
+- NUNCA misture matérias. O campo "subject" deve ser EXATAMENTE "${effectiveArea}"
 
 INSTRUÇÕES:
-1. A questão deve ser NOVA e ORIGINAL, inspirada no estilo dos exames listados acima
-2. Inclua o nome do exame e ano no enunciado entre parênteses, ex: "(ENEM 2019 - adaptada)"  
+1. Questão NOVA e ORIGINAL, inspirada nos exames: ${EXAM_SOURCES}
+2. Inclua fonte entre parênteses no enunciado: "(ENEM 2023 - adaptada)" ou "(FUVEST 2019 - adaptada)"
 3. 4 alternativas plausíveis, apenas 1 correta
-4. Explicação clara e didática da resposta correta
+4. Explicação clara e didática
 5. Nível adequado à dificuldade solicitada
 
-Retorne APENAS JSON válido (sem markdown, sem \`\`\`):
-{"text":"enunciado completo da questão?","options":["Alternativa A","Alternativa B","Alternativa C","Alternativa D"],"correctAnswer":0,"explanation":"explicação detalhada","subject":"${area === 'Todas' ? 'SUBSTITUA_PELA_MATERIA_ESCOLHIDA' : area}","difficulty":"${difficulty === 'Todas' ? 'Medio' : difficulty}","source":"ENEM 2024 (adaptada)"}`;
+Retorne APENAS JSON válido (sem markdown, sem \`\`\`json):
+{"text":"enunciado completo?","options":["A","B","C","D"],"correctAnswer":0,"explanation":"explicação","subject":"${effectiveArea}","difficulty":"${difficulty === 'Todas' ? 'Medio' : difficulty}","source":"ENEM 2024 (adaptada)"}`;
 
       const claudeResult = await anthropic.messages.create({
         model: 'claude-haiku-4-5',
@@ -62,10 +72,9 @@ Retorne APENAS JSON válido (sem markdown, sem \`\`\`):
         if (
           q.text && q.options && q.options.length === 4 &&
           typeof q.correctAnswer === 'number' && q.correctAnswer >= 0 && q.correctAnswer <= 3 &&
-          !excluded.includes(q.text) &&
-          (area === 'Todas' || matchesArea(q.subject || area, area))
+          !excluded.includes(q.text)
         ) {
-          if (area !== 'Todas' && !matchesArea(q.subject, area)) q.subject = area;
+          q.subject = effectiveArea; // Always force the correct subject
           q.id = `ai_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
           return NextResponse.json({ question: q });
         }
@@ -74,17 +83,12 @@ Retorne APENAS JSON válido (sem markdown, sem \`\`\`):
       console.log('AI unavailable, using question bank:', aiError);
     }
 
-    // Fallback: local question bank (massive static bank)
-    let pool = area && area !== 'Todas'
-      ? questionBank.filter(q => matchesArea(q.subject, area))
-      : [...questionBank];
-
-    // Filter excluded questions (deduplication)
+    // Fallback: local question bank
+    let pool = questionBank.filter(q => matchesArea(q.subject, effectiveArea));
     let filtered = pool.filter(q => !excluded.includes(q.text));
-    if (filtered.length === 0) filtered = [...pool]; // reset if all exhausted
-    if (filtered.length === 0) filtered = [...questionBank]; // last resort
+    if (filtered.length === 0) filtered = [...pool];
+    if (filtered.length === 0) filtered = [...questionBank];
 
-    // Apply difficulty filter
     if (difficulty && difficulty !== 'Todas') {
       const normDiff = normalizeStr(difficulty);
       const byDiff = filtered.filter(q => normalizeStr(q.difficulty) === normDiff);
@@ -95,7 +99,7 @@ Retorne APENAS JSON válido (sem markdown, sem \`\`\`):
     return NextResponse.json({
       question: {
         ...randomQ,
-        subject: area !== 'Todas' ? area : randomQ.subject,
+        subject: effectiveArea,
         id: `bank_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
       }
     });
