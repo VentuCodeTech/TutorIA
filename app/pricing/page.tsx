@@ -17,7 +17,7 @@ const plans = [
       'Comunidade de estudantes',
     ],
     notIncluded: [
-      'Simulados ilimitados',
+      
       'Assistente IA ilimitado',
       'Análise de desempenho avançada',
       'Plano de estudos personalizado',
@@ -37,7 +37,6 @@ const plans = [
     features: [
       'Questões ilimitadas',
       'Todas as matérias',
-      'Simulados ilimitados',
       'Assistente IA (50 msgs/dia)',
       'Análise de desempenho completa',
       'Anotações sincronizadas',
@@ -59,6 +58,7 @@ const plans = [
     description: 'Para quem leva os estudos a sério',
     features: [
       'Tudo do plano Standard',
+      'Simulados ilimitados',
       'Assistente IA ilimitado',
       'Redação corrigida por IA',
       'Acesso antecipado a novidades',
