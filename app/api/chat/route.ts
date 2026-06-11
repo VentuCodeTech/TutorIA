@@ -9,6 +9,33 @@ Quando explicar conceitos acadêmicos, use exemplos práticos e relevantes para 
 Mantenha um tom amigável, encorajador e profissional.
 
 ====================
+CAPACIDADES DE ANÁLISE DE ARQUIVOS
+====================
+Quando o usuário enviar um arquivo (imagem, PDF ou Word), você deve:
+
+1. REDAÇÕES (texto manuscrito ou digitado):
+   - Analise o texto completo
+   - Avalie: Competência 1 (Domínio da norma culta), Competência 2 (Compreensão da proposta), Competência 3 (Seleção e organização de informações), Competência 4 (Mecanismos linguísticos), Competência 5 (Proposta de intervenção)
+   - Para cada competência: nota de 0 a 200 e comentário específico
+   - Aponte erros gramaticais, ortográficos e de pontuação com citações do texto
+   - Sugira melhorias concretas
+   - Calcule nota final (0-1000) e classifique o nível
+
+2. QUESTÕES / EXERCÍCIOS (imagem ou documento com questões):
+   - Identifique cada questão presente
+   - Resolva passo a passo, de forma didática
+   - Explique o raciocínio por trás de cada etapa
+   - Indique a resposta correta quando for múltipla escolha
+
+3. ANOTAÇÕES / RESUMOS DO ESTUDANTE:
+   - Complemente com informações adicionais relevantes
+   - Corrija eventuais erros conceituais
+   - Sugira organização e tópicos que faltaram
+
+4. OUTROS DOCUMENTOS:
+   - Analise o conteúdo e responda à pergunta do usuário sobre ele
+
+====================
 SOBRE A PLATAFORMA TIREI10
 ====================
 O Tirei10 é uma plataforma SaaS de estudos com IA, disponível em https://www.tirei10.com.br.
@@ -114,53 +141,138 @@ INSTRUÇÕES DE COMPORTAMENTO
 - NUNCA invente informações sobre preços específicos ou datas de lançamento de funcionalidades que não estão listadas acima.
 - Seja sempre prestativo, claro e objetivo.
 - Use formatação markdown quando útil (listas, negrito) para facilitar a leitura.
+- Ao analisar arquivos, seja detalhado, estruturado e construtivo.
 `;
+
+interface AttachmentPayload {
+  name: string;
+  type: 'image' | 'document';
+  mimeType: string;
+  data: string; // base64 for images; base64 of raw bytes for PDFs/Word
+  userText?: string;
+}
+
+// Supported image MIME types for Claude vision
+const CLAUDE_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+
+function buildAttachmentUserContent(
+  attachment: AttachmentPayload,
+  userText: string,
+): Anthropic.MessageParam['content'] {
+  const promptText = userText?.trim()
+    ? userText
+    : attachment.type === 'image'
+      ? 'Por favor, analise este arquivo. Se for uma redação, corrija-a com as 5 competências do ENEM. Se forem questões, resolva-as passo a passo.'
+      : 'Por favor, analise este documento. Se for uma redação, corrija-a com as 5 competências do ENEM. Se forem questões, resolva-as passo a passo.';
+
+  if (attachment.type === 'image' && CLAUDE_IMAGE_TYPES.includes(attachment.mimeType)) {
+    // Extract raw base64 from data URL (strip "data:image/xxx;base64,")
+    const base64 = attachment.data.includes(',') ? attachment.data.split(',')[1] : attachment.data;
+    return [
+      {
+        type: 'image',
+        source: {
+          type: 'base64',
+          media_type: attachment.mimeType as 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp',
+          data: base64,
+        },
+      },
+      { type: 'text', text: promptText },
+    ];
+  }
+
+  // PDF or Word — pass as base64 document block (Claude supports PDF natively)
+  if (attachment.mimeType === 'application/pdf') {
+    return [
+      {
+        type: 'document',
+        source: {
+          type: 'base64',
+          media_type: 'application/pdf',
+          data: attachment.data,
+        },
+      } as unknown as Anthropic.TextBlockParam,
+      { type: 'text', text: promptText },
+    ];
+  }
+
+  // Word (.doc/.docx) — Claude cannot read binary Word natively;
+  // send a clear instruction asking the user for text if needed,
+  // but still include file info so the AI can inform the user.
+  return [
+    {
+      type: 'text',
+      text: `O usuário enviou um arquivo Word ("${attachment.name}"). Infelizmente não consigo ler arquivos .doc/.docx diretamente. Por favor, peça ao usuário que:
+1. Copie e cole o texto da redação/questão diretamente na conversa, ou
+2. Salve o arquivo como PDF e envie novamente.
+
+Caso o usuário tenha digitado alguma instrução adicional: "${promptText}"`,
+    },
+  ];
+}
 
 export async function POST(request: NextRequest) {
   try {
-    const { messages, planId } = await request.json();
+    const { messages, planId, attachment } = await request.json() as {
+      messages: { role: string; content: string }[];
+      planId?: string;
+      attachment?: AttachmentPayload;
+    };
 
     if (!messages || !Array.isArray(messages)) {
-      return NextResponse.json(
-        { error: 'Messages array is required' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Messages array is required' }, { status: 400 });
     }
 
-    // Determine model and max_tokens based on plan
-    // planId can be passed from client (assistente page) or default to haiku
     const effectivePlan = planId || 'free';
 
+    // Advanced Pro uses Sonnet; others use Haiku.
+    // For file analysis (vision/PDF), always use at least Haiku — it supports vision.
     const model = effectivePlan === 'advanced_pro'
       ? 'claude-sonnet-4-5'
       : 'claude-haiku-4-5';
 
-    const maxTokens = effectivePlan === 'advanced_pro' ? 2000
+    // Give more tokens when there's an attachment (longer analysis needed)
+    const baseTokens = effectivePlan === 'advanced_pro' ? 2000
       : effectivePlan === 'student' ? 1200
       : effectivePlan === 'standard' ? 600
       : 300;
+    const maxTokens = attachment ? Math.max(baseTokens, 1200) : baseTokens;
 
-    // Use prompt caching for paid plans
     const useCaching = effectivePlan !== 'free';
 
     const systemContent = useCaching
       ? [{ type: 'text' as const, text: SYSTEM_PROMPT, cache_control: { type: 'ephemeral' as const } }]
       : SYSTEM_PROMPT;
 
-    const claudeMessages = messages.map((msg: { role: string; content: string }) => ({
+    // Build previous messages (text-only history)
+    const previousMessages: Anthropic.MessageParam[] = messages.slice(0, -1).map((msg) => ({
       role: msg.role as 'user' | 'assistant',
       content: msg.content,
     }));
 
+    // Build the current (last) user message — potentially with attachment
+    const lastMessage = messages[messages.length - 1];
+    let currentUserContent: Anthropic.MessageParam['content'];
+
+    if (attachment) {
+      currentUserContent = buildAttachmentUserContent(attachment, attachment.userText || lastMessage?.content || '');
+    } else {
+      currentUserContent = lastMessage?.content || '';
+    }
+
+    const claudeMessages: Anthropic.MessageParam[] = [
+      ...previousMessages,
+      { role: 'user', content: currentUserContent },
+    ];
+
     const response = await client.messages.create({
       model,
       max_tokens: maxTokens,
-      system: systemContent as any,
+      system: systemContent as Parameters<typeof client.messages.create>[0]['system'],
       messages: claudeMessages,
     });
 
     const text = response.content[0].type === 'text' ? response.content[0].text : '';
-
     return NextResponse.json({ message: text });
 
   } catch (error: unknown) {
@@ -172,10 +284,14 @@ export async function POST(request: NextRequest) {
         message: 'O assistente está temporariamente sobrecarregado. Por favor, aguarde 1-2 minutos e tente novamente. 🙏',
       });
     }
-
     if (errMsg.includes('rate_limit') || errMsg.includes('429')) {
       return NextResponse.json({
         message: 'Limite de requisições atingido. Por favor, aguarde alguns instantes e tente novamente.',
+      });
+    }
+    if (errMsg.includes('invalid_request') || errMsg.includes('400')) {
+      return NextResponse.json({
+        message: 'Não foi possível processar este arquivo. Verifique se é uma imagem válida (JPG, PNG, WEBP, GIF) ou PDF. Para arquivos Word, copie o texto e cole diretamente na conversa.',
       });
     }
 
@@ -183,4 +299,4 @@ export async function POST(request: NextRequest) {
       message: 'Ocorreu um erro inesperado. Por favor, tente novamente.',
     });
   }
-}
+         }
