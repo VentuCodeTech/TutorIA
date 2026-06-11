@@ -39,15 +39,6 @@ const AREA_URL_MAP: Record<string, string> = {
   'Direito Penal': 'Direito Penal',
   'Direito Trabalhista': 'Direito Trabalhista',
   'Matematica Financeira': 'Matematica Financeira',
-  'Matematica': 'Matematica',
-  'Portugues': 'Portugues',
-  'Historia': 'Historia',
-  'Fisica': 'Fisica',
-  'Quimica': 'Quimica',
-  'Biologia': 'Biologia',
-  'Redacao': 'Redacao',
-  'Ingles': 'Ingles',
-  'Espanhol': 'Espanhol',
 }
 
 function QuestoesContent() {
@@ -156,7 +147,7 @@ function QuestoesContent() {
       <main className="ml-64 p-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-800">Questoes</h1>
-          <p className="text-gray-500 mt-1">Pratique com questoes de ENEM, FUVEST, UNESP, UNICAMP, VUNESP, OAB, CPA-20 e concursos militares</p>
+          <p className="text-gray-500 mt-1">Questoes de ENEM, FUVEST, UNESP, UNICAMP, VUNESP, OAB, CPA-20 e concursos militares (2005-2025)</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
