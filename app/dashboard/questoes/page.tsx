@@ -13,23 +13,24 @@ interface Question {
   explanation: string
   subject: string
   difficulty: string
+  source?: string
+  vestibularSource?: string
 }
 
 import { useUserPlan } from '@/lib/useUserPlan'
 
-// Map accented area names from URL params to dropdown option values
 const AREA_URL_MAP: Record<string, string> = {
-  'Matemática': 'Matematica',
-  'Português': 'Portugues',
-  'História': 'Historia',
-  'Física': 'Fisica',
-  'Química': 'Quimica',
+  'Matematica': 'Matematica',
+  'Portugues': 'Portugues',
+  'Historia': 'Historia',
+  'Fisica': 'Fisica',
+  'Quimica': 'Quimica',
   'Biologia': 'Biologia',
-  'Redação': 'Redacao',
-  'Ciências': 'Ciencias',
-  'Inglês': 'Ingles',
+  'Redacao': 'Redacao',
+  'Ciencias': 'Ciencias',
+  'Ingles': 'Ingles',
   'Espanhol': 'Espanhol',
-  'Finanças Pessoais': 'Financas Pessoais',
+  'Financas Pessoais': 'Financas Pessoais',
   'Investimentos': 'Investimentos',
   'Geografia': 'Geografia',
   'CPA-20': 'CPA-20',
@@ -37,6 +38,16 @@ const AREA_URL_MAP: Record<string, string> = {
   'Direito Civil': 'Direito Civil',
   'Direito Penal': 'Direito Penal',
   'Direito Trabalhista': 'Direito Trabalhista',
+  'Matematica Financeira': 'Matematica Financeira',
+  'Matematica': 'Matematica',
+  'Portugues': 'Portugues',
+  'Historia': 'Historia',
+  'Fisica': 'Fisica',
+  'Quimica': 'Quimica',
+  'Biologia': 'Biologia',
+  'Redacao': 'Redacao',
+  'Ingles': 'Ingles',
+  'Espanhol': 'Espanhol',
 }
 
 function QuestoesContent() {
@@ -60,7 +71,6 @@ function QuestoesContent() {
       const area = params.get('area')
       if (area) {
         const decoded = decodeURIComponent(area)
-        // Normalize accented names to match dropdown option values
         const normalized = AREA_URL_MAP[decoded] || decoded
         setSelectedArea(normalized)
       }
@@ -137,7 +147,7 @@ function QuestoesContent() {
     generateQuestion(selectedArea, selectedDifficulty, shownTexts)
   }
 
-  const areas = ['Todas', 'Matematica', 'Portugues', 'Historia', 'Ciencias', 'Fisica', 'Quimica', 'Biologia', 'Redacao', 'Direito Constitucional', 'Direito Civil', 'Direito Penal', 'Direito Trabalhista', 'Financas Pessoais', 'Investimentos', 'CPA-20', 'Geografia', 'Ingles', 'Espanhol']
+  const areas = ['Todas', 'Matematica', 'Portugues', 'Historia', 'Ciencias', 'Fisica', 'Quimica', 'Biologia', 'Redacao', 'Direito Constitucional', 'Direito Civil', 'Direito Penal', 'Direito Trabalhista', 'Financas Pessoais', 'Investimentos', 'Matematica Financeira', 'CPA-20', 'Geografia', 'Ingles', 'Espanhol']
   const difficulties = ['Todas', 'Facil', 'Medio', 'Dificil']
 
   return (
@@ -145,8 +155,8 @@ function QuestoesContent() {
       <Sidebar />
       <main className="ml-64 p-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-800">Questões</h1>
-          <p className="text-gray-500 mt-1">Pratique com questões adaptativas geradas por IA</p>
+          <h1 className="text-3xl font-bold text-gray-800">Questoes</h1>
+          <p className="text-gray-500 mt-1">Pratique com questoes de ENEM, FUVEST, UNESP, UNICAMP, VUNESP, OAB, CPA-20 e concursos militares</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
@@ -154,7 +164,7 @@ function QuestoesContent() {
             <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
               <h2 className="text-lg font-semibold text-gray-800 mb-4">Filtros</h2>
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">ÁREA</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">AREA</label>
                 <select
                   value={selectedArea}
                   onChange={(e) => { setSelectedArea(e.target.value); setShownTexts([]); }}
@@ -178,12 +188,12 @@ function QuestoesContent() {
                 disabled={loading}
                 className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-2 rounded-xl font-medium hover:from-indigo-700 hover:to-purple-700 disabled:opacity-50 transition-all"
               >
-                {loading ? 'Gerando...' : 'Gerar Questão'}
+                {loading ? 'Gerando...' : 'Gerar Questao'}
               </button>
             </div>
 
             <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-              <h2 className="text-lg font-semibold text-gray-800 mb-4">Estatísticas</h2>
+              <h2 className="text-lg font-semibold text-gray-800 mb-4">Estatisticas</h2>
               <div className="space-y-3">
                 <div className="flex justify-between">
                   <span className="text-sm text-gray-600">Respondidas</span>
@@ -208,21 +218,30 @@ function QuestoesContent() {
               <div className="bg-white rounded-2xl p-12 shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center min-h-96">
                 <div className="text-6xl mb-4">📋</div>
                 <h3 className="text-xl font-bold text-gray-800 mb-2">Pronto para praticar?</h3>
-                <p className="text-gray-500 mb-6">Selecione os filtros e clique em Gerar Questão para comecar.</p>
+                <p className="text-gray-500 mb-6">Selecione os filtros e clique em Gerar Questao para comecar.</p>
                 <button
                   onClick={() => generateQuestion()}
                   className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-xl font-medium hover:from-indigo-700 hover:to-purple-700 transition-all"
                 >
-                  Começar Agora
+                  Comecar Agora
                 </button>
               </div>
             ) : loading ? (
               <div className="bg-white rounded-2xl p-12 shadow-sm border border-gray-100 flex flex-col items-center justify-center min-h-96">
                 <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-4"></div>
-                <p className="text-gray-500">Gerando questao...</p>
+                <p className="text-gray-500">Buscando questao do banco...</p>
               </div>
             ) : currentQuestion && (
               <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                {(currentQuestion.vestibularSource || currentQuestion.source) && (
+                  <div className="mb-4 p-3 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl flex items-center gap-2">
+                    <span className="text-blue-600 text-lg">🎓</span>
+                    <div>
+                      <p className="text-xs font-semibold text-blue-500 uppercase tracking-wide">Fonte Oficial</p>
+                      <p className="text-sm font-bold text-blue-800">{currentQuestion.vestibularSource || currentQuestion.source}</p>
+                    </div>
+                  </div>
+                )}
                 <div className="flex gap-2 mb-4">
                   <span className="bg-indigo-100 text-indigo-700 text-xs font-medium px-3 py-1 rounded-full">{currentQuestion.subject}</span>
                   <span className="bg-gray-100 text-gray-700 text-xs font-medium px-3 py-1 rounded-full">{currentQuestion.difficulty}</span>
@@ -273,7 +292,7 @@ function QuestoesContent() {
                     onClick={handleNextQuestion}
                     className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 rounded-xl font-medium hover:from-indigo-700 hover:to-purple-700 transition-all"
                   >
-                    Próxima Questão
+                    Proxima Questao
                   </button>
                 )}
               </div>
@@ -292,4 +311,4 @@ export default function QuestoesPage() {
       <QuestoesContent />
     </Suspense>
   )
-                            }
+}
