@@ -559,7 +559,7 @@ const { features } = useUserPlan();
         <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-6 text-white">
           <h2 className="text-xl font-bold mb-2">🤖 Simulado Adaptativo com IA</h2>
           <p className="text-indigo-100 mb-4">Nossa IA cria um simulado 100% personalizado baseado no seu histórico e vestibular escolhido.</p>
-          <button onClick={()=>{if(!features.aiPersonalizedSimulados){alert('🔒 Simulado Adaptativo com IA é exclusivo do plano Advanced Pro. Acesse a página de Planos para fazer upgrade!');return;}const pref=vestibularPref||'ENEM';const match=vestibularSimulados.find(s=>s.vestibular.toLowerCase().includes(pref.toLowerCase()))||vestibularSimulados[0];startSimulado({...match,id:`adaptativo_${Date.now()}`,title:`Simulado Adaptativo IA - ${pref}`,tag:'IA Adaptativo'});}} className="bg-white text-indigo-600 px-5 py-2 rounded-xl font-semibold hover:bg-indigo-50 transition-colors">Criar Simulado Adaptativo</button>
+          <button onClick={()=>{if(!features.aiPersonalizedSimulados){router.push('/dashboard/planos');return;}const pref=vestibularPref||'ENEM';const match=vestibularSimulados.find(s=>s.vestibular.toLowerCase().includes(pref.toLowerCase()))||vestibularSimulados[0];startSimulado({...match,id:`adaptativo_${Date.now()}`,title:`Simulado Adaptativo IA - ${pref}`,tag:'IA Adaptativo'});}} className="bg-white text-indigo-600 px-5 py-2 rounded-xl font-semibold hover:bg-indigo-50 transition-colors">Criar Simulado Adaptativo</button>
         </div>
         <Chatbot />
       </main>
