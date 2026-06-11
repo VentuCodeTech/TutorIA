@@ -191,7 +191,7 @@ function PlanosContent() {
                 <span className="text-gray-500 mb-1">/mês</span>
               </div>
               <ul className="space-y-3 flex-1">
-                {['Tudo do plano Student','Assistente IA sem limites com GPT-4','Redações corrigidas ilimitadas','Simulados personalizados por IA','Plano de estudos adaptativo','Relatórios detalhados de evolução','Prioridade máxima no suporte','Badge exclusivo de Elite'].map(f => (
+                {['Tudo do plano Student','Assistente IA sem limites','Redações corrigidas ilimitadas','Simulados personalizados por IA','Plano de estudos adaptativo','Relatórios detalhados de evolução','Prioridade máxima no suporte','Badge exclusivo de Elite'].map(f => (
                   <li key={f} className="flex items-center gap-2 text-sm text-gray-700"><span className="text-yellow-500">⭐</span> {f}</li>
                 ))}
               </ul>
