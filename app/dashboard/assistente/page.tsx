@@ -11,13 +11,22 @@ interface Message {
   timestamp: Date;
 }
 
-const suggestions = [
+const studySuggestions = [
   'Me explique logaritmos de forma simples',
   'Como funciona a célula eucariota?',
   'Quais são as principais causas da 2ª Guerra Mundial?',
   'Como resolver equações do 2º grau?',
   'Explique o processo de fotossíntese',
   'Dicas para redação do ENEM',
+];
+
+const supportSuggestions = [
+  'Como faço upgrade do meu plano?',
+  'Posso cancelar minha assinatura?',
+  'Como funciona o plano Gratuito?',
+  'Esqueci minha senha, o que faço?',
+  'Meus dados de estudo ficam salvos?',
+  'Como funciona a integração com Google Calendar?',
 ];
 
 export default function AssistentePage() {
@@ -27,7 +36,7 @@ export default function AssistentePage() {
     {
       id: '1',
       role: 'assistant',
-      content: 'Olá! Sou o Assistente IA do Tirei10. Estou aqui para te ajudar com seus estudos! 🎓\n\nPosso te ajudar com:\n• Explicações de matérias e conteúdos\n• Resolução de dúvidas específicas\n• Dicas de estudo e memorização\n• Preparação para vestibulares e concursos\n\nComo posso te ajudar hoje?',
+      content: 'Olá! Sou o Assistente IA do Tirei10. Estou aqui para te ajudar! 🎓\n\nPosso te ajudar com:\n• Explicações de matérias e conteúdos acadêmicos\n• Resolução de dúvidas de vestibulares e concursos\n• Dicas de estudo e memorização\n• Dúvidas sobre a plataforma Tirei10 (planos, funcionalidades, conta)\n• Problemas técnicos e perguntas frequentes\n\nComo posso te ajudar hoje?',
       timestamp: new Date(),
     }
   ]);
@@ -35,6 +44,7 @@ export default function AssistentePage() {
   const [loading, setLoading] = useState(false);
   const [todayMsgCount, setTodayMsgCount] = useState(0);
   const [userName, setUserName] = useState('Estudante');
+  const [suggestionTab, setSuggestionTab] = useState<'study' | 'support'>('study');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const supabase = createClient();
 
@@ -117,7 +127,7 @@ export default function AssistentePage() {
             role: m.role,
             content: m.content,
           })),
-                      planId,
+          planId,
         }),
       });
 
@@ -153,6 +163,8 @@ export default function AssistentePage() {
     }
   };
 
+  const currentSuggestions = suggestionTab === 'study' ? studySuggestions : supportSuggestions;
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Sidebar />
@@ -160,7 +172,7 @@ export default function AssistentePage() {
         <div className="p-6 border-b border-gray-100 bg-white flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">🤖 Assistente IA</h1>
-            <p className="text-gray-600 text-sm mt-1">Tire todas as suas dúvidas de estudo</p>
+            <p className="text-gray-600 text-sm mt-1">Tire todas as suas dúvidas de estudo e sobre a plataforma</p>
           </div>
           {!planLoading && (
             <div className="text-right">
@@ -232,9 +244,30 @@ export default function AssistentePage() {
 
           {messages.length === 1 && features.aiAssistantEnabled && (
             <div className="mt-4">
-              <p className="text-xs text-gray-400 mb-3">💡 Sugestões de perguntas:</p>
+              <div className="flex gap-2 mb-3">
+                <button
+                  onClick={() => setSuggestionTab('study')}
+                  className={`text-xs px-3 py-1.5 rounded-full font-medium transition-colors ${
+                    suggestionTab === 'study'
+                      ? 'bg-indigo-600 text-white'
+                      : 'bg-white border border-gray-200 text-gray-500 hover:border-indigo-300 hover:text-indigo-600'
+                  }`}
+                >
+                  📚 Estudos
+                </button>
+                <button
+                  onClick={() => setSuggestionTab('support')}
+                  className={`text-xs px-3 py-1.5 rounded-full font-medium transition-colors ${
+                    suggestionTab === 'support'
+                      ? 'bg-indigo-600 text-white'
+                      : 'bg-white border border-gray-200 text-gray-500 hover:border-indigo-300 hover:text-indigo-600'
+                  }`}
+                >
+                  ❓ Suporte
+                </button>
+              </div>
               <div className="flex flex-wrap gap-2">
-                {suggestions.map((s, i) => (
+                {currentSuggestions.map((s, i) => (
                   <button
                     key={i}
                     onClick={() => handleSend(s)}
@@ -266,7 +299,7 @@ export default function AssistentePage() {
                   ? 'Assistente IA disponível nos planos pagos'
                   : isLimitReached
                   ? `Limite de ${dailyLimit} msgs/dia atingido`
-                  : 'Digite sua dúvida de estudo... (Enter para enviar)'
+                  : 'Digite sua dúvida de estudo ou sobre a plataforma... (Enter para enviar)'
               }
               className="flex-1 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none disabled:bg-gray-50 disabled:text-gray-400"
               rows={2}
