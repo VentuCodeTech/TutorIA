@@ -361,7 +361,7 @@ export const questionBank: Question[] = [
 {subject:'Matematica',difficulty:'Facil',text:'(AFA 2019) O valor de 0,001 em notacao cientifica e:',options:['1x10^-2','1x10^-3','1x10^2','1x10^3'],correctAnswer:1,explanation:'0,001=10^-3',source:'AFA 2019'},
 {subject:'Matematica',difficulty:'Medio',text:'(EFOMM 2019) Quantas diagonais tem um pentagono?',options:['4','5','6','8'],correctAnswer:1,explanation:'D=n(n-3)/2=5x2/2=5',source:'EFOMM 2019'},
 {subject:'Portugues',difficulty:'Facil',text:'(ENEM 2020) A figura de linguagem em "o coracao gritava" e:',options:['Metafora','Personificacao','Hiperbole','Eufemismo'],correctAnswer:1,explanation:'Personificacao: atribui accao humana a coisa inanimada',source:'ENEM 2020'},
-{subject:'Matematica',difficulty:'Facil',text:'TEST',options:['a','b','c','d'],correctAnswer:0,explanation:'test',source:'TEST'}
+{subject:'Matematica',difficulty:'Facil',text:'TEST',options:['a','b','c','d'],correctAnswer:0,explanation:'test',source:'TEST'},
 {subject:'Portugues',difficulty:'Medio',text:'(FUVEST 2020) A conjuncao que indica concessao em "Embora chova, sairemos" e:',options:['porque','embora','portanto','contudo'],correctAnswer:1,explanation:'Embora = conjuncao concessiva',source:'FUVEST 2020'},
 {subject:'Portugues',difficulty:'Facil',text:'(UNICAMP 2019) O plural correto de "mao" e:',options:['maos','maes','maosinho','mos'],correctAnswer:0,explanation:'Mao -> maos (plural regular em -aos)',source:'UNICAMP 2019'},
 {subject:'Portugues',difficulty:'Medio',text:'(UNESP 2018) Em "Vou a Paris", o uso da crase e:',options:['Obrigatorio','Facultativo','Proibido','Opcional'],correctAnswer:2,explanation:'Antes de nomes de cidades sem artigo definido, nao se usa crase',source:'UNESP 2018'},
