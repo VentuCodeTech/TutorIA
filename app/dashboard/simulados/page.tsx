@@ -550,7 +550,7 @@ const { features } = useUserPlan();
                   <div className="flex items-center gap-2 text-sm text-gray-500"><span>⏱️</span><span>{sim.timeMinutes} min</span></div>
                   <div className="flex items-center gap-2 text-sm text-gray-500"><span>📚</span><span className="truncate">{sim.areaOrder.slice(0,2).map(a=>a.area).join(', ')}{sim.areaOrder.length>2?'...':''}</span></div>
                 </div>
-                <button onClick={()=>startSimulado(sim)} className="w-full bg-indigo-600 text-white py-2.5 rounded-xl font-medium hover:bg-indigo-700 transition-colors text-sm">Iniciar Simulado →</button>
+                <button onClick={()=>{if(!features.unlimitedSimulados){router.push('/dashboard/planos');return;}startSimulado(sim);}} className="w-full bg-indigo-600 text-white py-2.5 rounded-xl font-medium hover:bg-indigo-700 transition-colors text-sm">Iniciar Simulado →</button>
               </div>
             );
           })}
