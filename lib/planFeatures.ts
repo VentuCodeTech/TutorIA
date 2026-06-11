@@ -97,7 +97,7 @@ export const PLAN_FEATURES: Record<PlanId, PlanFeatures> = {
   student: {
     dailyQuestionLimit: null,
     allSubjects: true,
-    unlimitedSimulados: true,
+    unlimitedSimulados: false,
     aiAssistantEnabled: true,
     aiDailyMessageLimit: null,
     basicDashboard: true,
