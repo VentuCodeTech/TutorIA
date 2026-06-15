@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 interface Message {
     id: string;
@@ -106,41 +106,30 @@ export default function Chatbot() {
                 const isHeader3 = line.startsWith('### ');
                 const isBullet = line.startsWith('- ') || line.startsWith('• ');
                 const isNumbered = /^\d+\.\s/.test(line);
-                
-                // Process inline markdown: **bold**, *italic*
-                const parseInline = (text: string) => {
-                        const parts: React.ReactNode[] = [];
-                        let remaining = text;
-                        let key = 0;
-                        while (remaining.length > 0) {
-                                const boldMatch = remaining.match(/^(.*?)\*\*(.*?)\*\*(.*)/s);
-                                if (boldMatch) {
-                                        if (boldMatch[1]) parts.push(<span key={key++}>{boldMatch[1]}</span>);
-                                        parts.push(<strong key={key++}>{boldMatch[2]}</strong>);
-                                        remaining = boldMatch[3];
-                                } else {
-                                        parts.push(<span key={key++}>{remaining}</span>);
-                                        break;
-                                }
-                        }
-                        return parts;
+
+                // Parse **bold** inline
+                const parseBold = (text: string) => {
+                        const parts = text.split(/\*\*(.*?)\*\*/);
+                        return parts.map((p, idx) =>
+                                idx % 2 === 1 ? <strong key={idx}>{p}</strong> : <span key={idx}>{p}</span>
+                        );
                 };
-                
+
                 if (isHeader2) {
-                        return <p key={i} className="font-bold text-base mt-2 mb-1">{parseInline(line.slice(3))}</p>;
+                        return <p key={i} className="font-bold text-base mt-2 mb-1">{parseBold(line.slice(3))}</p>;
                 } else if (isHeader3) {
-                        return <p key={i} className="font-semibold mt-1 mb-1">{parseInline(line.slice(4))}</p>;
+                        return <p key={i} className="font-semibold mt-1 mb-1">{parseBold(line.slice(4))}</p>;
                 } else if (isBullet) {
-                        return <div key={i} className="flex gap-1 ml-2"><span>•</span><span>{parseInline(line.slice(2))}</span></div>;
+                        return <div key={i} className="flex gap-1 ml-2"><span>•</span><span>{parseBold(line.slice(2))}</span></div>;
                 } else if (isNumbered) {
-                        return <div key={i} className="ml-2">{parseInline(line)}</div>;
+                        return <div key={i} className="ml-2">{parseBold(line)}</div>;
                 } else if (line.trim() === '') {
                         return i < lines.length - 1 ? <br key={i} /> : null;
                 } else {
-                        return <span key={i}>{parseInline(line)}{i < lines.length - 1 && <br />}</span>;
+                        return <span key={i}>{parseBold(line)}{i < lines.length - 1 && <br />}</span>;
                 }
         }).filter(Boolean);
-  };
+  };;
 
   return (
         <div className="fixed bottom-6 right-6 z-50">
