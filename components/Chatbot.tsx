@@ -100,12 +100,46 @@ export default function Chatbot() {
   };
 
   const formatMessage = (content: string) => {
-        return content.split('\n').map((line, i) => (
-                <span key={i}>
-                  {line}
-                  {i < content.split('\n').length - 1 && <br />}
-                </span>
-              ));
+        const lines = content.split('\n');
+        return lines.map((line, i) => {
+                const isHeader2 = line.startsWith('## ');
+                const isHeader3 = line.startsWith('### ');
+                const isBullet = line.startsWith('- ') || line.startsWith('• ');
+                const isNumbered = /^\d+\.\s/.test(line);
+                
+                // Process inline markdown: **bold**, *italic*
+                const parseInline = (text: string) => {
+                        const parts: React.ReactNode[] = [];
+                        let remaining = text;
+                        let key = 0;
+                        while (remaining.length > 0) {
+                                const boldMatch = remaining.match(/^(.*?)\*\*(.*?)\*\*(.*)/s);
+                                if (boldMatch) {
+                                        if (boldMatch[1]) parts.push(<span key={key++}>{boldMatch[1]}</span>);
+                                        parts.push(<strong key={key++}>{boldMatch[2]}</strong>);
+                                        remaining = boldMatch[3];
+                                } else {
+                                        parts.push(<span key={key++}>{remaining}</span>);
+                                        break;
+                                }
+                        }
+                        return parts;
+                };
+                
+                if (isHeader2) {
+                        return <p key={i} className="font-bold text-base mt-2 mb-1">{parseInline(line.slice(3))}</p>;
+                } else if (isHeader3) {
+                        return <p key={i} className="font-semibold mt-1 mb-1">{parseInline(line.slice(4))}</p>;
+                } else if (isBullet) {
+                        return <div key={i} className="flex gap-1 ml-2"><span>•</span><span>{parseInline(line.slice(2))}</span></div>;
+                } else if (isNumbered) {
+                        return <div key={i} className="ml-2">{parseInline(line)}</div>;
+                } else if (line.trim() === '') {
+                        return i < lines.length - 1 ? <br key={i} /> : null;
+                } else {
+                        return <span key={i}>{parseInline(line)}{i < lines.length - 1 && <br />}</span>;
+                }
+        }).filter(Boolean);
   };
 
   return (
