@@ -20,17 +20,17 @@ interface Question {
 import { useUserPlan } from '@/lib/useUserPlan'
 
 const AREA_URL_MAP: Record<string, string> = {
-  'Matematica': 'Matematica',
-  'Portugues': 'Portugues',
-  'Historia': 'Historia',
-  'Fisica': 'Fisica',
-  'Quimica': 'Quimica',
+  'Matemática': 'Matemática',
+  'Português': 'Português',
+  'História': 'História',
+  'Física': 'Física',
+  'Química': 'Química',
   'Biologia': 'Biologia',
-  'Redacao': 'Redacao',
-  'Ciencias': 'Ciencias',
-  'Ingles': 'Ingles',
+  'Redação': 'Redação',
+  'Ciências': 'Ciências',
+  'Inglês': 'Inglês',
   'Espanhol': 'Espanhol',
-  'Financas Pessoais': 'Financas Pessoais',
+  'Finanças Pessoais': 'Finanças Pessoais',
   'Investimentos': 'Investimentos',
   'Geografia': 'Geografia',
   'CPA-20': 'CPA-20',
@@ -38,7 +38,7 @@ const AREA_URL_MAP: Record<string, string> = {
   'Direito Civil': 'Direito Civil',
   'Direito Penal': 'Direito Penal',
   'Direito Trabalhista': 'Direito Trabalhista',
-  'Matematica Financeira': 'Matematica Financeira',
+  'Matemática Financeira': 'Matemática Financeira',
 }
 
 function QuestoesContent() {
@@ -138,16 +138,16 @@ function QuestoesContent() {
     generateQuestion(selectedArea, selectedDifficulty, shownTexts)
   }
 
-  const areas = ['Todas', 'Matematica', 'Portugues', 'Historia', 'Ciencias', 'Fisica', 'Quimica', 'Biologia', 'Redacao', 'Direito Constitucional', 'Direito Civil', 'Direito Penal', 'Direito Trabalhista', 'Financas Pessoais', 'Investimentos', 'Matematica Financeira', 'CPA-20', 'Geografia', 'Ingles', 'Espanhol']
-  const difficulties = ['Todas', 'Facil', 'Medio', 'Dificil']
+  const areas = ['Todas', 'Matemática', 'Português', 'História', 'Ciências', 'Física', 'Química', 'Biologia', 'Redação', 'Direito Constitucional', 'Direito Civil', 'Direito Penal', 'Direito Trabalhista', 'Finanças Pessoais', 'Investimentos', 'Matemática Financeira', 'CPA-20', 'Geografia', 'Inglês', 'Espanhol']
+  const difficulties = ['Todas', 'Fácil', 'Médio', 'Difícil']
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50 to-purple-50">
       <Sidebar />
       <main className="ml-64 p-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-800">Questoes</h1>
-          <p className="text-gray-500 mt-1">Questoes de ENEM, FUVEST, UNESP, UNICAMP, VUNESP, OAB, CPA-20 e concursos militares (2005-2025)</p>
+          <h1 className="text-3xl font-bold text-gray-800">Questões</h1>
+          <p className="text-gray-500 mt-1">Questões de ENEM, FUVEST, UNESP, UNICAMP, VUNESP, OAB, CPA-20 e concursos militares (2005-2025)</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
@@ -179,12 +179,12 @@ function QuestoesContent() {
                 disabled={loading}
                 className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-2 rounded-xl font-medium hover:from-indigo-700 hover:to-purple-700 disabled:opacity-50 transition-all"
               >
-                {loading ? 'Gerando...' : 'Gerar Questao'}
+                {loading ? 'Gerando...' : 'Gerar Questão'}
               </button>
             </div>
 
             <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-              <h2 className="text-lg font-semibold text-gray-800 mb-4">Estatisticas</h2>
+              <h2 className="text-lg font-semibold text-gray-800 mb-4">Estatísticas</h2>
               <div className="space-y-3">
                 <div className="flex justify-between">
                   <span className="text-sm text-gray-600">Respondidas</span>
@@ -209,18 +209,18 @@ function QuestoesContent() {
               <div className="bg-white rounded-2xl p-12 shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center min-h-96">
                 <div className="text-6xl mb-4">📋</div>
                 <h3 className="text-xl font-bold text-gray-800 mb-2">Pronto para praticar?</h3>
-                <p className="text-gray-500 mb-6">Selecione os filtros e clique em Gerar Questao para comecar.</p>
+                <p className="text-gray-500 mb-6">Selecione os filtros e clique em Gerar Questão para começar.</p>
                 <button
                   onClick={() => generateQuestion()}
                   className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-xl font-medium hover:from-indigo-700 hover:to-purple-700 transition-all"
                 >
-                  Comecar Agora
+                  Começar Agora
                 </button>
               </div>
             ) : loading ? (
               <div className="bg-white rounded-2xl p-12 shadow-sm border border-gray-100 flex flex-col items-center justify-center min-h-96">
                 <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-4"></div>
-                <p className="text-gray-500">Buscando questao do banco...</p>
+                <p className="text-gray-500">Buscando questão do banco...</p>
               </div>
             ) : currentQuestion && (
               <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
@@ -283,7 +283,7 @@ function QuestoesContent() {
                     onClick={handleNextQuestion}
                     className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 rounded-xl font-medium hover:from-indigo-700 hover:to-purple-700 transition-all"
                   >
-                    Proxima Questao
+                    Próxima Questão
                   </button>
                 )}
               </div>
