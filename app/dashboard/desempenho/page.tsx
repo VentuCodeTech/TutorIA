@@ -17,16 +17,16 @@ interface DayData {
 }
 
 const COLORS: Record<string, string> = {
-        'Matematica': 'bg-blue-500',
-        'Portugues': 'bg-green-500',
-        'Historia': 'bg-yellow-500',
-        'Ciencias': 'bg-purple-500',
-        'Fisica': 'bg-red-500',
-        'Quimica': 'bg-orange-500',
+        'Matemática': 'bg-blue-500',
+        'Português': 'bg-green-500',
+        'História': 'bg-yellow-500',
+        'Ciências': 'bg-purple-500',
+        'Física': 'bg-red-500',
+        'Química': 'bg-orange-500',
         'Biologia': 'bg-teal-500',
         'Geografia': 'bg-indigo-500',
-        'Redacao': 'bg-pink-500',
-        'Ingles': 'bg-sky-500',
+        'Redação': 'bg-pink-500',
+        'Inglês': 'bg-sky-500',
         'Espanhol': 'bg-rose-500',
 };
 
@@ -152,7 +152,7 @@ export default function DesempenhoPage() {
                                                       <div className="text-2xl font-bold text-yellow-500">Melhor</div>
                                                       <div className="text-sm font-medium text-gray-900 mt-1">{best ? best.subject : 'Sem dados'}</div>
                                                       <div className="text-xs text-green-600 mt-1">
-                                                            {best && best.total > 0 ? Math.round((best.correct / best.total) * 100) + '% acerto' : 'Responda questoes'}
+                                                            {best && best.total > 0 ? Math.round((best.correct / best.total) * 100) + '% acerto' : 'Responda questões'}
                                                       </div>
                                           </div>
                                           <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
@@ -168,9 +168,9 @@ export default function DesempenhoPage() {
                                   <div className="bg-white rounded-2xl p-12 shadow-sm border border-gray-100 text-center">
                                               <div className="text-6xl mb-4">📚</div>
                                               <h3 className="text-xl font-bold text-gray-800 mb-2">Nenhum dado ainda</h3>
-                                              <p className="text-gray-500 mb-6">Comece a responder questoes para ver seu desempenho aqui!</p>
+                                              <p className="text-gray-500 mb-6">Comece a responder questões para ver seu desempenho aqui!</p>
                                               <a href="/dashboard/questoes" className="bg-indigo-600 text-white px-6 py-3 rounded-xl font-medium hover:bg-indigo-700 transition-colors">
-                                                            Ir para Questoes
+                                                            Ir para Questões
                                               </a>
                                   </div>
                                 ) : (
@@ -234,7 +234,7 @@ export default function DesempenhoPage() {
                         
                               {totalAnswered > 0 && (
                                   <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                                              <h3 className="font-semibold text-gray-900 mb-4">Recomendacoes Personalizadas</h3>
+                                              <h3 className="font-semibold text-gray-900 mb-4">Recomendações Personalizadas</h3>
                                               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                                     {worst && worst.total > 0 && (
                                                         <div className="bg-red-50 rounded-xl p-4 border border-red-100">
@@ -245,8 +245,8 @@ export default function DesempenhoPage() {
                                                             )}
                                                             <div className="bg-yellow-50 rounded-xl p-4 border border-yellow-100">
                                                                             <div className="text-yellow-600 font-semibold text-sm mb-1">Atenção</div>
-                                                                            <p className="text-sm text-gray-700 font-medium">Consistencia Diaria</p>
-                                                                            <p className="text-xs text-gray-500 mt-1">Tente responder pelo menos 20 questoes por dia para manter o ritmo.</p>
+                                                                            <p className="text-sm text-gray-700 font-medium">Consistência Diária</p>
+                                                                            <p className="text-xs text-gray-500 mt-1">Tente responder pelo menos 20 questões por dia para manter o ritmo.</p>
                                                             </div>
                                                     {best && best.total > 0 && (
                                                         <div className="bg-green-50 rounded-xl p-4 border border-green-100">
