@@ -30,6 +30,32 @@ const COLORS: Record<string, string> = {
         'Espanhol': 'bg-rose-500',
 };
 
+const SUBJECT_DISPLAY_NAMES: Record<string, string> = {
+  'Matematica': 'Matemática',
+  'Portugues': 'Português',
+  'Historia': 'História',
+  'Fisica': 'Física',
+  'Quimica': 'Química',
+  'Biologia': 'Biologia',
+  'Redacao': 'Redação',
+  'Ciencias': 'Ciências',
+  'Ingles': 'Inglês',
+  'Espanhol': 'Espanhol',
+  'Financas Pessoais': 'Finanças Pessoais',
+  'Matematica Financeira': 'Matemática Financeira',
+  'CPA-20': 'CPA-20',
+  'Investimentos': 'Investimentos',
+  'Direito Constitucional': 'Direito Constitucional',
+  'Direito Civil': 'Direito Civil',
+  'Direito Penal': 'Direito Penal',
+  'Direito Trabalhista': 'Direito Trabalhista',
+  'Geografia': 'Geografia',
+};
+
+function displaySubjectName(subject: string): string {
+  return SUBJECT_DISPLAY_NAMES[subject] || subject;
+}
+
 function getSubjectColor(subject: string): string {
         const norm = subject.replace(/[^a-zA-Z]/g, '');
         for (const key of Object.keys(COLORS)) {
@@ -150,14 +176,14 @@ export default function DesempenhoPage() {
                                           </div>
                                           <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
                                                       <div className="text-2xl font-bold text-yellow-500">Melhor</div>
-                                                      <div className="text-sm font-medium text-gray-900 mt-1">{best ? best.subject : 'Sem dados'}</div>
+                                                      <div className="text-sm font-medium text-gray-900 mt-1">{best ? displaySubjectName(best.subject) : 'Sem dados'}</div>
                                                       <div className="text-xs text-green-600 mt-1">
                                                             {best && best.total > 0 ? Math.round((best.correct / best.total) * 100) + '% acerto' : 'Responda questões'}
                                                       </div>
                                           </div>
                                           <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
                                                       <div className="text-2xl font-bold text-red-400">Atenção</div>
-                                                      <div className="text-sm font-medium text-gray-900 mt-1">{worst && worst !== best ? worst.subject : 'Continue!'}</div>
+                                                      <div className="text-sm font-medium text-gray-900 mt-1">{worst && worst !== best ? displaySubjectName(worst.subject) : 'Continue!'}</div>
                                                       <div className="text-xs text-red-600 mt-1">
                                                             {worst && worst !== best && worst.total > 0 ? Math.round((worst.correct / worst.total) * 100) + '% acerto' : 'Bom trabalho!'}
                                                       </div>
@@ -184,7 +210,7 @@ export default function DesempenhoPage() {
                                                           return (
                                                                                     <div key={s.subject}>
                                                                                                           <div className="flex justify-between items-center mb-1">
-                                                                                                                                  <span className="text-sm text-gray-700">{s.subject}</span>
+                                                                                                                                  <span className="text-sm text-gray-700">{displaySubjectName(s.subject)}</span>
                                                                                                                                   <div className="flex items-center gap-2">
                                                                                                                                                             <span className="text-xs text-gray-400">{s.correct}/{s.total}</span>
                                                                                                                                                             <span className="text-sm font-semibold text-gray-900">{pct}%</span>
@@ -239,7 +265,7 @@ export default function DesempenhoPage() {
                                                     {worst && worst.total > 0 && (
                                                         <div className="bg-red-50 rounded-xl p-4 border border-red-100">
                                                                           <div className="text-red-500 font-semibold text-sm mb-1">Prioridade Alta</div>
-                                                                          <p className="text-sm text-gray-700 font-medium">{worst.subject}</p>
+                                                                          <p className="text-sm text-gray-700 font-medium">{displaySubjectName(worst.subject)}</p>
                                                                           <p className="text-xs text-gray-500 mt-1">Taxa de acerto: {Math.round((worst.correct / worst.total) * 100)}%. Dedique mais tempo!</p>
                                                         </div>
                                                             )}
@@ -251,7 +277,7 @@ export default function DesempenhoPage() {
                                                     {best && best.total > 0 && (
                                                         <div className="bg-green-50 rounded-xl p-4 border border-green-100">
                                                                           <div className="text-green-600 font-semibold text-sm mb-1">Ponto Forte</div>
-                                                                          <p className="text-sm text-gray-700 font-medium">{best.subject}</p>
+                                                                          <p className="text-sm text-gray-700 font-medium">{displaySubjectName(best.subject)}</p>
                                                                           <p className="text-xs text-gray-500 mt-1">Excelente! {Math.round((best.correct / best.total) * 100)}% de acerto. Continue assim!</p>
                                                         </div>
                                                             )}
