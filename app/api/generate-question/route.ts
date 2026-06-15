@@ -5,10 +5,10 @@ import { questionBank, normalizeStr, matchesArea } from '@/lib/questionBank';
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! });
 
 const ALL_AREAS = [
-  'Matematica','Portugues','Historia','Fisica','Quimica','Biologia',
-  'Geografia','Redacao','Direito Constitucional','Direito Civil',
+  'Matemática','Português','História','Física','Química','Biologia',
+  'Geografia','Redação','Direito Constitucional','Direito Civil',
   'Direito Penal','Direito Trabalhista','Investimentos',
-  'Matematica Financeira','Financas Pessoais','Ingles','Espanhol'
+  'Matemática Financeira','Finanças Pessoais','Inglês','Espanhol'
 ];
 
 export async function POST(request: NextRequest) {
