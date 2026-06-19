@@ -45,58 +45,7 @@ export default function ComunidadePage() {
   const channelRef = useRef<ReturnType<ReturnType<typeof createClient>['channel']> | null>(null);
   const supabase = createClient();
 
-  useEffect(() => {
-    const init = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        setUserId(user.id);
-        const name = user.user_metadata?.full_name || user.email?.split('@')[0] || 'Usuario';
-        setUserName(name);
-        const savedLikes = localStorage.getItem('liked_posts_' + user.id);
-        if (savedLikes) {
-          try { setLikedPosts(new Set(JSON.parse(savedLikes))); } catch {}
-        }
-      }
-      await fetchPosts();
-    };
-    init();
-
-    const channel = supabase
-      .channel('forum_posts_realtime')
-      .on('postgres_changes', {
-        event: 'INSERT',
-        schema: 'public',
-        table: 'forum_posts',
-      }, (payload: { new: ForumPost }) => {
-        const newPost = payload.new as ForumPost;
-        setPosts((prev) => {
-          if (prev.some((p) => p.id === newPost.id)) return prev;
-          const userName = newPost.title.includes('||') ? newPost.title.split('||')[0] : 'Usuario';
-          const title = newPost.title.includes('||') ? newPost.title.split('||')[1] : newPost.title;
-          return [{ ...newPost, user_name: userName, title }, ...prev];
-        });
-      })
-      .on('postgres_changes', {
-        event: 'UPDATE',
-        schema: 'public',
-        table: 'forum_posts',
-      }, (payload: { new: ForumPost }) => {
-        const updated = payload.new as ForumPost;
-        setPosts((prev) => prev.map((p) => (p.id === updated.id ? { ...p, likes: updated.likes } : p)));
-      })
-      .subscribe();
-
-    channelRef.current = channel;
-
-    return () => {
-      if (channelRef.current) {
-        supabase.removeChannel(channelRef.current);
-      }
-    };
-  }, []);
-
   const fetchPosts = async () => {
-    setLoading(true);
     setError('');
     try {
       const { data, error: fetchError } = await supabase
@@ -128,8 +77,70 @@ export default function ComunidadePage() {
     } catch {
       setError('Erro de conexao. Tente novamente.');
     }
-    setLoading(false);
   };
+
+  useEffect(() => {
+    const init = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setUserId(user.id);
+        const name = user.user_metadata?.full_name || user.email?.split('@')[0] || 'Usuario';
+        setUserName(name);
+        const savedLikes = localStorage.getItem('liked_posts_' + user.id);
+        if (savedLikes) {
+          try { setLikedPosts(new Set(JSON.parse(savedLikes))); } catch {}
+        }
+      }
+      setLoading(true);
+      await fetchPosts();
+      setLoading(false);
+    };
+    init();
+
+    const channel = supabase
+      .channel('forum_posts_changes')
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'forum_posts',
+      }, (payload: { new: Record<string, unknown> }) => {
+        const newPost = payload.new;
+        const rawTitle = newPost.title as string;
+        const hasDelimiter = rawTitle.includes('||');
+        const mapped: ForumPost = {
+          id: newPost.id as string,
+          user_id: newPost.user_id as string,
+          user_name: hasDelimiter ? rawTitle.split('||')[0] : 'Usuario',
+          title: hasDelimiter ? rawTitle.split('||')[1] : rawTitle,
+          content: newPost.content as string,
+          exam_tag: newPost.exam_tag as string | null,
+          likes: newPost.likes as number,
+          replies_count: newPost.replies_count as number,
+          created_at: newPost.created_at as string,
+        };
+        setPosts((prev) => {
+          if (prev.some((p) => p.id === mapped.id)) return prev;
+          return [mapped, ...prev];
+        });
+      })
+      .on('postgres_changes', {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'forum_posts',
+      }, (payload: { new: Record<string, unknown> }) => {
+        const updated = payload.new;
+        setPosts((prev) => prev.map((p) => (p.id === updated.id ? { ...p, likes: updated.likes as number } : p)));
+      })
+      .subscribe();
+
+    channelRef.current = channel;
+
+    return () => {
+      if (channelRef.current) {
+        supabase.removeChannel(channelRef.current);
+      }
+    };
+  }, []);
 
   const filteredPosts = selectedCategory === 'Todos'
     ? posts
@@ -160,6 +171,7 @@ export default function ComunidadePage() {
       setNewPostContent('');
       setNewPostTitle('');
       setShowNewPost(false);
+      await fetchPosts();
     }
     setSubmitting(false);
   };
@@ -340,7 +352,7 @@ export default function ComunidadePage() {
                       disabled={!userId}
                       className={'flex items-center gap-1 transition-colors text-sm font-medium ' + (likedPosts.has(post.id) ? 'text-red-500 hover:text-red-700' : 'text-gray-500 hover:text-red-500')}
                     >
-                      {likedPosts.has(post.id) ? 'LIKE' : 'like'} {post.likes}
+                      {likedPosts.has(post.id) ? 'liked' : 'like'} {post.likes}
                     </button>
                     <button
                       onClick={() => handleShare(post)}
