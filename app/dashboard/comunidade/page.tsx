@@ -106,15 +106,19 @@ export default function ComunidadePage() {
         .order('created_at', { ascending: true });
 
       if (!fetchError && data) {
-        const mapped: ForumReply[] = data.map((r: Record<string, unknown>) => ({
-          id: r.id as string,
-          post_id: r.post_id as string,
-          user_id: r.user_id as string,
-          user_name: (r.user_name as string) || 'Usuario',
-          content: r.content as string,
-          likes: r.likes as number,
-          created_at: r.created_at as string,
-        }));
+        const mapped: ForumReply[] = data.map((r: Record<string, unknown>) => {
+          const rawContent = r.content as string;
+          const hasDelimiter = rawContent.includes('||');
+          return {
+            id: r.id as string,
+            post_id: r.post_id as string,
+            user_id: r.user_id as string,
+            user_name: hasDelimiter ? rawContent.split('||')[0] : 'Usuario',
+            content: hasDelimiter ? rawContent.split('||')[1] : rawContent,
+            likes: r.likes as number,
+            created_at: r.created_at as string,
+          };
+        });
         setRepliesMap((prev) => ({ ...prev, [postId]: mapped }));
       }
     } catch {}
@@ -139,12 +143,13 @@ export default function ComunidadePage() {
     if (!content || !userId) return;
     setSubmittingReply(postId);
     try {
+      const contentField = userName + '||' + content;
       const { error: insertError } = await supabase
         .from('forum_replies')
         .insert([{
           post_id: postId,
           user_id: userId,
-          content,
+          content: contentField,
           likes: 0,
         }]);
 
@@ -284,7 +289,7 @@ export default function ComunidadePage() {
 
   const handleShare = async (post: ForumPost) => {
     const url = window.location.origin + '/dashboard/comunidade';
-    const text = '"' + post.content.substring(0, 100) + '..." \u2014 Tirei10 Comunidade';
+    const text = '"' + post.content.substring(0, 100) + '..." — Tirei10 Comunidade';
     if (navigator.share) {
       try { await navigator.share({ title: 'Tirei10 Comunidade', text, url }); } catch {}
     } else {
@@ -304,7 +309,7 @@ export default function ComunidadePage() {
           <div className="flex items-center justify-between mb-8">
             <div>
               <h1 className="text-3xl font-bold text-gray-900">Comunidade</h1>
-              <p className="text-gray-600 mt-1">Forum da Tirei10 \u2014 compartilhe duvidas, dicas e conquistas em tempo real</p>
+              <p className="text-gray-600 mt-1">Forum da Tirei10 — compartilhe duvidas, dicas e conquistas em tempo real</p>
             </div>
             {userId && (
               <button
@@ -319,7 +324,7 @@ export default function ComunidadePage() {
           <div className="flex items-center gap-2 mb-4">
             <span className="inline-flex items-center gap-1.5 bg-green-50 text-green-700 text-xs px-3 py-1 rounded-full border border-green-200 font-medium">
               <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse inline-block"></span>
-              Forum ao vivo \u2014 {posts.length} {posts.length === 1 ? 'post' : 'posts'}
+              Forum ao vivo — {posts.length} {posts.length === 1 ? 'post' : 'posts'}
             </span>
           </div>
 
