@@ -15,6 +15,16 @@ interface ForumPost {
   created_at: string;
 }
 
+interface ForumReply {
+  id: string;
+  post_id: string;
+  user_id: string;
+  user_name: string;
+  content: string;
+  likes: number;
+  created_at: string;
+}
+
 const categories = ['Todos', 'ENEM', 'Vestibular', 'Concursos', 'Dicas', 'Conquistas', 'Duvidas', 'OAB', 'CPA-20'];
 
 function timeAgo(dateStr: string): string {
@@ -25,7 +35,9 @@ function timeAgo(dateStr: string): string {
   if (diff < 3600) return Math.floor(diff / 60) + ' min atras';
   if (diff < 86400) return Math.floor(diff / 3600) + 'h atras';
   if (diff < 604800) return Math.floor(diff / 86400) + 'd atras';
-  return date.toLocaleDateString('pt-BR');
+  if (diff < 2592000) return Math.floor(diff / 604800) + ' sem atras';
+  if (diff < 31536000) return Math.floor(diff / 2592000) + ' mes atras';
+  return Math.floor(diff / 31536000) + ' ano atras';
 }
 
 export default function ComunidadePage() {
@@ -42,6 +54,11 @@ export default function ComunidadePage() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [expandedReplies, setExpandedReplies] = useState<Set<string>>(new Set());
+  const [repliesMap, setRepliesMap] = useState<Record<string, ForumReply[]>>({});
+  const [replyContent, setReplyContent] = useState<Record<string, string>>({});
+  const [submittingReply, setSubmittingReply] = useState<string | null>(null);
+  const [loadingReplies, setLoadingReplies] = useState<Set<string>>(new Set());
   const channelRef = useRef<ReturnType<ReturnType<typeof createClient>['channel']> | null>(null);
   const supabase = createClient();
 
@@ -77,6 +94,72 @@ export default function ComunidadePage() {
     } catch {
       setError('Erro de conexao. Tente novamente.');
     }
+  };
+
+  const fetchReplies = async (postId: string) => {
+    setLoadingReplies((prev) => new Set(prev).add(postId));
+    try {
+      const { data, error: fetchError } = await supabase
+        .from('forum_replies')
+        .select('id, post_id, user_id, content, likes, created_at')
+        .eq('post_id', postId)
+        .order('created_at', { ascending: true });
+
+      if (!fetchError && data) {
+        const mapped: ForumReply[] = data.map((r: Record<string, unknown>) => ({
+          id: r.id as string,
+          post_id: r.post_id as string,
+          user_id: r.user_id as string,
+          user_name: (r.user_name as string) || 'Usuario',
+          content: r.content as string,
+          likes: r.likes as number,
+          created_at: r.created_at as string,
+        }));
+        setRepliesMap((prev) => ({ ...prev, [postId]: mapped }));
+      }
+    } catch {}
+    setLoadingReplies((prev) => { const s = new Set(prev); s.delete(postId); return s; });
+  };
+
+  const toggleReplies = async (postId: string) => {
+    const newExpanded = new Set(expandedReplies);
+    if (newExpanded.has(postId)) {
+      newExpanded.delete(postId);
+    } else {
+      newExpanded.add(postId);
+      if (!repliesMap[postId]) {
+        await fetchReplies(postId);
+      }
+    }
+    setExpandedReplies(newExpanded);
+  };
+
+  const handleSubmitReply = async (postId: string) => {
+    const content = replyContent[postId]?.trim();
+    if (!content || !userId) return;
+    setSubmittingReply(postId);
+    try {
+      const { error: insertError } = await supabase
+        .from('forum_replies')
+        .insert([{
+          post_id: postId,
+          user_id: userId,
+          content,
+          likes: 0,
+        }]);
+
+      if (!insertError) {
+        setReplyContent((prev) => ({ ...prev, [postId]: '' }));
+        await fetchReplies(postId);
+        const post = posts.find((p) => p.id === postId);
+        if (post) {
+          const newCount = post.replies_count + 1;
+          await supabase.from('forum_posts').update({ replies_count: newCount }).eq('id', postId);
+          setPosts((prev) => prev.map((p) => p.id === postId ? { ...p, replies_count: newCount } : p));
+        }
+      }
+    } catch {}
+    setSubmittingReply(null);
   };
 
   useEffect(() => {
@@ -129,7 +212,7 @@ export default function ComunidadePage() {
         table: 'forum_posts',
       }, (payload: { new: Record<string, unknown> }) => {
         const updated = payload.new;
-        setPosts((prev) => prev.map((p) => (p.id === updated.id ? { ...p, likes: updated.likes as number } : p)));
+        setPosts((prev) => prev.map((p) => (p.id === updated.id ? { ...p, likes: updated.likes as number, replies_count: updated.replies_count as number } : p)));
       })
       .subscribe();
 
@@ -201,7 +284,7 @@ export default function ComunidadePage() {
 
   const handleShare = async (post: ForumPost) => {
     const url = window.location.origin + '/dashboard/comunidade';
-    const text = '"' + post.content.substring(0, 100) + '..." — Tirei10 Comunidade';
+    const text = '"' + post.content.substring(0, 100) + '..." \u2014 Tirei10 Comunidade';
     if (navigator.share) {
       try { await navigator.share({ title: 'Tirei10 Comunidade', text, url }); } catch {}
     } else {
@@ -221,7 +304,7 @@ export default function ComunidadePage() {
           <div className="flex items-center justify-between mb-8">
             <div>
               <h1 className="text-3xl font-bold text-gray-900">Comunidade</h1>
-              <p className="text-gray-600 mt-1">Forum da Tirei10 — compartilhe duvidas, dicas e conquistas em tempo real</p>
+              <p className="text-gray-600 mt-1">Forum da Tirei10 \u2014 compartilhe duvidas, dicas e conquistas em tempo real</p>
             </div>
             {userId && (
               <button
@@ -236,7 +319,7 @@ export default function ComunidadePage() {
           <div className="flex items-center gap-2 mb-4">
             <span className="inline-flex items-center gap-1.5 bg-green-50 text-green-700 text-xs px-3 py-1 rounded-full border border-green-200 font-medium">
               <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse inline-block"></span>
-              Forum ao vivo — {posts.length} {posts.length === 1 ? 'post' : 'posts'}
+              Forum ao vivo \u2014 {posts.length} {posts.length === 1 ? 'post' : 'posts'}
             </span>
           </div>
 
@@ -319,48 +402,130 @@ export default function ComunidadePage() {
             </div>
           ) : filteredPosts.length === 0 ? (
             <div className="text-center py-16 text-gray-400">
-              <p className="text-5xl mb-3">💬</p>
+              <p className="text-5xl mb-3">&#128172;</p>
               <p className="font-medium text-gray-500">Nenhum post nesta categoria ainda.</p>
               <p className="text-sm mt-1">Seja o primeiro a publicar!</p>
             </div>
           ) : (
             <div className="space-y-4">
               {filteredPosts.map((post) => (
-                <div key={post.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:border-indigo-100 transition-colors">
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center flex-shrink-0">
-                        <span className="text-indigo-600 font-semibold text-sm">
-                          {post.user_name.charAt(0).toUpperCase()}
+                <div key={post.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 hover:border-indigo-100 transition-colors">
+                  <div className="p-6">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center flex-shrink-0">
+                          <span className="text-indigo-600 font-semibold text-sm">
+                            {post.user_name.charAt(0).toUpperCase()}
+                          </span>
+                        </div>
+                        <div>
+                          <p className="font-semibold text-gray-900 text-sm">{post.user_name}</p>
+                          <p className="text-xs text-gray-400">{timeAgo(post.created_at)}</p>
+                        </div>
+                      </div>
+                      {post.exam_tag && (
+                        <span className="bg-indigo-50 text-indigo-700 text-xs px-3 py-1 rounded-full font-medium flex-shrink-0">
+                          {post.exam_tag}
                         </span>
-                      </div>
-                      <div>
-                        <p className="font-semibold text-gray-900 text-sm">{post.user_name}</p>
-                        <p className="text-xs text-gray-400">{timeAgo(post.created_at)}</p>
-                      </div>
+                      )}
                     </div>
-                    {post.exam_tag && (
-                      <span className="bg-indigo-50 text-indigo-700 text-xs px-3 py-1 rounded-full font-medium flex-shrink-0">
-                        {post.exam_tag}
-                      </span>
-                    )}
+                    <p className="text-gray-700 text-sm leading-relaxed mb-4">{post.content}</p>
+                    <div className="flex items-center gap-4">
+                      <button
+                        onClick={() => handleLike(post.id)}
+                        disabled={!userId}
+                        className={'flex items-center gap-1.5 transition-colors text-sm font-medium ' + (likedPosts.has(post.id) ? 'text-red-500 hover:text-red-700' : 'text-gray-500 hover:text-red-500')}
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill={likedPosts.has(post.id) ? 'currentColor' : 'none'} viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                        </svg>
+                        {post.likes}
+                      </button>
+                      <button
+                        onClick={() => toggleReplies(post.id)}
+                        className="flex items-center gap-1.5 text-gray-500 hover:text-indigo-600 transition-colors text-sm font-medium"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                        </svg>
+                        {post.replies_count > 0 ? post.replies_count + ' ' + (post.replies_count === 1 ? 'resposta' : 'respostas') : 'Responder'}
+                        {expandedReplies.has(post.id) ? (
+                          <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3 ml-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" /></svg>
+                        ) : (
+                          <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3 ml-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                        )}
+                      </button>
+                      <button
+                        onClick={() => handleShare(post)}
+                        className="flex items-center gap-1.5 text-gray-500 hover:text-indigo-600 transition-colors text-sm"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                        </svg>
+                        {shareMsg === post.id ? 'Link copiado!' : 'Compartilhar'}
+                      </button>
+                    </div>
                   </div>
-                  <p className="text-gray-700 text-sm leading-relaxed mb-4">{post.content}</p>
-                  <div className="flex items-center gap-4">
-                    <button
-                      onClick={() => handleLike(post.id)}
-                      disabled={!userId}
-                      className={'flex items-center gap-1 transition-colors text-sm font-medium ' + (likedPosts.has(post.id) ? 'text-red-500 hover:text-red-700' : 'text-gray-500 hover:text-red-500')}
-                    >
-                      {likedPosts.has(post.id) ? 'liked' : 'like'} {post.likes}
-                    </button>
-                    <button
-                      onClick={() => handleShare(post)}
-                      className="flex items-center gap-1 text-gray-500 hover:text-indigo-600 transition-colors text-sm"
-                    >
-                      {shareMsg === post.id ? 'Link copiado!' : 'Compartilhar'}
-                    </button>
-                  </div>
+
+                  {expandedReplies.has(post.id) && (
+                    <div className="border-t border-gray-100 bg-gray-50 rounded-b-2xl px-6 py-4">
+                      {loadingReplies.has(post.id) ? (
+                        <div className="flex justify-center py-4">
+                          <div className="w-5 h-5 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+                        </div>
+                      ) : (
+                        <div className="space-y-3">
+                          {(repliesMap[post.id] || []).length === 0 && (
+                            <p className="text-sm text-gray-400 text-center py-2">Nenhuma resposta ainda. Seja o primeiro!</p>
+                          )}
+                          {(repliesMap[post.id] || []).map((reply) => (
+                            <div key={reply.id} className="flex gap-3">
+                              <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <span className="text-purple-600 font-semibold text-xs">
+                                  {reply.user_name.charAt(0).toUpperCase()}
+                                </span>
+                              </div>
+                              <div className="flex-1 bg-white rounded-xl p-3 border border-gray-100">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <span className="font-semibold text-gray-900 text-xs">{reply.user_name}</span>
+                                  <span className="text-gray-400 text-xs">{timeAgo(reply.created_at)}</span>
+                                </div>
+                                <p className="text-gray-700 text-sm leading-relaxed">{reply.content}</p>
+                              </div>
+                            </div>
+                          ))}
+                          {userId && (
+                            <div className="flex gap-3 mt-3 pt-3 border-t border-gray-200">
+                              <div className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <span className="text-indigo-600 font-semibold text-xs">
+                                  {userName.charAt(0).toUpperCase()}
+                                </span>
+                              </div>
+                              <div className="flex-1">
+                                <textarea
+                                  value={replyContent[post.id] || ''}
+                                  onChange={(e) => setReplyContent((prev) => ({ ...prev, [post.id]: e.target.value }))}
+                                  placeholder="Escreva sua resposta..."
+                                  className="w-full border border-gray-200 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none bg-white"
+                                  rows={2}
+                                  maxLength={1000}
+                                />
+                                <div className="flex justify-end mt-2">
+                                  <button
+                                    onClick={() => handleSubmitReply(post.id)}
+                                    disabled={!replyContent[post.id]?.trim() || submittingReply === post.id}
+                                    className="bg-indigo-600 text-white px-4 py-1.5 rounded-lg text-xs font-medium hover:bg-indigo-700 disabled:opacity-50 transition-colors"
+                                  >
+                                    {submittingReply === post.id ? 'Enviando...' : 'Responder'}
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
