@@ -13,7 +13,7 @@ import { useEffect, useRef, useState } from 'react';
 // Alert: #F59E0B (Âmbar)
 // White: #FFFFFF
 
-function AnimatedCounter({ // NOSONAR target, suffix = '', duration = 2000 }: { target: number; suffix?: string; duration?: number }) {
+function AnimatedCounter({ target, suffix = '', duration = 2000 }: { target: number; suffix?: string; duration?: number }) {
   const [count, setCount] = useState(0);
   const [started, setStarted] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -63,7 +63,7 @@ function BarChart() {
   ];
   return (
     <div ref={ref} className="flex items-end gap-2 h-28 px-1">
-      {bars.map((bar) => (
+      {bars.map((bar, i) => (
         <div key={bar.label} className="flex flex-col items-center gap-1 flex-1">
           <span className="text-xs font-bold" style={{ color: '#6D28D9' }}>{bar.value}%</span>
           <div className="w-full rounded-t-md transition-all duration-700 ease-out" style={{ height: anim ? bar.value + '%' : '0%', background: 'linear-gradient(to top, #5B21B6, #9333ea)', transitionDelay: (i * 80) + 'ms' }} />
@@ -94,7 +94,7 @@ function MateriasChart() {
   ];
   return (
     <div ref={ref} className="space-y-4">
-      {materias.map((m) => (
+      {materias.map((m, i) => (
         <div key={m.name}>
           <div className="flex justify-between text-xs mb-1.5">
             <span style={{ color: '#111827' }} className="font-medium">{m.name}</span>
@@ -149,7 +149,7 @@ export default function Home() {
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight" style={{ color: '#111827' }}>
                   Estude com{' '}
                   <span style={{ background: 'linear-gradient(135deg, #6D28D9, #0E7490)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
-                    Inteligência Artificial {/* NOSONAR */}
+                    Inteligência Artificial
                   </span>
                   {' '}e tire{' '}
                   <span style={{ color: '#6D28D9' }}>10</span>
@@ -241,7 +241,7 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {[
                 { icon: '🤖', bg: '#F5F3FF', iconBg: '#6D28D9', title: 'IA Adaptativa', desc: 'Nosso assistente powered by Claude AI aprende com seu estilo de estudo e adapta o conteúdo às suas necessidades específicas.' },
-                { icon: '📊', bg: '#F0FDFF', iconBg: '#0E7490', title: 'Analytics em Tempo Real', desc: 'Acompanhe seu progresso com métricas detalhadas, relatórios personalizados e insights gerados por Inteligência Artificial {/* NOSONAR */}.' },
+                { icon: '📊', bg: '#F0FDFF', iconBg: '#0E7490', title: 'Analytics em Tempo Real', desc: 'Acompanhe seu progresso com métricas detalhadas, relatórios personalizados e insights gerados por inteligência artificial.' },
                 { icon: '🎯', bg: '#F0FDF4', iconBg: '#16a34a', title: 'Foco no Resultado', desc: 'Simulados cronometrados, questões adaptativas e planos de estudo otimizados para maximizar suas chances de aprovação.' },
               ].map((feature) => (
                 <div key={feature.title} className="rounded-2xl p-8 border hover:-translate-y-2 transition-all duration-300 group cursor-default" style={{ background: feature.bg, borderColor: '#E9D5FF', boxShadow: '0 2px 16px rgba(109,40,217,0.06)' }}>
