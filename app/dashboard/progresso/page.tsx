@@ -8,7 +8,7 @@ import { createClient } from '@/lib/supabase/client'
 
 export default function ProgressoPage() {
   const router = useRouter()
-  const [stats, setStats] = useState({
+  const [stats, setStats] = useState({h
     totalAnswered: 0,
     totalCorrect: 0,
     weeklyData: [] as {date: string, count: number}[],
@@ -20,7 +20,7 @@ export default function ProgressoPage() {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) { window.location.href = '/login'; return }
+      if (!session) { globalThis.location.href = '/login'; return }
       loadProgress(session.user.id)
     })
   }, [])
