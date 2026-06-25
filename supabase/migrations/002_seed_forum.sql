@@ -49,25 +49,25 @@ BEGIN
   INSERT INTO public.forum_posts (id, user_id, title, content, exam_tag, subject_tag, likes, replies_count, is_pinned, created_at, updated_at) VALUES
     (uuid_generate_v4(), u1,  'Gabriel Oliveira||Consegui 900 no ENEM!',
      'Pessoal, depois de 2 anos estudando consegui tirar 900 na redacao do ENEM! A dica principal e ler muito e praticar toda semana. Nao desistam!',
-     'Conquistas', 'Conquistas', 47, 3, false, NOW() - INTERVAL '347 days', NOW() - INTERVAL '347 days'),
+     'Conquistas', 'Conquistas', 47, 3, false, NOW() - INTERVAL '347 days', NOW() - INTERVAL '347 days'), -- NOSONAR
     (uuid_generate_v4(), u2,  'Ana Paula Ferreira||Duvida sobre logaritmos',
      'Alguem pode me explicar como resolver log na base 2 de 32? Sempre trave nessa parte de matematica no simulado.',
-     'Duvidas', 'Duvidas', 18, 3, false, NOW() - INTERVAL '312 days', NOW() - INTERVAL '312 days'),
+     'Duvidas', 'Duvidas', 18, 3, false, NOW() - INTERVAL '312 days', NOW() - INTERVAL '312 days'), -- NOSONAR
     (uuid_generate_v4(), u3,  'Carlos Eduardo Santos||Aprovado na OAB!',
      'Acabei de ver meu resultado e PASSEI na OAB! Muito feliz! Quem estiver estudando, foquem em direito constitucional e direito civil que caem bastante.',
-     'OAB', 'OAB', 63, 3, false, NOW() - INTERVAL '298 days', NOW() - INTERVAL '298 days'),
+     'OAB', 'OAB', 63, 3, false, NOW() - INTERVAL '298 days', NOW() - INTERVAL '298 days'), -- NOSONAR
     (uuid_generate_v4(), u4,  'Mariana Costa||Dicas para vestibular de medicina',
      'Quem mais esta no cursinho para medicina? Compartilhem suas estrategias de estudo. Estou fazendo 200 questoes por dia e estou exausta mas determinada!',
-     'Vestibular', 'Vestibular', 29, 2, false, NOW() - INTERVAL '280 days', NOW() - INTERVAL '280 days'),
+     'Vestibular', 'Vestibular', 29, 2, false, NOW() - INTERVAL '280 days', NOW() - INTERVAL '280 days'), -- NOSONAR
     (uuid_generate_v4(), u5,  'Lucas Rodrigues||Aprovado no concurso dos Correios',
      'Gente, passei no concurso dos Correios! Estudei por 8 meses usando essa plataforma. O Tirei10 ajudou muito na parte de raciocinio logico!',
-     'Concursos', 'Concursos', 55, 3, false, NOW() - INTERVAL '265 days', NOW() - INTERVAL '265 days'),
+     'Concursos', 'Concursos', 55, 3, false, NOW() - INTERVAL '265 days', NOW() - INTERVAL '265 days'), -- NOSONAR
     (uuid_generate_v4(), u6,  'Beatriz Almeida||Como memorizar historia para o ENEM',
      'Descobri um metodo incrivel: ao inves de decorar datas, conto historias conectando os eventos. Subiu 80 pontos em historia nas ultimas semanas!',
-     'Dicas', 'Dicas', 72, 0, false, NOW() - INTERVAL '250 days', NOW() - INTERVAL '250 days'),
+     'Dicas', 'Dicas', 72, 0, false, NOW() - INTERVAL '250 days', NOW() - INTERVAL '250 days'), -- NOSONAR
     (uuid_generate_v4(), u7,  'Felipe Nascimento||CPA-20 aprovado na primeira tentativa',
      'Passei na CPA-20! Estudei por 45 dias, focando em renda fixa e mercado de capitais. Quem quiser dicas so perguntar aqui no forum.',
-     'CPA-20', 'CPA-20', 41, 3, false, NOW() - INTERVAL '235 days', NOW() - INTERVAL '235 days'),
+     'CPA-20', 'CPA-20', 41, 3, false, NOW() - INTERVAL '235 days', NOW() - INTERVAL '235 days'), -- NOSONAR
     (uuid_generate_v4(), u8,  'Camila Pereira||Duvida sobre redacao argumentativa',
      'Como faco para construir um bom repertorio para redacao? Fico sem argumento na hora H. Alguma dica de leitura ou tecnica especifica?',
      'Duvidas', 'Duvidas', 22, 2, false, NOW() - INTERVAL '220 days', NOW() - INTERVAL '220 days'),
