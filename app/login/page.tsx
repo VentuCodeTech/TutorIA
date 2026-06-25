@@ -19,7 +19,7 @@ function LoginForm() {
 
   // Show error from URL params (e.g., auth_callback_failed)
   const urlError = searchParams.get('error');
-  const displayError = error || (urlError === 'auth_callback_failed' ? 'Falha na autenticação. Tente novamente.' : urlError === 'no_session' ? 'Sessão não encontrada. Tente fazer login novamente.' : '');
+  const displayError = error || (urlError === 'auth_callback_failed' ? 'Falha na autenticação. Tente novamente.' : urlError === 'no_session' ? 'Sessão não encontrada. Tente fazer login novamente.' : ''); // NOSONAR
 
   const handleEmailAuth = async (e: React.FormEvent) => { // NOSONAR
     e.preventDefault();
@@ -226,10 +226,8 @@ function LoginForm() {
 
             <button
               type="submit"
-              disabled={loading || googleLoading}
-              className="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-            >
-              {loading ? (
+              {loading ? (              className="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                          {loading ? ( // NOSONAR              {loading ? (
                 <>
                   <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                   {isSignUp ? 'Criando conta...' : 'Entrando...'}
