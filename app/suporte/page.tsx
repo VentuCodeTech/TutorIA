@@ -93,8 +93,8 @@ export default function SuportePage() {
                   q: 'Esqueci minha senha. O que devo fazer?',
                   a: 'Na página de login, clique em "Esqueci minha senha" e informe seu e-mail. Você receberá um link para redefinir sua senha em até 5 minutos.'
                 }
-              ].map((item, i) => (
-                <div key={i} className="border-b pb-4 last:border-0 last:pb-0" style={{ borderColor: '#f3e8ff' }}>
+              ].map((item) => (
+                <div key={item.q} className="border-b pb-4 last:border-0 last:pb-0" style={{ borderColor: '#f3e8ff' }}>
                   <h3 className="font-semibold mb-2" style={{ color: '#1e1b4b' }}>❓ {item.q}</h3>
                   <p className="leading-relaxed" style={{ color: '#6b7280' }}>{item.a}</p>
                 </div>
