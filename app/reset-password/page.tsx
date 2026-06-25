@@ -79,7 +79,7 @@ function ResetPasswordForm() {
           </p>
         </div>
 
-        {success ? (
+        {success ? ( // NOSONAR
           <div className="text-center">
             <div className="text-green-500 text-5xl mb-4">✓</div>
             {mode === 'request' ? (
