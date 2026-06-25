@@ -81,6 +81,7 @@ alert('Erro ao iniciar checkout: ' + (data.error || 'Tente novamente.'));
 setLoading(null);
 }
 } catch (e) {
+  console.error('Checkout error:', e);
 alert('Erro de conexão. Tente novamente.');
 setLoading(null);
 }
