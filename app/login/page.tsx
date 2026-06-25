@@ -33,7 +33,7 @@ function LoginForm() {
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/auth/callback`,
+            emailRedirectTo: `${globalThis.location.origin}/auth/callback`,
             data: {
               created_at: new Date().toISOString(),
             }
@@ -49,7 +49,7 @@ function LoginForm() {
           setEmail('');
           setPassword('');
         } else if (data.session) {
-          window.location.href = '/dashboard';
+          globalThis.location.href = '/dashboard';
         }
       } else {
         const { error } = await supabase.auth.signInWithPassword({
@@ -68,7 +68,7 @@ function LoginForm() {
           return;
         }
 
-        window.location.href = '/dashboard';
+        globalThis.location.href = '/dashboard';
       }
     } catch (err: unknown) {
       const error = err as Error;
@@ -86,7 +86,7 @@ function LoginForm() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo: `${globalThis.location.origin}/auth/callback`,
         },
       });
 
@@ -209,7 +209,7 @@ function LoginForm() {
                     }
                     setLoading(true);
                     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-                      redirectTo: `${window.location.origin}/auth/callback?next=/reset-password`,
+                      redirectTo: `${globalThis.location.origin}/auth/callback?next=/reset-password`,
                     });
                     setLoading(false);
                     if (error) {
