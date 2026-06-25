@@ -24,7 +24,6 @@ const planIcons: Record<string, string> = {
 export default function Dashboard() {
   const router = useRouter()
   const [userName, setUserName] = useState('Estudante')
-  const [userId, setUserId] = useState<string | null>(null)
   const [stats, setStats] = useState({
     streakDays: 0,
     questionsToday: 0,
@@ -37,9 +36,11 @@ export default function Dashboard() {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) { window.location.href = '/login'; return }
-      setUserId(session.user.id)
-      const name = session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'Estudante'
+      if (!session) {
+        globalThis.location.href = '/login'
+        return
+      }
+      const name = session.user.user_metadata?.full_name ?? session.user.email?.split('@')[0] ?? 'Estudante'
       setUserName(name)
       loadStats(session.user.id)
     })
@@ -61,13 +62,17 @@ export default function Dashboard() {
       const correct = allAnswers.filter(a => a.is_correct).length
       const accuracy = Math.round((correct / allAnswers.length) * 100)
 
-      // FIX: Calculate streak days (consecutive days with at least 1 question answered)
+      // Calculate streak days (consecutive days with at least 1 question answered)
       const seen: string[] = []
       const uniqueDays = allAnswers
         .filter(a => a.created_at)
         .map(a => a.created_at.split('T')[0])
-        .filter(d => { if (seen.includes(d)) return false; seen.push(d); return true; })
-        .sort()
+        .filter(d => {
+          if (seen.includes(d)) return false
+          seen.push(d)
+          return true
+        })
+        .sort((a, b) => a.localeCompare(b))
         .reverse()
       let streak = 0
       const nowDate = new Date()
@@ -113,8 +118,8 @@ export default function Dashboard() {
     { emoji: '🗣️', subject: 'Espanhol', path: '/dashboard/questoes?area=Espanhol', color: 'red' },
   ]
 
-  const planColor = planColors[planId] || planColors.free;
-  const planIcon = planIcons[planId] || '🆓';
+  const planColor = planColors[planId] ?? planColors.free;
+  const planIcon = planIcons[planId] ?? '🆓';
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50 to-purple-50">
