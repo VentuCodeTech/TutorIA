@@ -13,7 +13,7 @@ import { useEffect, useRef, useState } from 'react';
 // Alert: #F59E0B (Âmbar)
 // White: #FFFFFF
 
-function AnimatedCounter({ target, suffix = '', duration = 2000 }: { target: number; suffix?: string; duration?: number }) {
+function AnimatedCounter({ target, suffix = '', duration = 2000 }: Readonly<{ target: number; suffix?: string; duration?: number }>) {
   const [count, setCount] = useState(0);
   const [started, setStarted] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -151,7 +151,7 @@ export default function Home() {
                   <span style={{ background: 'linear-gradient(135deg, #6D28D9, #0E7490)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
                     Inteligência Artificial
                   </span>
-                  {' '}e tire{' '}
+                  {' e tire '}
                   <span style={{ color: '#6D28D9' }}>10</span>
                 </h1>
                 <p className="text-lg md:text-xl mb-8 leading-relaxed" style={{ color: '#6b7280' }}>
@@ -352,7 +352,7 @@ export default function Home() {
               ].map((t) => (
                 <div key={t.name} className="rounded-2xl p-6 border" style={{ background: t.color, borderColor: '#EDE9FE' }}>
                   <div className="flex gap-1 mb-3">
-                    {[...new Array(t.stars)].map((_, s) => <span key={'star-' + s} style={{ color: '#F59E0B' }}>★</span>)}
+                    {Array.from({ length: t.stars }, (_, s) => <span key={'star-' + s} style={{ color: '#F59E0B' }}>★</span>)}
                   </div>
                   <p className="text-sm leading-relaxed mb-4" style={{ color: '#374151' }}>"{t.text}"</p>
                   <div>
