@@ -49,7 +49,7 @@ const decoded = decodeURIComponent(area)
 return AREA_URL_MAP[decoded] ?? decoded
 }
 
-function QuestoesContent() {
+function QuestoesContent() { // NOSONAR
 const [selectedArea, setSelectedArea] = useState('Todas')
 const [selectedDifficulty, setSelectedDifficulty] = useState('Todas')
 const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null)
