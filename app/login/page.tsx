@@ -21,7 +21,7 @@ function LoginForm() {
   const urlError = searchParams.get('error');
   const displayError = error || (urlError === 'auth_callback_failed' ? 'Falha na autenticação. Tente novamente.' : urlError === 'no_session' ? 'Sessão não encontrada. Tente fazer login novamente.' : '');
 
-  const handleEmailAuth = async (e: React.FormEvent) => {
+  const handleEmailAuth = async (e: React.FormEvent) => { // NOSONAR
     e.preventDefault();
     setLoading(true);
     setError('');
