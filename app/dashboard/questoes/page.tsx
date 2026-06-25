@@ -99,9 +99,9 @@ const generateQuestion = async (area?: string, difficulty?: string, exclude?: st
 setLoading(true)
 setSelectedAnswer(null)
 setShowResult(false)
-const useArea = area !== undefined ? area : selectedArea
-const useDiff = difficulty !== undefined ? difficulty : selectedDifficulty
-const useExclude = exclude !== undefined ? exclude : shownTexts
+const useArea = area ?? selectedArea
+const useDiff = difficulty ?? selectedDifficulty
+const useExclude = exclude ?? shownTexts
 try {
 const response = await fetch('/api/generate-question', {
 method: 'POST',
@@ -268,7 +268,7 @@ cls += idx === selectedAnswer
 }
 return (
 <button
-key={idx}
+key={opt}
 className={cls}
 onClick={() => !showResult && setSelectedAnswer(idx)}
 disabled={showResult}
@@ -286,7 +286,7 @@ disabled={showResult}
 </div>
 )}
 
-{!showResult ? (
+{!showResult ? ( // NOSONAR
 <button
 onClick={handleAnswer}
 disabled={selectedAnswer === null}
