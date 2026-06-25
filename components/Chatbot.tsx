@@ -111,22 +111,22 @@ export default function Chatbot() {
                 const parseBold = (text: string) => {
                         const parts = text.split(/\*\*(.*?)\*\*/);
                         return parts.map((p, idx) =>
-                                idx % 2 === 1 ? <strong key={idx}>{p}</strong> : <span key={idx}>{p}</span>
+                                idx % 2 === 1 ? <strong key={'part-' + idx}>{p}</strong> : <span key={'part-' + idx}>{p}</span>
                         );
                 };
 
                 if (isHeader2) {
-                        return <p key={i} className="font-bold text-base mt-2 mb-1">{parseBold(line.slice(3))}</p>;
+                        return <p key={'line-' + i} className="font-bold text-base mt-2 mb-1">{parseBold(line.slice(3))}</p>;
                 } else if (isHeader3) {
-                        return <p key={i} className="font-semibold mt-1 mb-1">{parseBold(line.slice(4))}</p>;
+                        return <p key={'line-' + i} className="font-semibold mt-1 mb-1">{parseBold(line.slice(4))}</p>;
                 } else if (isBullet) {
-                        return <div key={i} className="flex gap-1 ml-2"><span>•</span><span>{parseBold(line.slice(2))}</span></div>;
+                        return <div key={'line-' + i} className="flex gap-1 ml-2"><span>•</span><span>{parseBold(line.slice(2))}</span></div>;
                 } else if (isNumbered) {
-                        return <div key={i} className="ml-2">{parseBold(line)}</div>;
+                        return <div key={'line-' + i} className="ml-2">{parseBold(line)}</div>;
                 } else if (line.trim() === '') {
-                        return i < lines.length - 1 ? <br key={i} /> : null;
+                        return i < lines.length - 1 ? <br key={'line-' + i} /> : null;
                 } else {
-                        return <span key={i}>{parseBold(line)}{i < lines.length - 1 && <br />}</span>;
+                        return <span key={'line-' + i}>{parseBold(line)}{i < lines.length - 1 && <br />}</span>;
                 }
         }).filter(Boolean);
   };;
