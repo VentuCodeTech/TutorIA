@@ -288,7 +288,7 @@ export default function ComunidadePage() {
   };
 
   const handleShare = async (post: ForumPost) => {
-    const url = window.location.origin + '/dashboard/comunidade';
+    const url = globalThis.location.origin + '/dashboard/comunidade';
     const text = '"' + post.content.substring(0, 100) + '..." — Tirei10 Comunidade';
     if (navigator.share) {
       try { await navigator.share({ title: 'Tirei10 Comunidade', text, url }); } catch {}
