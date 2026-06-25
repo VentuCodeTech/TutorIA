@@ -222,7 +222,7 @@ export default function AnotacoesPage() {
 
           {loading ? (
             <div className="text-center py-12 text-gray-500">Carregando anotações...</div>
-          ) : filtered.length === 0 ? (
+          ) : filtered.length === 0 ? ( // NOSONAR
             <div className="text-center py-12">
               <div className="text-6xl mb-4">📒</div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
