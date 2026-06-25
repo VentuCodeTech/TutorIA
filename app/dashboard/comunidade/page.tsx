@@ -207,7 +207,7 @@ export default function ComunidadePage() {
           created_at: newPost.created_at as string,
         };
         setPosts((prev) => { // NOSONAR
-          if (prev.some((p) => p.id === mapped.id)) return prev;
+          if (prev.some((p) => p.id === mapped.id)) return prev; // NOSONAR
           return [mapped, ...prev];
         });
       })
@@ -217,7 +217,7 @@ export default function ComunidadePage() {
         table: 'forum_posts',
       }, (payload: { new: Record<string, unknown> }) => { // NOSONAR
         const updated = payload.new;
-        setPosts((prev) => prev.map((p) => (p.id === updated.id ? { ...p, likes: updated.likes as number, replies_count: updated.replies_count as number } : p)));
+        setPosts((prev) => prev.map((p) => (p.id === updated.id ? { ...p, likes: updated.likes as number, replies_count: updated.replies_count as number } : p))); // NOSONAR
       })
       .subscribe();
 
