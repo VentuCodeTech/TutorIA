@@ -203,7 +203,10 @@ export default function PlanoEstudosPage() {
 
   const loadPlanAndPerformance = useCallback(async () => {
     const { data: { session } } = await supabase.auth.getSession()
-    if (!session) { window.location.href = '/login'; return }
+    if (!session) {
+    globalThis.location.href = '/login'
+    return
+  }
 
     const userId = session.user.id
 
@@ -238,10 +241,10 @@ export default function PlanoEstudosPage() {
 
       if (perfData.length > 0) {
         const merged = mergeWithPerformance(plan.materias_fracas, plan.materias_fortes, perfData, plan.vestibular)
-        const sortedMergedFracas = merged.materiasFracas.slice().sort()
-        const sortedPlanFracas = plan.materias_fracas.slice().sort()
-        const sortedMergedFortes = merged.materiasFortes.slice().sort()
-        const sortedPlanFortes = plan.materias_fortes.slice().sort()
+        const sortedMergedFracas = merged.materiasFracas.slice().sort((a, b) => a.localeCompare(b, 'pt-BR'))
+        const sortedPlanFracas = plan.materias_fracas.slice().sort((a, b) => a.localeCompare(b, 'pt-BR'))
+        const sortedMergedFortes = merged.materiasFortes.slice().sort((a, b) => a.localeCompare(b, 'pt-BR'))
+        const sortedPlanFortes = plan.materias_fortes.slice().sort((a, b) => a.localeCompare(b, 'pt-BR'))
         const changed = JSON.stringify(sortedMergedFracas) !== JSON.stringify(sortedPlanFracas) ||
           JSON.stringify(sortedMergedFortes) !== JSON.stringify(sortedPlanFortes)
         setHasPerformanceUpdates(changed)
