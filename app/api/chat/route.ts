@@ -14,26 +14,26 @@ CAPACIDADES DE ANÁLISE DE ARQUIVOS
 Quando o usuário enviar um arquivo (imagem, PDF ou Word), você deve:
 
 1. REDAÇÕES (texto manuscrito ou digitado):
-   - Analise o texto completo
-   - Avalie: Competência 1 (Domínio da norma culta), Competência 2 (Compreensão da proposta), Competência 3 (Seleção e organização de informações), Competência 4 (Mecanismos linguísticos), Competência 5 (Proposta de intervenção)
-   - Para cada competência: nota de 0 a 200 e comentário específico
-   - Aponte erros gramaticais, ortográficos e de pontuação com citações do texto
-   - Sugira melhorias concretas
-   - Calcule nota final (0-1000) e classifique o nível
+- Analise o texto completo
+- Avalie: Competência 1 (Domínio da norma culta), Competência 2 (Compreensão da proposta), Competência 3 (Seleção e organização de informações), Competência 4 (Mecanismos linguísticos), Competência 5 (Proposta de intervenção)
+- Para cada competência: nota de 0 a 200 e comentário específico
+- Aponte erros gramaticais, ortográficos e de pontuação com citações do texto
+- Sugira melhorias concretas
+- Calcule nota final (0-1000) e classifique o nível
 
 2. QUESTÕES / EXERCÍCIOS (imagem ou documento com questões):
-   - Identifique cada questão presente
-   - Resolva passo a passo, de forma didática
-   - Explique o raciocínio por trás de cada etapa
-   - Indique a resposta correta quando for múltipla escolha
+- Identifique cada questão presente
+- Resolva passo a passo, de forma didática
+- Explique o raciocínio por trás de cada etapa
+- Indique a resposta correta quando for múltipla escolha
 
 3. ANOTAÇÕES / RESUMOS DO ESTUDANTE:
-   - Complemente com informações adicionais relevantes
-   - Corrija eventuais erros conceituais
-   - Sugira organização e tópicos que faltaram
+- Complemente com informações adicionais relevantes
+- Corrija eventuais erros conceituais
+- Sugira organização e tópicos que faltaram
 
 4. OUTROS DOCUMENTOS:
-   - Analise o conteúdo e responda à pergunta do usuário sobre ele
+- Analise o conteúdo e responda à pergunta do usuário sobre ele
 
 ====================
 SOBRE A PLATAFORMA TIREI10
@@ -50,32 +50,32 @@ CANAIS DE SUPORTE OFICIAIS:
 PLANOS DISPONÍVEIS
 ====================
 1. GRATUITO (Free):
-   - 20 questões por dia
-   - Acesso às matérias básicas
-   - Dashboard simplificado
-   - Participação na comunidade
-   - Sem necessidade de cartão de crédito
+- 20 questões por dia
+- Acesso às matérias básicas
+- Dashboard simplificado
+- Participação na comunidade
+- Sem necessidade de cartão de crédito
 
 2. STANDARD:
-   - Questões ilimitadas
-   - Todas as matérias e áreas de estudo
-   - Assistente IA com até 50 mensagens por dia
-   - Simulados completos
-   - Plano de estudos personalizado
+- Questões ilimitadas
+- Todas as matérias e áreas de estudo
+- Assistente IA com até 50 mensagens por dia
+- Simulados completos
+- Plano de estudos personalizado
 
 3. STUDENT (mais popular):
-   - Tudo do Standard
-   - Assistente IA ilimitado
-   - Integração com Google Calendar
-   - Chat ao vivo com suporte
-   - Acesso prioritário a novos recursos
+- Tudo do Standard
+- Assistente IA ilimitado
+- Integração com Google Calendar
+- Chat ao vivo com suporte
+- Acesso prioritário a novos recursos
 
 4. ADVANCED PRO:
-   - Tudo do Student
-   - Modelo de IA mais avançado (Claude Sonnet)
-   - Respostas mais longas e detalhadas
-   - Suporte prioritário
-   - Recursos exclusivos beta
+- Tudo do Student
+- Modelo de IA mais avançado (Claude Sonnet)
+- Respostas mais longas e detalhadas
+- Suporte prioritário
+- Recursos exclusivos beta
 
 Para fazer upgrade: acesse "Planos" no menu lateral do dashboard.
 O upgrade é ativado imediatamente após o pagamento (processado via Stripe com segurança).
@@ -152,20 +152,26 @@ interface AttachmentPayload {
   userText?: string;
 }
 
-// Supported image MIME types for Claude vision
-const CLAUDE_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+// Supported image MIME types for Claude vision - using Set for O(1) lookup
+const CLAUDE_IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/gif', 'image/webp']);
+
+function getPromptText(attachment: AttachmentPayload, userText: string): string {
+  if (userText?.trim()) {
+    return userText;
+  }
+  if (attachment.type === 'image') {
+    return 'Por favor, analise este arquivo. Se for uma redação, corrija-a com as 5 competências do ENEM. Se forem questões, resolva-as passo a passo.';
+  }
+  return 'Por favor, analise este documento. Se for uma redação, corrija-a com as 5 competências do ENEM. Se forem questões, resolva-as passo a passo.';
+}
 
 function buildAttachmentUserContent(
   attachment: AttachmentPayload,
   userText: string,
 ): Anthropic.MessageParam['content'] {
-  const promptText = userText?.trim()
-    ? userText
-    : attachment.type === 'image'
-      ? 'Por favor, analise este arquivo. Se for uma redação, corrija-a com as 5 competências do ENEM. Se forem questões, resolva-as passo a passo.'
-      : 'Por favor, analise este documento. Se for uma redação, corrija-a com as 5 competências do ENEM. Se forem questões, resolva-as passo a passo.';
+  const promptText = getPromptText(attachment, userText);
 
-  if (attachment.type === 'image' && CLAUDE_IMAGE_TYPES.includes(attachment.mimeType)) {
+  if (attachment.type === 'image' && CLAUDE_IMAGE_TYPES.has(attachment.mimeType)) {
     // Extract raw base64 from data URL (strip "data:image/xxx;base64,")
     const base64 = attachment.data.includes(',') ? attachment.data.split(',')[1] : attachment.data;
     return [
@@ -181,7 +187,7 @@ function buildAttachmentUserContent(
     ];
   }
 
-  // PDF or Word — pass as base64 document block (Claude supports PDF natively)
+  // PDF — pass as base64 document block (Claude supports PDF natively)
   if (attachment.mimeType === 'application/pdf') {
     return [
       {
@@ -196,19 +202,27 @@ function buildAttachmentUserContent(
     ];
   }
 
-  // Word (.doc/.docx) — Claude cannot read binary Word natively;
-  // send a clear instruction asking the user for text if needed,
-  // but still include file info so the AI can inform the user.
+  // Word (.doc/.docx) — Claude cannot read binary Word natively
   return [
     {
       type: 'text',
-      text: `O usuário enviou um arquivo Word ("${attachment.name}"). Infelizmente não consigo ler arquivos .doc/.docx diretamente. Por favor, peça ao usuário que:
-1. Copie e cole o texto da redação/questão diretamente na conversa, ou
-2. Salve o arquivo como PDF e envie novamente.
-
-Caso o usuário tenha digitado alguma instrução adicional: "${promptText}"`,
+      text: `O usuário enviou um arquivo Word ("${attachment.name}"). Infelizmente não consigo ler arquivos .doc/.docx diretamente. Por favor, peça ao usuário que:\n1. Copie e cole o texto da redação/questão diretamente na conversa, ou\n2. Salve o arquivo como PDF e envie novamente.\n\nCaso o usuário tenha digitado alguma instrução adicional: "${promptText}"`,
     },
   ];
+}
+
+function getModel(effectivePlan: string): string {
+  if (effectivePlan === 'advanced_pro') {
+    return 'claude-sonnet-4-5';
+  }
+  return 'claude-haiku-4-5';
+}
+
+function getBaseTokens(effectivePlan: string): number {
+  if (effectivePlan === 'advanced_pro') return 2000;
+  if (effectivePlan === 'student') return 1200;
+  if (effectivePlan === 'standard') return 600;
+  return 300;
 }
 
 export async function POST(request: NextRequest) {
@@ -223,21 +237,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Messages array is required' }, { status: 400 });
     }
 
-    const effectivePlan = planId || 'free';
-
-    // Advanced Pro uses Sonnet; others use Haiku.
-    // For file analysis (vision/PDF), always use at least Haiku — it supports vision.
-    const model = effectivePlan === 'advanced_pro'
-      ? 'claude-sonnet-4-5'
-      : 'claude-haiku-4-5';
-
-    // Give more tokens when there's an attachment (longer analysis needed)
-    const baseTokens = effectivePlan === 'advanced_pro' ? 2000
-      : effectivePlan === 'student' ? 1200
-      : effectivePlan === 'standard' ? 600
-      : 300;
+    const effectivePlan = planId ?? 'free';
+    const model = getModel(effectivePlan);
+    const baseTokens = getBaseTokens(effectivePlan);
     const maxTokens = attachment ? Math.max(baseTokens, 1200) : baseTokens;
-
     const useCaching = effectivePlan !== 'free';
 
     const systemContent = useCaching
@@ -251,13 +254,13 @@ export async function POST(request: NextRequest) {
     }));
 
     // Build the current (last) user message — potentially with attachment
-    const lastMessage = messages[messages.length - 1];
+    const lastMessage = messages.at(-1);
     let currentUserContent: Anthropic.MessageParam['content'];
 
     if (attachment) {
-      currentUserContent = buildAttachmentUserContent(attachment, attachment.userText || lastMessage?.content || '');
+      currentUserContent = buildAttachmentUserContent(attachment, attachment.userText ?? lastMessage?.content ?? '');
     } else {
-      currentUserContent = lastMessage?.content || '';
+      currentUserContent = lastMessage?.content ?? '';
     }
 
     const claudeMessages: Anthropic.MessageParam[] = [
@@ -277,7 +280,7 @@ export async function POST(request: NextRequest) {
 
   } catch (error: unknown) {
     console.error('Chatbot API error:', error);
-    const errMsg = (error as Error).message || '';
+    const errMsg = (error as Error).message ?? '';
 
     if (errMsg.includes('overloaded') || errMsg.includes('529')) {
       return NextResponse.json({
@@ -299,4 +302,4 @@ export async function POST(request: NextRequest) {
       message: 'Ocorreu um erro inesperado. Por favor, tente novamente.',
     });
   }
-         }
+}
