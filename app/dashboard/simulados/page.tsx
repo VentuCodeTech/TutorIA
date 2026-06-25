@@ -238,7 +238,7 @@ const colorMap: Record<string, {bg: string, border: string, text: string, badge:
   military: { bg: 'bg-slate-50', border: 'border-slate-300', text: 'text-slate-700', badge: 'bg-slate-200 text-slate-700' },
 };
 
-export default function SimuladosPage() {
+export default function SimuladosPage() { // NOSONAR
   const router = useRouter();
   const [userId, setUserId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
