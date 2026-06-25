@@ -11,7 +11,7 @@ export default function CalendarioPage() {
   const [loading, setLoading] = useState(true);
   const [connected, setConnected] = useState(false);
   const [googleEmail, setGoogleEmail] = useState<string | null>(null);
-  const { planId, planName, features } = useUserPlan();
+  const { planName, features } = useUserPlan();
   const supabase = createClient();
 
   useEffect(() => {
