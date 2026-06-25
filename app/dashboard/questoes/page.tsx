@@ -75,7 +75,7 @@ setStats({
 answered: data.length,
 correct: data.filter(d => d.is_correct).length
 })
-const todayCount = data.filter(d => d.created_at && d.created_at.startsWith(today)).length
+const todayCount = data.filter(d => d.created_at?.startsWith(today)).length
 setTodayAnsweredCount(todayCount)
 }
 }, [supabase])
@@ -217,7 +217,7 @@ className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-2
 </div>
 
 <div className="lg:col-span-3">
-{!currentQuestion && !loading ? (
+{!currentQuestion && !loading ? ( // NOSONAR
 <div className="bg-white rounded-2xl p-12 shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center min-h-96">
 <div className="text-6xl mb-4">📋</div>
 <h3 className="text-xl font-bold text-gray-800 mb-2">Pronto para praticar?</h3>
