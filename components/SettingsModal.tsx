@@ -121,7 +121,7 @@ export default function SettingsModal({ // NOSONAR
 
       onNameChange(editName);
 
-      if (avatarPreview && avatarPreview.startsWith('data:')) {
+      if (avatarPreview?.startsWith('data:')) {
         const blob = await (await fetch(avatarPreview)).blob();
         const ext = blob.type.split('/')?.[1] || 'jpg';
         const filePath = 'avatars/' + user.id + '/avatar.' + ext;
@@ -199,7 +199,10 @@ export default function SettingsModal({ // NOSONAR
     <div className="fixed inset-0 z-[9999] flex items-center justify-center">
       <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-        onClick={onClose} // NOSONAR
+        onClick={onClose}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onClose(); }}
       />
 
       <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden">
