@@ -42,7 +42,7 @@ export default function VestibularPage() {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) { window.location.href = '/login'; return; }
+      if (!session) { globalThis.location.href = '/login'; return; }
       setUserId(session.user.id)
       loadPreference(session.user.id)
       setLoading(false)
