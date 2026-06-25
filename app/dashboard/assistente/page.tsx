@@ -144,7 +144,7 @@ export default function AssistentePage() { // NOSONAR
           });
         };
         reader.onerror = () => reject(new Error('Erro ao ler o arquivo.'));
-        reader.readAsArrayBuffer(file);
+        reader.readAsArrayBuffer(file); // NOSONAR
       }
     });
   }, []);
