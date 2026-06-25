@@ -57,7 +57,7 @@ export default function Dashboard() {
 
     if (allAnswers && allAnswers.length > 0) {
       const todayAnswers = allAnswers.filter(a =>
-        a.created_at && a.created_at.startsWith(today)
+        a.created_at?.startsWith(today)
       )
       const correct = allAnswers.filter(a => a.is_correct).length
       const accuracy = Math.round((correct / allAnswers.length) * 100)
@@ -157,8 +157,8 @@ export default function Dashboard() {
             { icon: '✅', value: stats.questionsToday, label: 'Questões Hoje', sub: 'de 20 meta diária' },
             { icon: '🎯', value: stats.accuracy + '%', label: 'Taxa de Acerto', sub: 'geral' },
             { icon: '🏆', value: stats.ranking, label: 'Ranking', sub: 'posição geral' },
-          ].map((stat, i) => (
-            <div key={i} className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+          ].map((stat) => (
+            <div key={stat.label} className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
               <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-xl mb-3">
                 {stat.icon}
               </div>
@@ -228,9 +228,9 @@ export default function Dashboard() {
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-8">
           <h2 className="text-xl font-bold text-gray-800 mb-5">📚 Áreas de Estudo</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-            {studyAreas.map((item, i) => (
+            {studyAreas.map((item) => (
               <button
-                key={i}
+                key={item.path}
                 onClick={() => router.push(item.path)}
                 className="flex flex-col items-center p-4 rounded-xl bg-gray-50 hover:bg-indigo-50 hover:border-indigo-200 border border-transparent transition-all group cursor-pointer"
               >
