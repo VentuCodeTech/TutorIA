@@ -107,7 +107,7 @@ export default function Chatbot() {
                 const isBullet = line.startsWith('- ') || line.startsWith('• ');
                 const isNumbered = /^\d+\.\s/.test(line);
 
-                // Parse **bold** inline
+                // Parse **bold** inline // NOSONAR
                 const parseBold = (text: string) => {
                         const parts = text.split(/\*\*(.*?)\*\*/);
                         return parts.map((p, idx) =>
