@@ -345,7 +345,7 @@ export default function OnboardingPage() {
             try {
               const { data: { user } } = await supabase.auth.getUser();
               if (user) await supabase.from('profiles').upsert({ id: user.id, onboarding_completed: true, updated_at: new Date().toISOString() }, { onConflict: 'id' });
-            } catch(e) {}
+            } catch { /* silently ignore profile update failure */ }
             router.push('/dashboard');
           }} className="text-sm transition-colors hover:underline" style={{ color: '#9ca3af' }}>
             Pular por agora →
