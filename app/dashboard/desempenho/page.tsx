@@ -234,8 +234,8 @@ export default function DesempenhoPage() {
                                                                             </select>
                                                             </div>
                                                             <div className="flex items-end gap-2 h-48">
-                                                                  {weeklyData.map((d, idx) => (
-                                                          <div key={idx} className="flex-1 flex flex-col items-center gap-1">
+                                                                  {weeklyData.map((d) => (
+                                                          <div key={d.day} className="flex-1 flex flex-col items-center gap-1">
                                                                               <div className="w-full flex flex-col items-center justify-end h-36">
                                                                                     {d.questions > 0 ? (
                                                                                         <div className="w-full bg-indigo-100 rounded-t-lg relative flex flex-col justify-end" style={{height: Math.round((d.questions / maxQ) * 100) + '%'}}>
