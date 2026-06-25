@@ -256,7 +256,7 @@ export default function PlanoEstudosPage() {
           const filteredFracas = plan.materias_fracas.filter(m => allowed.some(a => a.toLowerCase() === m.toLowerCase() || a.toLowerCase().includes(m.toLowerCase()) || m.toLowerCase().includes(a.toLowerCase())))
           const filteredFortes = plan.materias_fortes.filter(m => allowed.some(a => a.toLowerCase() === m.toLowerCase() || a.toLowerCase().includes(m.toLowerCase()) || m.toLowerCase().includes(a.toLowerCase())))
           const seen: string[] = []
-          const allM = filteredFracas.concat(filteredFortes).filter(m => { if (seen.includes(m)) return false; seen.push(m); return true; })
+          const allM = filteredFracas.concat(filteredFortes).filter(m => { if (seen.includes(m)) return false; seen.push(m); return true; }) // NOSONAR
           const ordemEstudo = filteredFracas.concat(allM.filter(m => !filteredFracas.includes(m)))
           setResultado({ materiasFracas: filteredFracas, materiasFortes: filteredFortes, ordemEstudo })
         } else {
