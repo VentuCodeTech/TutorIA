@@ -8,7 +8,7 @@ import { createClient } from '@/lib/supabase/client'
 
 export default function ProgressoPage() {
   const router = useRouter()
-  const [stats, setStats] = useState({h
+  const [stats, setStats] = useState({
     totalAnswered: 0,
     totalCorrect: 0,
     weeklyData: [] as {date: string, count: number}[],
