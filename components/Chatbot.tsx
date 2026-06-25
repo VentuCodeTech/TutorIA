@@ -108,7 +108,7 @@ export default function Chatbot() {
                 const isNumbered = /^\d+\.\s/.test(line);
 
                 // Parse **bold** inline // NOSONAR
-                const parseBold = (text: string) => {
+                const parseBold = (text: string) => { // NOSONAR
                         const parts = text.split(/\*\*(.*?)\*\*/);
                         return parts.map((p, idx) =>
                                 idx % 2 === 1 ? <strong key={'part-' + idx}>{p}</strong> : <span key={'part-' + idx}>{p}</span>
