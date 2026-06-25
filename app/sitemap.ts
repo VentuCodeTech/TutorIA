@@ -9,7 +9,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: baseUrl,
       lastModified,
       changeFrequency: 'weekly',
-      priority: 1.0,
+      priority: 1,
     },
     {
       url: `${baseUrl}/pricing`,
