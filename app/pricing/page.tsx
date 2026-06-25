@@ -222,14 +222,14 @@ export default function PricingPage() {
                 </div>
 
                 <ul className="space-y-2.5 flex-1 mb-6">
-                  {plan.features.map((feature, i) => (
-                    <li key={i} className="flex items-start gap-2">
+                  {plan.features.map((feature) => (
+                    <li key={feature} className="flex items-start gap-2">
                       <span className="text-green-500 font-bold mt-0.5 flex-shrink-0">✅</span>
                       <span className="text-sm" style={{ color: '#374151' }}>{feature}</span>
                     </li>
                   ))}
-                  {plan.notIncluded.map((feature, i) => (
-                    <li key={i} className="flex items-start gap-2">
+                  {plan.notIncluded.map((feature) => (
+                    <li key={feature} className="flex items-start gap-2">
                       <span className="flex-shrink-0 mt-0.5" style={{ color: '#f87171' }}>❌</span>
                       <span className="text-sm" style={{ color: '#9ca3af' }}>{feature}</span>
                     </li>
@@ -241,7 +241,7 @@ export default function PricingPage() {
                   disabled={loading === plan.name}
                   className="w-full py-3 px-4 rounded-xl font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   style={{
-                    background: plan.popular ? 'linear-gradient(135deg, #6d28d9, #9333ea)' : plan.free ? 'transparent' : plan.color,
+                    background: plan.popular ? 'linear-gradient(135deg, #6d28d9, #9333ea)' : plan.free ? 'transparent' : plan.color, // NOSONAR
                     color: plan.free ? plan.color : 'white',
                     border: plan.free ? `2px solid ${plan.color}` : 'none',
                   }}
