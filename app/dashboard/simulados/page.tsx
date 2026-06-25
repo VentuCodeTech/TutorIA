@@ -268,7 +268,7 @@ const { features } = useUserPlan();
       loadVestibularPref(session.user.id);
       setLoading(false);
     });
-    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+    return () => { if (timerRef.current) { clearInterval(timerRef.current); } };
   }, []);
 
   const loadVestibularPref = async (uid: string) => {
@@ -354,7 +354,7 @@ const { features } = useUserPlan();
     setGeneratingQuestions(false);
     timerRef.current = setInterval(() => {
       setTimeLeft(prev => {
-        if (prev <= 1) { if (timerRef.current) clearInterval(timerRef.current); return 0; }
+        if (prev <= 1) { if (timerRef.current) { clearInterval(timerRef.current); } return 0; }
         return prev - 1;
       });
     }, 1000);
@@ -374,7 +374,7 @@ const { features } = useUserPlan();
     setAnswers(newAnswers);
     setShowResult(true);
     if (currentQIndex + 1 >= simQuestions.length) {
-      if (timerRef.current) clearInterval(timerRef.current);
+      if (timerRef.current) { clearInterval(timerRef.current); }
       setTimeout(() => finishSimulado(simQuestions, newAnswers), 1500);
     }
   };
@@ -383,7 +383,7 @@ const { features } = useUserPlan();
 
   const finishSimulado = async (questions: Question[], finalAnswers: {correct: boolean; questionId: string}[]) => {
     setSimFinished(true);
-    if (timerRef.current) clearInterval(timerRef.current);
+    if (timerRef.current) { clearInterval(timerRef.current); }
     if (userId && activeSimulado && finalAnswers.length > 0) {
       const score = finalAnswers.filter(a => a.correct).length;
       const timeSpent = (activeSimulado.timeMinutes * 60) - timeLeft;
@@ -465,7 +465,7 @@ const { features } = useUserPlan();
               </div>
               <div className="flex items-center gap-4">
                 <div className={`text-xl font-bold font-mono ${timeLeft < 120 ? 'text-red-500 animate-pulse' : 'text-gray-700'}`}>⏱ {formatTime(timeLeft)}</div>
-                <button onClick={() => { if (timerRef.current) clearInterval(timerRef.current); finishSimulado(simQuestions, answers); }} className="text-sm text-red-500 hover:text-red-700 border border-red-200 px-3 py-1 rounded-lg">Encerrar</button>
+                <button onClick={() => { if (timerRef.current) { clearInterval(timerRef.current); } finishSimulado(simQuestions, answers); }} className="text-sm text-red-500 hover:text-red-700 border border-red-200 px-3 py-1 rounded-lg">Encerrar</button>
               </div>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2 mb-4"><div className="bg-indigo-500 h-2 rounded-full transition-all" style={{width: `${progress}%`}}></div></div>
