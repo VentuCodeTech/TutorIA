@@ -19,7 +19,7 @@ function ResetPasswordForm() {
 
   useEffect(() => {
     // Se vier com access_token na URL, é modo reset
-    const hashParams = new URLSearchParams(window.location.hash.substring(1))
+    const hashParams = new URLSearchParams(globalThis.location.hash.substring(1))
     const type = searchParams.get('type') || hashParams.get('type')
     if (type === 'recovery') {
       setMode('reset')
@@ -32,7 +32,7 @@ function ResetPasswordForm() {
     setError('')
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/reset-password`,
+        redirectTo: `${globalThis.location.origin}/reset-password`,
       })
       if (error) throw error
       setSuccess(true)
