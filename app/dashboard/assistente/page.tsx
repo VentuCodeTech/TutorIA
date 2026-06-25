@@ -72,7 +72,7 @@ export default function AssistentePage() { // NOSONAR
         setUserName(user.user_metadata?.full_name?.split(' ')[0] || 'Estudante');
         const today = new Date().toISOString().split('T')[0];
         const key = `ai_msg_count_${user.id}_${today}`;
-        const stored = parseInt(localStorage.getItem(key) || '0', 10);
+        const stored = Number.parseInt(localStorage.getItem(key) || '0', 10);
         setTodayMsgCount(stored);
       }
     };
@@ -413,8 +413,8 @@ export default function AssistentePage() { // NOSONAR
                 }`}>❓ Suporte</button>
               </div>
               <div className="flex flex-wrap gap-2">
-                {currentSuggestions.map((s, i) => (
-                  <button key={i} onClick={() => handleSend(s)}
+                {currentSuggestions.map((s) => (
+                  <button key={s} onClick={() => handleSend(s)}
                     className="text-xs bg-white border border-gray-200 text-gray-600 px-3 py-2 rounded-full hover:border-indigo-300 hover:text-indigo-600 transition-colors">
                     {s}
                   </button>
@@ -495,7 +495,7 @@ export default function AssistentePage() { // NOSONAR
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder={
+                placeholder={ // NOSONAR
                   !features.aiAssistantEnabled
                     ? 'Assistente IA disponível nos planos pagos'
                     : isLimitReached
