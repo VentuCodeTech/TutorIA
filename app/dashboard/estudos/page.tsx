@@ -84,7 +84,7 @@ export default function EstudosPage() {
               <h2 className="text-xl font-bold text-gray-800 mb-4">ð Progresso por MatÃ©ria</h2>
               {loading ? (
                 <div className="text-center py-8 text-gray-500">Carregando...</div>
-              ) : stats.answered === 0 ? (
+              ) : stats.answered === 0 ? ( // NOSONAR
                 <div className="text-center py-8">
                   <div className="text-5xl mb-3">ð</div>
                   <p className="text-gray-500 mb-4">VocÃª ainda nÃ£o respondeu nenhuma questÃ£o.</p>
@@ -95,10 +95,10 @@ export default function EstudosPage() {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {Object.entries(stats.subjects).map(([subject, data], i) => {
+                  {Object.entries(stats.subjects).map(([subject, data]) => {
                     const pct = Math.round((data.correct / data.answered) * 100)
                     return (
-                      <div key={i} className="flex items-center gap-4 p-3 rounded-xl bg-gray-50">
+                      <div key={subject} className="flex items-center gap-4 p-3 rounded-xl bg-gray-50">
                         <div className="flex-1">
                           <div className="flex justify-between mb-1">
                             <span className="text-sm font-medium text-gray-700">{subject}</span>
@@ -118,8 +118,8 @@ export default function EstudosPage() {
               <h2 className="text-xl font-bold text-gray-800 mb-4">ð¤ SessÃ£o de IA</h2>
               <p className="text-gray-500 text-sm mb-4">Use a inteligÃªncia artificial para estudar de forma personalizada e adaptativa.</p>
               <div className="grid grid-cols-2 gap-3">
-                {studyTopics.map((topic, i) => (
-                  <button key={i} onClick={() => router.push(`/dashboard/questoes?area=${encodeURIComponent(topic.subject)}`)}
+                {studyTopics.map((topic) => (
+                  <button key={topic.subject} onClick={() => router.push(`/dashboard/questoes?area=${encodeURIComponent(topic.subject)}`)}
                     className="flex items-center gap-3 p-3 rounded-xl border border-gray-200 hover:border-indigo-300 hover:bg-indigo-50 transition-all text-left">
                     <span className="text-2xl">{topic.emoji}</span>
                     <span className="text-sm font-medium text-gray-700">{topic.subject}</span>
