@@ -4,9 +4,9 @@ import { createClient } from '@/lib/supabase/server';
 
 // Use environment variables for Price IDs (avoids hardcoded mismatches)
 const PLAN_TO_PRICE: Record<string, string> = {
-  standard:     process.env.NEXT_PUBLIC_STRIPE_PRICE_STANDARD     || process.env.STRIPE_PRICE_STANDARD_MONTHLY     || '',
-  student:      process.env.NEXT_PUBLIC_STRIPE_PRICE_STUDENT      || process.env.STRIPE_PRICE_STUDENT_MONTHLY      || '',
-  advanced_pro: process.env.NEXT_PUBLIC_STRIPE_PRICE_ADVANCED_PRO || process.env.STRIPE_PRICE_ADVANCED_MONTHLY     || '',
+  standard: process.env.NEXT_PUBLIC_STRIPE_PRICE_STANDARD || process.env.STRIPE_PRICE_STANDARD_MONTHLY || '',
+  student: process.env.NEXT_PUBLIC_STRIPE_PRICE_STUDENT || process.env.STRIPE_PRICE_STUDENT_MONTHLY || '',
+  advanced_pro: process.env.NEXT_PUBLIC_STRIPE_PRICE_ADVANCED_PRO || process.env.STRIPE_PRICE_ADVANCED_MONTHLY || '',
 };
 
 // Also accept direct price IDs sent by the pricing page
@@ -34,16 +34,20 @@ export async function POST(req: NextRequest) {
     }
 
     const origin = req.headers.get('origin') || 'https://www.tirei10.com.br';
+    const planLabel = (body.planId || body.planName || '') as string;
+    const successPath = '/dashboard/planos?success=true&plan=' + planLabel;
+    const successUrl = origin + '/auth/callback?next=' + encodeURIComponent(successPath);
+    const cancelUrl = origin + '/pricing?canceled=true';
 
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
       line_items: [{ price: priceId, quantity: 1 }],
-            success_url: `${origin}/auth/callback?next=${encodeURIComponent(`/dashboard/planos?success=true&plan=${body.planId || body.planName || ''}`)}`,
-      cancel_url: `${origin}/pricing?canceled=true`,
+      success_url: successUrl,
+      cancel_url: cancelUrl,
       customer_email: user?.email,
       metadata: {
-        user_id: user?.id || '',
-        plan: body.planId || body.planName || '',
+        user_id: user?.id ?? '',
+        plan: planLabel,
       },
       allow_promotion_codes: true,
       billing_address_collection: 'auto',
