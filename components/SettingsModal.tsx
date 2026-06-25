@@ -200,7 +200,7 @@ export default function SettingsModal({ // NOSONAR
       <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
         onClick={onClose}
-        role="button" // NOSONAR
+        type="button"
         tabIndex={0}
         onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onClose(); }}
       />
