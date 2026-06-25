@@ -139,7 +139,7 @@ export default function PricingPage() {
       }
 
       if (data.url) {
-        window.location.href = data.url
+        globalThis.location.href = data.url
       } else {
         throw new Error('URL de pagamento não encontrada')
       }
