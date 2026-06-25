@@ -16,7 +16,7 @@ export default function CalendarioPage() {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) { window.location.href = '/login'; return; }
+      if (!session) { globalThis.location.href = '/login'; return; }
       setUserId(session.user.id);
 
       // Check if user connected via Google OAuth (has Google provider)
@@ -41,7 +41,7 @@ export default function CalendarioPage() {
   const handleConnectGoogle = () => {
     // Redirect to Google OAuth with calendar scope
     const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
-    const redirectUri = encodeURIComponent(window.location.origin + '/api/auth/google-calendar/callback');
+    const redirectUri = encodeURIComponent(globalThis.location.origin + '/api/auth/google-calendar/callback');
     const scope = encodeURIComponent(
       'https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.events'
     );
@@ -49,7 +49,7 @@ export default function CalendarioPage() {
 
     if (clientId) {
       const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&access_type=offline&prompt=consent&state=${state}`;
-      window.location.href = authUrl;
+      globalThis.location.href = authUrl;
     } else {
       // Fallback: simulate connection for demo purposes
       localStorage.setItem('google_calendar_connected', 'true');
@@ -70,7 +70,7 @@ export default function CalendarioPage() {
   };
 
   const openGoogleCalendar = () => {
-    window.open('https://calendar.google.com', '_blank');
+    globalThis.open('https://calendar.google.com', '_blank');
   };
 
   if (loading) {
@@ -88,24 +88,24 @@ export default function CalendarioPage() {
       <Sidebar />
       <main className="flex-1 ml-64 p-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-800">📅 Google Calendar</h1>
+          <h1 className="text-3xl font-bold text-gray-800">ð Google Calendar</h1>
           <p className="text-gray-500 mt-1">Vincule sua conta Google e sincronize sua rotina de estudos com o Google Calendar</p>
         </div>
 
         {!canUseCalendar && (
           <div className="bg-amber-50 border border-amber-200 rounded-2xl p-6 mb-6 flex items-start gap-4">
-            <span className="text-3xl">🔒</span>
+            <span className="text-3xl">ð</span>
             <div>
               <h3 className="font-bold text-amber-800 mb-1">Recurso exclusivo para planos Student e Advanced Pro</h3>
               <p className="text-amber-700 text-sm mb-3">
-                A integração com o Google Calendar está disponível nos planos <strong>Student</strong> e <strong>Advanced Pro</strong>.
-                Seu plano atual é <strong>{planName}</strong>.
+                A integraÃ§Ã£o com o Google Calendar estÃ¡ disponÃ­vel nos planos <strong>Student</strong> e <strong>Advanced Pro</strong>.
+                Seu plano atual Ã© <strong>{planName}</strong>.
               </p>
               <a
                 href="/dashboard/planos"
                 className="inline-block bg-amber-600 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-amber-700 transition-colors"
               >
-                Ver Planos →
+                Ver Planos â
               </a>
             </div>
           </div>
@@ -116,7 +116,7 @@ export default function CalendarioPage() {
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center">
-                <span className="text-2xl">📅</span>
+                <span className="text-2xl">ð</span>
               </div>
               <div>
                 <h2 className="font-bold text-gray-800">Google Calendar</h2>
@@ -136,7 +136,7 @@ export default function CalendarioPage() {
                     onClick={openGoogleCalendar}
                     className="bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-blue-700 transition-colors"
                   >
-                    Abrir Google Calendar →
+                    Abrir Google Calendar â
                   </button>
                   <button
                     onClick={handleDisconnect}
@@ -149,7 +149,7 @@ export default function CalendarioPage() {
             ) : (
               <div>
                 <p className="text-sm text-gray-500 mb-4">
-                  Conecte sua conta Google para sincronizar automaticamente suas sessões de estudo, simulados e metas diárias com o Google Calendar.
+                  Conecte sua conta Google para sincronizar automaticamente suas sessÃµes de estudo, simulados e metas diÃ¡rias com o Google Calendar.
                 </p>
                 <button
                   onClick={canUseCalendar ? handleConnectGoogle : undefined}
@@ -173,10 +173,10 @@ export default function CalendarioPage() {
             <h2 className="font-bold text-gray-800 mb-4">Como funciona</h2>
             <div className="space-y-4">
               {[
-                { icon: '🔗', title: 'Vincule sua conta', desc: 'Conecte sua conta Google com um clique para autorizar a sincronização.' },
-                { icon: '📝', title: 'Crie sessões de estudo', desc: 'Suas sessões, simulados e metas diárias são adicionados automaticamente ao calendário.' },
-                { icon: '🔔', title: 'Receba lembretes', desc: 'O Google Calendar envia notificações para que você nunca perca uma sessão de estudos.' },
-                { icon: '📊', title: 'Acompanhe seu progresso', desc: 'Visualize sua rotina de estudos diretamente no Google Calendar.' },
+                { icon: 'ð', title: 'Vincule sua conta', desc: 'Conecte sua conta Google com um clique para autorizar a sincronizaÃ§Ã£o.' },
+                { icon: 'ð', title: 'Crie sessÃµes de estudo', desc: 'Suas sessÃµes, simulados e metas diÃ¡rias sÃ£o adicionados automaticamente ao calendÃ¡rio.' },
+                { icon: 'ð', title: 'Receba lembretes', desc: 'O Google Calendar envia notificaÃ§Ãµes para que vocÃª nunca perca uma sessÃ£o de estudos.' },
+                { icon: 'ð', title: 'Acompanhe seu progresso', desc: 'Visualize sua rotina de estudos diretamente no Google Calendar.' },
               ].map((item, i) => (
                 <div key={i} className="flex items-start gap-3">
                   <span className="text-xl flex-shrink-0">{item.icon}</span>
@@ -192,13 +192,13 @@ export default function CalendarioPage() {
 
         {/* Quick Actions */}
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-6">
-          <h2 className="font-bold text-gray-800 mb-4">Ações Rápidas</h2>
+          <h2 className="font-bold text-gray-800 mb-4">AÃ§Ãµes RÃ¡pidas</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {[
-              { icon: '📚', label: 'Agendar Sessão de Estudo', desc: 'Criar evento de estudo', href: 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=Sess%C3%A3o+de+Estudos+-+Tirei10&details=Sess%C3%A3o+de+estudos+com+Tirei10' },
-              { icon: '🎯', label: 'Agendar Simulado', desc: 'Marcar data de simulado', href: 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=Simulado+-+Tirei10&details=Realizar+simulado+na+plataforma+Tirei10' },
-              { icon: '📅', label: 'Ver Minha Agenda', desc: 'Abrir Google Calendar', href: 'https://calendar.google.com' },
-              { icon: '⏰', label: 'Lembrete de Revisão', desc: 'Criar lembrete de revisão', href: 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=Revis%C3%A3o+-+Tirei10&details=Revis%C3%A3o+do+conte%C3%BAdo+estudado' },
+              { icon: 'ð', label: 'Agendar SessÃ£o de Estudo', desc: 'Criar evento de estudo', href: 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=Sess%C3%A3o+de+Estudos+-+Tirei10&details=Sess%C3%A3o+de+estudos+com+Tirei10' },
+              { icon: 'ð¯', label: 'Agendar Simulado', desc: 'Marcar data de simulado', href: 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=Simulado+-+Tirei10&details=Realizar+simulado+na+plataforma+Tirei10' },
+              { icon: 'ð', label: 'Ver Minha Agenda', desc: 'Abrir Google Calendar', href: 'https://calendar.google.com' },
+              { icon: 'â°', label: 'Lembrete de RevisÃ£o', desc: 'Criar lembrete de revisÃ£o', href: 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=Revis%C3%A3o+-+Tirei10&details=Revis%C3%A3o+do+conte%C3%BAdo+estudado' },
             ].map((action, i) => (
               <a
                 key={i}
@@ -215,10 +215,10 @@ export default function CalendarioPage() {
             ))}
           </div>
           {!connected && canUseCalendar && (
-            <p className="text-center text-sm text-gray-400 mt-4">Conecte sua conta Google para usar as ações rápidas</p>
+            <p className="text-center text-sm text-gray-400 mt-4">Conecte sua conta Google para usar as aÃ§Ãµes rÃ¡pidas</p>
           )}
           {!canUseCalendar && (
-            <p className="text-center text-sm text-amber-500 mt-4">Faça upgrade para o plano Student ou Advanced Pro para usar esta funcionalidade</p>
+            <p className="text-center text-sm text-amber-500 mt-4">FaÃ§a upgrade para o plano Student ou Advanced Pro para usar esta funcionalidade</p>
           )}
         </div>
 
@@ -227,14 +227,14 @@ export default function CalendarioPage() {
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
             <h2 className="font-bold text-gray-800 mb-4">Sua Agenda</h2>
             <p className="text-sm text-gray-500 mb-4">
-              Para visualizar seu Google Calendar aqui, clique em "Abrir Google Calendar" ou use as ações rápidas acima.
-              A incorporação direta requer configuração adicional no Google Calendar.
+              Para visualizar seu Google Calendar aqui, clique em "Abrir Google Calendar" ou use as aÃ§Ãµes rÃ¡pidas acima.
+              A incorporaÃ§Ã£o direta requer configuraÃ§Ã£o adicional no Google Calendar.
             </p>
             <button
               onClick={openGoogleCalendar}
               className="bg-indigo-600 text-white px-6 py-3 rounded-xl font-medium hover:bg-indigo-700 transition-colors"
             >
-              Abrir meu Google Calendar →
+              Abrir meu Google Calendar â
             </button>
           </div>
         )}
