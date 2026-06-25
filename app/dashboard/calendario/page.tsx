@@ -177,8 +177,8 @@ export default function CalendarioPage() {
                 { icon: 'ð', title: 'Crie sessÃµes de estudo', desc: 'Suas sessÃµes, simulados e metas diÃ¡rias sÃ£o adicionados automaticamente ao calendÃ¡rio.' },
                 { icon: 'ð', title: 'Receba lembretes', desc: 'O Google Calendar envia notificaÃ§Ãµes para que vocÃª nunca perca uma sessÃ£o de estudos.' },
                 { icon: 'ð', title: 'Acompanhe seu progresso', desc: 'Visualize sua rotina de estudos diretamente no Google Calendar.' },
-              ].map((item, i) => (
-                <div key={i} className="flex items-start gap-3">
+              ].map((item) => (
+                <div key={item.title} className="flex items-start gap-3">
                   <span className="text-xl flex-shrink-0">{item.icon}</span>
                   <div>
                     <p className="font-medium text-gray-800 text-sm">{item.title}</p>
@@ -199,9 +199,9 @@ export default function CalendarioPage() {
               { icon: 'ð¯', label: 'Agendar Simulado', desc: 'Marcar data de simulado', href: 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=Simulado+-+Tirei10&details=Realizar+simulado+na+plataforma+Tirei10' },
               { icon: 'ð', label: 'Ver Minha Agenda', desc: 'Abrir Google Calendar', href: 'https://calendar.google.com' },
               { icon: 'â°', label: 'Lembrete de RevisÃ£o', desc: 'Criar lembrete de revisÃ£o', href: 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=Revis%C3%A3o+-+Tirei10&details=Revis%C3%A3o+do+conte%C3%BAdo+estudado' },
-            ].map((action, i) => (
+            ].map((action) => (
               <a
-                key={i}
+                key={action.label}
                 href={connected && canUseCalendar ? action.href : '#'}
                 target={connected && canUseCalendar ? '_blank' : '_self'}
                 rel="noopener noreferrer"
@@ -219,7 +219,7 @@ export default function CalendarioPage() {
           )}
           {!canUseCalendar && (
             <p className="text-center text-sm text-amber-500 mt-4">FaÃ§a upgrade para o plano Student ou Advanced Pro para usar esta funcionalidade</p>
-          )}
+   map((item) => (       )}
         </div>
 
         {/* Embed Google Calendar for connected users */}
