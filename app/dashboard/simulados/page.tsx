@@ -1,6 +1,6 @@
 'use client'
 import { useRouter } from 'next/navigation';
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import Sidebar from '@/components/Sidebar';
 import Chatbot from '@/components/Chatbot';
@@ -262,7 +262,7 @@ const { features } = useUserPlan();
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) { window.location.href = '/login'; return; }
+      if (!session) { globalThis.location.href = '/login'; return; }
       setUserId(session.user.id);
       loadStats(session.user.id);
       loadVestibularPref(session.user.id);
@@ -486,7 +486,7 @@ const { features } = useUserPlan();
                   } else {
                     cls += idx === selectedAnswer ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-gray-200 hover:border-indigo-300 hover:bg-indigo-50 text-gray-700';
                   }
-                  return <button key={idx} className={cls} onClick={() => !showResult && setSelectedAnswer(idx)}><span className="font-semibold mr-2">{String.fromCharCode(65+idx)}.</span>{opt}</button>;
+                  return <button key={idx} className={cls} onClick={() => !showResult && setSelectedAnswer(idx)}><span className="font-semibold mr-2">{String.fromCodePoint(65+idx)}.</span>{opt}</button>;
                 })}
               </div>
               {showResult && (
