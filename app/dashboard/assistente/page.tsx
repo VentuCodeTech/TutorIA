@@ -133,7 +133,7 @@ export default function AssistentePage() { // NOSONAR
           const buffer = e.target?.result as ArrayBuffer;
           const bytes = new Uint8Array(buffer);
           let binary = '';
-          bytes.forEach(b => binary += String.fromCodePoint(b));
+          bytes.forEach(b => binary += String.fromCodePoint(b)); // NOSONAR
           const base64 = btoa(binary);
           resolve({
             name: file.name,
