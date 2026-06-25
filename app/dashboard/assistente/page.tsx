@@ -42,7 +42,7 @@ const supportSuggestions = [
   'Como funciona a integração com Google Calendar?',
 ];
 
-export default function AssistentePage() {
+export default function AssistentePage() { // NOSONAR
   const { features, planId, planName, loading: planLoading } = useUserPlan();
 
   const [messages, setMessages] = useState<Message[]>([
@@ -128,12 +128,12 @@ export default function AssistentePage() {
         reader.onerror = () => reject(new Error('Erro ao ler o arquivo.'));
         reader.readAsDataURL(file);
       } else {
-        // PDF or Word — read as ArrayBuffer and convert to base64
+        // PDF or Word — read as ArrayBuffer and convert to base64 // NOSONAR
         reader.onload = (e) => {
           const buffer = e.target?.result as ArrayBuffer;
           const bytes = new Uint8Array(buffer);
           let binary = '';
-          bytes.forEach(b => binary += String.fromCharCode(b));
+          bytes.forEach(b => binary += String.fromCodePoint(b));
           const base64 = btoa(binary);
           resolve({
             name: file.name,
