@@ -91,7 +91,7 @@ export default function PagamentosPage() {
                 { title: 'Comprovantes de Pagamento', desc: 'Para serviços digitais, você receberá automaticamente o comprovante de pagamento por e-mail. Notas fiscais estão disponíveis mediante solicitação.' },
                 { title: 'Política de Reembolso', desc: 'Oferecemos reembolso total nos primeiros 7 dias após a contratação, caso não esteja satisfeito com o serviço. Para solicitá-lo, entre em contato com nosso suporte.' },
               ].map((item, i) => (
-                <div key={i} className="flex gap-4">
+                <div key={item.title} className="flex gap-4">
                   <span className="font-bold text-lg" style={{ color: '#6d28d9' }}>•</span>
                   <div>
                     <h3 className="font-semibold mb-1" style={{ color: '#1e1b4b' }}>{item.title}</h3>
