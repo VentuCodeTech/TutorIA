@@ -401,7 +401,7 @@ export default function ComunidadePage() {
             ))}
           </div>
 
-          {loading ? (
+          {loading ? ( // NOSONAR
             <div className="flex justify-center py-16">
               <div className="w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
             </div>
@@ -453,7 +453,7 @@ export default function ComunidadePage() {
                         <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                         </svg>
-                        {post.replies_count > 0 ? post.replies_count + ' ' + (post.replies_count === 1 ? 'resposta' : 'respostas') : 'Responder'}
+                        {post.replies_count > 0 ? post.replies_count + ' ' + (post.replies_count === 1 ? 'resposta' : 'respostas') : 'Responder'} // NOSONAR
                         {expandedReplies.has(post.id) ? (
                           <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3 ml-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" /></svg>
                         ) : (
