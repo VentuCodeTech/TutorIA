@@ -57,8 +57,8 @@ export default function HomePage() {
                 { icon: '📓', title: 'Anotações', desc: 'Organize suas anotações sincronizadas na nuvem' },
                 { icon: '🏆', title: 'Comunidade', desc: 'Conecte-se com outros estudantes e compartilhe dicas' },
                 { icon: '📈', title: 'Progresso Visual', desc: 'Visualize seu progresso por matéria e tema' },
-              ].map((item, i) => (
-                <div key={i} className="flex items-start gap-3 p-4 bg-gray-50 rounded-xl">
+              ].map((item) => (
+                <div key={item.title} className="flex items-start gap-3 p-4 bg-gray-50 rounded-xl">
                   <span className="text-2xl">{item.icon}</span>
                   <div>
                     <h3 className="font-semibold text-gray-800">{item.title}</h3>
