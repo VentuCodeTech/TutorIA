@@ -59,10 +59,6 @@ export default function AnotacoesPage() {
     setLoading(false);
   };
 
-  const saveNotes = async (_newNotes: Note[]) => {
-    // Persistence handled by Supabase CRUD in handleSave/handleDelete
-  };
-
   const handleSave = async () => {
     if (!title.trim() || !content.trim()) return;
     const { data: { user } } = await supabase.auth.getUser();
