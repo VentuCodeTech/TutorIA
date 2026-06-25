@@ -148,8 +148,8 @@ const areas = ['Todas', 'Matemática', 'Português', 'História', 'Ciências', '
 const difficulties = ['Todas', 'Fácil', 'Médio', 'Difícil']
 
 // Suppress unused variable warning - planId used for future features
-void planId;
-void todayAnsweredCount;
+planId; // NOSONAR
+todayAnsweredCount; // NOSONAR
 
 return (
 <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50 to-purple-50">
