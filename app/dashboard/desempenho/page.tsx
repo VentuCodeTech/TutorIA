@@ -17,32 +17,32 @@ interface DayData {
 }
 
 const COLORS: Record<string, string> = {
-        'Matemática': 'bg-blue-500',
-        'Português': 'bg-green-500',
-        'História': 'bg-yellow-500',
-        'Ciências': 'bg-purple-500',
-        'Física': 'bg-red-500',
-        'Química': 'bg-orange-500',
+        'MatemÃ¡tica': 'bg-blue-500',
+        'PortuguÃªs': 'bg-green-500',
+        'HistÃ³ria': 'bg-yellow-500',
+        'CiÃªncias': 'bg-purple-500',
+        'FÃ­sica': 'bg-red-500',
+        'QuÃ­mica': 'bg-orange-500',
         'Biologia': 'bg-teal-500',
         'Geografia': 'bg-indigo-500',
-        'Redação': 'bg-pink-500',
-        'Inglês': 'bg-sky-500',
+        'RedaÃ§Ã£o': 'bg-pink-500',
+        'InglÃªs': 'bg-sky-500',
         'Espanhol': 'bg-rose-500',
 };
 
 const SUBJECT_DISPLAY_NAMES: Record<string, string> = {
-  'Matematica': 'Matemática',
-  'Portugues': 'Português',
-  'Historia': 'História',
-  'Fisica': 'Física',
-  'Quimica': 'Química',
+  'Matematica': 'MatemÃ¡tica',
+  'Portugues': 'PortuguÃªs',
+  'Historia': 'HistÃ³ria',
+  'Fisica': 'FÃ­sica',
+  'Quimica': 'QuÃ­mica',
   'Biologia': 'Biologia',
-  'Redacao': 'Redação',
-  'Ciencias': 'Ciências',
-  'Ingles': 'Inglês',
+  'Redacao': 'RedaÃ§Ã£o',
+  'Ciencias': 'CiÃªncias',
+  'Ingles': 'InglÃªs',
   'Espanhol': 'Espanhol',
-  'Financas Pessoais': 'Finanças Pessoais',
-  'Matematica Financeira': 'Matemática Financeira',
+  'Financas Pessoais': 'FinanÃ§as Pessoais',
+  'Matematica Financeira': 'MatemÃ¡tica Financeira',
   'CPA-20': 'CPA-20',
   'Investimentos': 'Investimentos',
   'Direito Constitucional': 'Direito Constitucional',
@@ -77,7 +77,7 @@ export default function DesempenhoPage() {
 
   useEffect(() => {
             supabase.auth.getSession().then(({ data: { session } }) => {
-                        if (!session) { window.location.href = '/login'; return; }
+                        if (!session) { globalThis.location.href = '/login'; return; }
                         loadData(session.user.id);
             });
   }, []);
@@ -159,30 +159,30 @@ export default function DesempenhoPage() {
                         <Sidebar />
                         <main className="ml-64 p-8">
                                 <div className="mb-8">
-                                          <h1 className="text-3xl font-bold text-gray-800">Análise de Desempenho</h1>
-                                          <p className="text-gray-500 mt-1">Acompanhe sua evolução e identifique pontos de melhoria</p>
+                                          <h1 className="text-3xl font-bold text-gray-800">AnÃ¡lise de Desempenho</h1>
+                                          <p className="text-gray-500 mt-1">Acompanhe sua evoluÃ§Ã£o e identifique pontos de melhoria</p>
                                 </div>
                         
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                                           <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
                                                       <div className="text-3xl font-bold text-indigo-600">{overallRate}%</div>
                                                       <div className="text-sm text-gray-600 mt-1">Taxa de Acerto Geral</div>
-                                                      <div className="text-xs text-gray-400 mt-1">{totalAnswered} questões respondidas</div>
+                                                      <div className="text-xs text-gray-400 mt-1">{totalAnswered} questÃµes respondidas</div>
                                           </div>
                                           <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
                                                       <div className="text-3xl font-bold text-green-600">{totalCorrect}</div>
-                                                      <div className="text-sm text-gray-600 mt-1">Questões Corretas</div>
+                                                      <div className="text-sm text-gray-600 mt-1">QuestÃµes Corretas</div>
                                                       <div className="text-xs text-gray-400 mt-1">de {totalAnswered} tentadas</div>
                                           </div>
                                           <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
                                                       <div className="text-2xl font-bold text-yellow-500">Melhor</div>
                                                       <div className="text-sm font-medium text-gray-900 mt-1">{best ? displaySubjectName(best.subject) : 'Sem dados'}</div>
                                                       <div className="text-xs text-green-600 mt-1">
-                                                            {best && best.total > 0 ? Math.round((best.correct / best.total) * 100) + '% acerto' : 'Responda questões'}
+                                                            {best && best.total > 0 ? Math.round((best.correct / best.total) * 100) + '% acerto' : 'Responda questÃµes'}
                                                       </div>
                                           </div>
                                           <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-                                                      <div className="text-2xl font-bold text-red-400">Atenção</div>
+                                                      <div className="text-2xl font-bold text-red-400">AtenÃ§Ã£o</div>
                                                       <div className="text-sm font-medium text-gray-900 mt-1">{worst && worst !== best ? displaySubjectName(worst.subject) : 'Continue!'}</div>
                                                       <div className="text-xs text-red-600 mt-1">
                                                             {worst && worst !== best && worst.total > 0 ? Math.round((worst.correct / worst.total) * 100) + '% acerto' : 'Bom trabalho!'}
@@ -192,17 +192,17 @@ export default function DesempenhoPage() {
                         
                               {totalAnswered === 0 ? (
                                   <div className="bg-white rounded-2xl p-12 shadow-sm border border-gray-100 text-center">
-                                              <div className="text-6xl mb-4">📚</div>
+                                              <div className="text-6xl mb-4">ð</div>
                                               <h3 className="text-xl font-bold text-gray-800 mb-2">Nenhum dado ainda</h3>
-                                              <p className="text-gray-500 mb-6">Comece a responder questões para ver seu desempenho aqui!</p>
+                                              <p className="text-gray-500 mb-6">Comece a responder questÃµes para ver seu desempenho aqui!</p>
                                               <a href="/dashboard/questoes" className="bg-indigo-600 text-white px-6 py-3 rounded-xl font-medium hover:bg-indigo-700 transition-colors">
-                                                            Ir para Questões
+                                                            Ir para QuestÃµes
                                               </a>
                                   </div>
                                 ) : (
                                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                                               <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                                                            <h3 className="font-semibold text-gray-900 mb-4">Desempenho por Matéria</h3>
+                                                            <h3 className="font-semibold text-gray-900 mb-4">Desempenho por MatÃ©ria</h3>
                                                             <div className="space-y-3">
                                                                   {subjects.map(s => {
                                                           const pct = s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0;
@@ -227,7 +227,7 @@ export default function DesempenhoPage() {
                                   
                                               <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                                                             <div className="flex justify-between items-center mb-4">
-                                                                            <h3 className="font-semibold text-gray-900">Questões por Dia</h3>
+                                                                            <h3 className="font-semibold text-gray-900">QuestÃµes por Dia</h3>
                                                                             <select value={period} onChange={e => setPeriod(e.target.value)} className="text-xs border border-gray-200 rounded-lg px-2 py-1 focus:outline-none">
                                                                                               <option value="semana">Esta semana</option>
                                                                                               <option value="mes">Este mes</option>
@@ -260,7 +260,7 @@ export default function DesempenhoPage() {
                         
                               {totalAnswered > 0 && (
                                   <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                                              <h3 className="font-semibold text-gray-900 mb-4">Recomendações Personalizadas</h3>
+                                              <h3 className="font-semibold text-gray-900 mb-4">RecomendaÃ§Ãµes Personalizadas</h3>
                                               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                                     {worst && worst.total > 0 && (
                                                         <div className="bg-red-50 rounded-xl p-4 border border-red-100">
@@ -270,9 +270,9 @@ export default function DesempenhoPage() {
                                                         </div>
                                                             )}
                                                             <div className="bg-yellow-50 rounded-xl p-4 border border-yellow-100">
-                                                                            <div className="text-yellow-600 font-semibold text-sm mb-1">Atenção</div>
-                                                                            <p className="text-sm text-gray-700 font-medium">Consistência Diária</p>
-                                                                            <p className="text-xs text-gray-500 mt-1">Tente responder pelo menos 20 questões por dia para manter o ritmo.</p>
+                                                                            <div className="text-yellow-600 font-semibold text-sm mb-1">AtenÃ§Ã£o</div>
+                                                                            <p className="text-sm text-gray-700 font-medium">ConsistÃªncia DiÃ¡ria</p>
+                                                                            <p className="text-xs text-gray-500 mt-1">Tente responder pelo menos 20 questÃµes por dia para manter o ritmo.</p>
                                                             </div>
                                                     {best && best.total > 0 && (
                                                         <div className="bg-green-50 rounded-xl p-4 border border-green-100">
