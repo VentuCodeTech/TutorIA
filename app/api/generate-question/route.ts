@@ -11,11 +11,18 @@ const ALL_AREAS = [
   'Matemática Financeira','Finanças Pessoais','Inglês','Espanhol'
 ];
 
+/** Returns a random integer in [0, max) for non-security use (question shuffling). */
+function randomIndex(max: number): number {
+  // NOSONAR: Math.random is used here for non-security purposes (random question selection)
+  return Math.floor(Math.random() * max); // NOSONAR
+}
+
 export async function POST(request: NextRequest) {
   try {
     const { area, difficulty, excludeTexts } = await request.json();
     const excluded: string[] = excludeTexts || [];
-    const effectiveArea = area === 'Todas' ? ALL_AREAS[Math.floor(Math.random() * ALL_AREAS.length)] : area;
+    // NOSONAR: Math.random used for non-security random area selection
+    const effectiveArea = area === 'Todas' ? ALL_AREAS[randomIndex(ALL_AREAS.length)] : area; // NOSONAR
     let pool = questionBank.filter(q => matchesArea(q.subject, effectiveArea));
     let filtered = pool.filter(q => !excluded.includes(q.text));
     if (filtered.length === 0) filtered = [...pool];
@@ -24,18 +31,23 @@ export async function POST(request: NextRequest) {
       if (byDiff.length > 0) filtered = byDiff;
     }
     if (filtered.length > 0) {
-      const randomQ = filtered[Math.floor(Math.random() * filtered.length)];
+      // NOSONAR: Math.random used for non-security random question selection
+      const randomQ = filtered[randomIndex(filtered.length)]; // NOSONAR
       return NextResponse.json({ question: { ...randomQ, subject: effectiveArea, vestibularSource: randomQ.source || '', id: 'bank_' + Date.now() } });
     }
     try {
-      const seed = Math.floor(Math.random() * 999999);
+      // NOSONAR: Math.random used for non-security seed generation
+      const seed = randomIndex(999999); // NOSONAR
       const diff = difficulty === 'Todas' ? 'Medio' : difficulty;
       const prompt = 'Gere UMA questao de multipla escolha (A,B,C,D) EXCLUSIVAMENTE sobre "' + effectiveArea + '". Dificuldade: ' + diff + '. SEED: ' + seed + '. Inclua fonte tipo "(ENEM 2019 - adaptada)". JSON apenas: {"text":"?","options":["A","B","C","D"],"correctAnswer":0,"explanation":"...","subject":"' + effectiveArea + '","difficulty":"' + diff + '","source":"ENEM 2020 (adaptada)"}';
       const result = await anthropic.messages.create({ model: 'claude-haiku-4-5', max_tokens: 1000, messages: [{ role: 'user', content: prompt }] });
       const txt = result.content[0].type === 'text' ? result.content[0].text : '';
-      const match = txt.match(/\{[\s\S]*\}/);
-      if (match) {
-        const q = JSON.parse(match[0]);
+      // Use non-backtracking regex: match from first { to last }
+      const startIdx = txt.indexOf('{');
+      const endIdx = txt.lastIndexOf('}');
+      if (startIdx !== -1 && endIdx !== -1 && endIdx > startIdx) {
+        const jsonStr = txt.slice(startIdx, endIdx + 1);
+        const q = JSON.parse(jsonStr);
         if (q.text && q.options?.length === 4 && typeof q.correctAnswer === 'number') {
           q.subject = effectiveArea;
           q.vestibularSource = q.source || 'IA';
@@ -43,10 +55,14 @@ export async function POST(request: NextRequest) {
           return NextResponse.json({ question: q });
         }
       }
-    } catch (e) { console.log('AI failed:', e); }
-    const fallback = questionBank[Math.floor(Math.random() * questionBank.length)];
+    } catch (aiError) {
+      console.error('AI question generation failed:', aiError);
+    }
+    // NOSONAR: Math.random used for non-security fallback question selection
+    const fallback = questionBank[randomIndex(questionBank.length)]; // NOSONAR
     return NextResponse.json({ question: { ...fallback, subject: effectiveArea, vestibularSource: fallback.source || '', id: 'fallback_' + Date.now() } });
   } catch (error) {
+    console.error('generate-question error:', error);
     return NextResponse.json({ error: 'Failed' }, { status: 500 });
   }
 }
