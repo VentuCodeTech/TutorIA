@@ -102,9 +102,9 @@ function ResetPasswordForm() {
               <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm">{error}</div>
             )}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">E-mail</label>
+              <label htmlFor="reset-email" className="block text-sm font-medium text-gray-700 mb-1">E-mail</label>
               <input
-                type="email"
+                type="email" id="reset-email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 required
@@ -129,10 +129,10 @@ function ResetPasswordForm() {
               <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm">{error}</div>
             )}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Nova senha</label>
+              <label htmlFor="new-password" className="block text-sm font-medium text-gray-700 mb-1">Nova senha</label>
               <input
                 type="password"
-                value={password}
+                id="new-password" value={password}
                 onChange={e => setPassword(e.target.value)}
                 required
                 minLength={6}
@@ -141,10 +141,10 @@ function ResetPasswordForm() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Confirmar senha</label>
+              <label htmlFor="confirm-password" className="block text-sm font-medium text-gray-700 mb-1">Confirmar senha</label>
               <input
                 type="password"
-                value={confirmPassword}
+                id="confirm-password" value={confirmPassword}
                 onChange={e => setConfirmPassword(e.target.value)}
                 required
                 minLength={6}
