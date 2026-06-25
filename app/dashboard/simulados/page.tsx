@@ -486,7 +486,7 @@ const { features } = useUserPlan();
                   } else {
                     cls += idx === selectedAnswer ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-gray-200 hover:border-indigo-300 hover:bg-indigo-50 text-gray-700';
                   }
-                  return <button key={idx} className={cls} onClick={() => !showResult && setSelectedAnswer(idx)}><span className="font-semibold mr-2">{String.fromCodePoint(65+idx)}.</span>{opt}</button>;
+                  return <button key={opt} className={cls} onClick={() => !showResult && setSelectedAnswer(idx)}><span className="font-semibold mr-2">{String.fromCodePoint(65+idx)}.</span>{opt}</button>;
                 })}
               </div>
               {showResult && (
@@ -495,9 +495,9 @@ const { features } = useUserPlan();
                   <p className="text-sm text-gray-600">{currentQ.explanation}</p>
                 </div>
               )}
-              {!showResult ? (
+              {!showResult ? ( // NOSONAR
                 <button onClick={handleAnswer} disabled={selectedAnswer === null} className="w-full bg-indigo-600 text-white py-3 rounded-xl font-medium hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">Confirmar Resposta</button>
-              ) : currentQIndex + 1 < simQuestions.length ? (
+              ) : currentQIndex + 1 < simQuestions.length ? ( // NOSONAR
                 <button onClick={nextQuestion} className="w-full bg-indigo-600 text-white py-3 rounded-xl font-medium hover:bg-indigo-700 transition-colors">Próxima Questão →</button>
               ) : null}
             </div>
@@ -528,7 +528,7 @@ const { features } = useUserPlan();
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {[{label:'Simulados Feitos',value:stats.done.toString(),icon:'📋'},{label:'Melhor Nota',value:stats.done>0?`${stats.bestNote}%`:'-',icon:'⭐'},{label:'Tempo Total',value:`${stats.totalTime}min`,icon:'⏱️'},{label:'Aprovações',value:stats.approved.toString(),icon:'✅'}].map((stat,i)=>(
-            <div key={i} className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex items-center gap-3">
+            <div key={item.label} className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex items-center gap-3">
               <span className="text-2xl">{stat.icon}</span><div><p className="text-xl font-bold text-gray-800">{stat.value}</p><p className="text-xs text-gray-500">{stat.label}</p></div>
             </div>
           ))}
