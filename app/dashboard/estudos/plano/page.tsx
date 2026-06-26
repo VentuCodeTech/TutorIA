@@ -489,12 +489,16 @@ export default function PlanoEstudosPage() {
                         <div className="flex items-center gap-2 mt-1">
                           <div className="flex-1 bg-gray-200 rounded-full h-1.5">
                             {(() => {
-                              const barColor = p.taxa >= 70 ? 'bg-green-500' : p.taxa >= 50 ? 'bg-yellow-500' : 'bg-red-500';
+                              let barColor = 'bg-red-500';
+                              if (p.taxa >= 70) barColor = 'bg-green-500';
+                              else if (p.taxa >= 40) barColor = 'bg-yellow-500';
                               return <div className={`h-1.5 rounded-full ${barColor}`} style={{width: `${p.taxa}%`}}></div>;
                             })()}
                           </div>
                           {(() => {
-                            const textColor = p.taxa >= 70 ? 'text-green-600' : p.taxa >= 50 ? 'text-yellow-600' : 'text-red-600';
+                            let textColor = 'text-red-600';
+                            if (p.taxa >= 70) textColor = 'text-green-600';
+                            else if (p.taxa >= 40) textColor = 'text-yellow-600';
                             return <span className={`text-xs font-bold ${textColor}`}>{p.taxa}%</span>;
                           })()}
                         </div>
