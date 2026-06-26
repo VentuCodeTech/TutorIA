@@ -9,7 +9,7 @@ interface Message {
     timestamp: Date;
 }
 
-export default function Chatbot() {
+function parseBold(text: string) {    const parts = text.split(/\*\*(.*?)\*\*/);    return parts.map((p, idx) =>        idx % 2 === 1 ? <strong key={'part-' + idx}>{p}</strong> : <span key={'part-' + idx}>{p}</span>    );}export default function Chatbot() {
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState<Message[]>([
       {
@@ -106,14 +106,6 @@ export default function Chatbot() {
                 const isHeader3 = line.startsWith('### ');
                 const isBullet = line.startsWith('- ') || line.startsWith('• ');
                 const isNumbered = /^\d+\.\s/.test(line);
-
-                // Parse **bold** inline // NOSONAR
-                const parseBold = (text: string) => { // NOSONAR
-                        const parts = text.split(/\*\*(.*?)\*\*/);
-                        return parts.map((p, idx) =>
-                                idx % 2 === 1 ? <strong key={'part-' + idx}>{p}</strong> : <span key={'part-' + idx}>{p}</span>
-                        );
-                };
 
                 if (isHeader2) {
                         return <p key={'line-' + i} className="font-bold text-base mt-2 mb-1">{parseBold(line.slice(3))}</p>;
