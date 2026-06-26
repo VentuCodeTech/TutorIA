@@ -191,7 +191,7 @@ export default function ComunidadePage() {
         event: 'INSERT',
         schema: 'public',
         table: 'forum_posts',
-      }, (payload: { new: Record<string, unknown> }) => {
+      }, (payload: { new: any }) => {
         const newPost = payload.new;
         const rawTitle = newPost.title as string;
         const hasDelimiter = rawTitle.includes('||');
@@ -215,7 +215,7 @@ export default function ComunidadePage() {
         event: 'UPDATE',
         schema: 'public',
         table: 'forum_posts',
-      }, (payload: { new: Record<string, unknown> }) => {
+      }, (payload: { new: any }) => {
         const updated = payload.new;
         setPosts((prev) => prev.map((p) => (p.id === updated.id ? { ...p, likes: updated.likes as number, replies_count: updated.replies_count as number } : p)));
       })
