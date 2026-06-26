@@ -9,7 +9,7 @@ import { createClient } from '@/lib/supabase/client'
 
 const subMenuItems = [
   { icon: '📋', label: 'Visão Geral', href: '/dashboard/estudos' },
-  { icon: '🗺ï¸', label: 'Plano de Estudos', href: '/dashboard/estudos/plano' },
+  { icon: '🗺️', label: 'Plano de Estudos', href: '/dashboard/estudos/plano' },
 ]
 
 export default function EstudosPage() {
@@ -48,10 +48,10 @@ export default function EstudosPage() {
     { subject: 'Matemática', emoji: '🧮' },
     { subject: 'Português', emoji: '📖' },
     { subject: 'História', emoji: '🌍' },
-    { subject: 'Física', emoji: 'âï¸' },
+    { subject: 'Física', emoji: '⚛️' },
     { subject: 'Química', emoji: '🧪' },
     { subject: 'Biologia', emoji: '🧬' },
-    { subject: 'Direito Constitucional', emoji: 'âï¸' },
+    { subject: 'Direito Constitucional', emoji: '⚖️' },
     { subject: 'Finanças Pessoais', emoji: '💰' },
   ]
 
@@ -157,7 +157,7 @@ export default function EstudosPage() {
               </div>
             </div>
             <div className="bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl p-6 text-white">
-              <h2 className="text-lg font-bold mb-2">🗺ï¸ Plano de Estudos</h2>
+              <h2 className="text-lg font-bold mb-2">🗺️ Plano de Estudos</h2>
               <p className="text-indigo-100 text-sm mb-4">Faça um diagnóstico e receba um roteiro personalizado de estudos</p>
               <button onClick={() => router.push('/dashboard/estudos/plano')}
                 className="w-full bg-white text-indigo-700 py-2.5 rounded-xl font-semibold hover:bg-indigo-50 transition-colors">
