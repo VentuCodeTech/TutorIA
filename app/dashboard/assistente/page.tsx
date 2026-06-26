@@ -186,7 +186,7 @@ export default function AssistentePage() { // NOSONAR
   };
 
   const dailyLimit = features.aiDailyMessageLimit;
-  const isLimitReached = dailyLimit !== null && todayMsgCount >= dailyLimit;
+  const isLimitReached = dailyLimit === null ? false : todayMsgCount >= dailyLimit;
   const canSend = (input.trim() || attachedFile) && !loading && features.aiAssistantEnabled && !isLimitReached;
 
   const handleSend = async (message?: string) => {
@@ -291,13 +291,20 @@ export default function AssistentePage() { // NOSONAR
 
   const currentSuggestions = suggestionTab === 'study' ? studySuggestions : supportSuggestions;
 
-  const textareaPlaceholder = !features.aiAssistantEnabled
-    ? 'Assistente IA disponível nos planos pagos'
-    : isLimitReached
-    ? `Limite de ${dailyLimit} msgs/dia atingido`
-    : attachedFile
-    ? 'Adicione uma instrução (ex: "Corrija minha redação") ou envie direto...'
-    : 'Digite ou arraste um arquivo aqui... (Enter para enviar)';
+const getTextareaPlaceholder = (): string => {
+      if (!features.aiAssistantEnabled) {
+            return 'Assistente IA disponível nos planos pagos';
+                }
+                    if (isLimitReached) {
+                          return `Limite de ${dailyLimit} msgs/dia atingido`;
+                              }
+                                  if (attachedFile) {
+                                        return 'Adicione uma instrução (ex: "Corrija minha redação") ou envie direto...';
+                                            }
+                                                return 'Digite ou arraste um arquivo aqui... (Enter para enviar)';
+                                                  };
+                                                    const textareaPlaceholder = getTextareaPlaceholder();
+}
   const formatSize = (bytes: number) => {
     if (bytes < 1024) return `${bytes} B`;
     if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;

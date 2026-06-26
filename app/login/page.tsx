@@ -230,12 +230,13 @@ function LoginForm() {
               className="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {loading ? (
-                <>
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  {isSignUp ? 'Criando conta...' : 'Entrando...'}
-                </>
-              ) : (
-                isSignUp ? 'Criar Conta Gratuita' : 'Entrar na Plataforma'
+                              <>
+                                              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                                              {isSignUp ? 'Criando conta...' : 'Entrando...'}
+                                                                            </>
+                                                                                        ) : (
+                                                                                                      <span>{isSignUp ? 'Criar Conta Gratuita' : 'Entrar na Plataforma'}</span>
+                                                                                                                  )}
               )}
             </button>
           </form>
