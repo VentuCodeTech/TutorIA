@@ -518,7 +518,7 @@ export default function ComunidadePage() {
                                 />
                                 <div className="flex justify-end mt-2">
                                   <button
-   createClient();                                 onClick={() => handleSubmitReply(post.id)}
+                            onClick={() => handleSubmitReply(post.id)}
                                     disabled={!replyContent[post.id]?.trim() || submittingReply === post.id}
                                     className="bg-indigo-600 text-white px-4 py-1.5 rounded-lg text-xs font-medium hover:bg-indigo-700 disabled:opacity-50 transition-colors"
                                   >
