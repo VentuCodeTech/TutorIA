@@ -65,21 +65,21 @@ export default function NovidadesPage() {
                 <div className="ml-64 p-8">
                         <div className="max-w-4xl mx-auto">
                                   <div className="mb-8">
-                                              <h1 className="text-3xl font-bold text-gray-900">🔔 Novidades</h1>h1>
-                                              <p className="text-gray-600 mt-1">Fique por dentro de todas as atualizações e novos recursos do Tirei10</p>p>
-                                  </div>div>
+                                              <h1 className="text-3xl font-bold text-gray-900">🔔 Novidades</h1>
+                                              <p className="text-gray-600 mt-1">Fique por dentro de todas as atualizações e novos recursos do Tirei10</p>
+                                  </div>
                         
                                   <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-6 text-white mb-8">
                                               <div className="flex items-center gap-3 mb-3">
-                                                            <span className="text-3xl">🚀</span>span>
-                                                            <span className="bg-white/20 text-white text-xs px-3 py-1 rounded-full font-medium">Mais Recente</span>span>
-                                              </div>div>
-                                              <h2 className="text-2xl font-bold mb-2">Tirei10 2.0 chegou!</h2>h2>
+                                                            <span className="text-3xl">🚀</span>
+                                                            <span className="bg-white/20 text-white text-xs px-3 py-1 rounded-full font-medium">Mais Recente</span>
+                                              </div>
+                                              <h2 className="text-2xl font-bold mb-2">Tirei10 2.0 chegou!</h2>
                                               <p className="text-indigo-100">
                                                             Nova interface, novos recursos, mesma missão: ajudar você a conquistar seus objetivos.
                                                             Explore todas as novidades e aproveite ao máximo a plataforma!
-                                              </p>p>
-                                  </div>div>
+                                              </p>
+                                  </div>
                         
                                   <div className="grid gap-4">
                                     {novidades.map((novidade) => (
@@ -89,28 +89,28 @@ export default function NovidadesPage() {
                                                                                 <div className="flex items-center gap-3 mb-2">
                                                                                                       <span className={`text-xs px-3 py-1 rounded-full font-medium ${novidade.badgeColor}`}>
                                                                                                         {novidade.badge}
-                                                                                                        </span>span>
-                                                                                                      <span className="text-xs text-gray-400">{novidade.category}</span>span>
-                                                                                                      <span className="text-xs text-gray-400">•</span>span>
-                                                                                                      <span className="text-xs text-gray-400">{novidade.date}</span>span>
-                                                                                  </div>div>
-                                                                                <h3 className="text-lg font-semibold text-gray-900 mb-2">{novidade.title}</h3>h3>
-                                                                                <p className="text-gray-600 text-sm leading-relaxed">{novidade.description}</p>p>
-                                                            </div>div>
-                                          </div>div>
-                          </div>div>
+                                                                                                        </span>
+                                                                                                      <span className="text-xs text-gray-400">{novidade.category}</span>
+                                                                                                      <span className="text-xs text-gray-400">•</span>
+                                                                                                      <span className="text-xs text-gray-400">{novidade.date}</span>
+                                                                                  </div>
+                                                                                <h3 className="text-lg font-semibold text-gray-900 mb-2">{novidade.title}</h3>
+                                                                                <p className="text-gray-600 text-sm leading-relaxed">{novidade.description}</p>
+                                                            </div>
+                                          </div>
+                          </div>
                         ))}
-                                  </div>div>
+                                  </div>
                         
                                   <div className="mt-8 bg-indigo-50 rounded-2xl p-6 text-center">
-                                              <p className="text-indigo-700 font-medium">💡 Tem uma sugestão para o Tirei10?</p>p>
-                                              <p className="text-indigo-600 text-sm mt-1">Compartilhe suas ideias na Comunidade! Sua opinião é muito importante para nós.</p>p>
+                                              <p className="text-indigo-700 font-medium">💡 Tem uma sugestão para o Tirei10?</p>
+                                              <p className="text-indigo-600 text-sm mt-1">Compartilhe suas ideias na Comunidade! Sua opinião é muito importante para nós.</p>
                                               <a href="/dashboard/comunidade" className="inline-block mt-4 bg-indigo-600 text-white px-6 py-2 rounded-xl text-sm font-medium hover:bg-indigo-700 transition-colors">
                                                             Ir para Comunidade
-                                              </a>a>
-                                  </div>div>
-                        </div>div>
-                </div>div>
-          </div>div>
+                                              </a>
+                                  </div>
+                        </div>
+                </div>
+          </div>
         );
 }</div>
