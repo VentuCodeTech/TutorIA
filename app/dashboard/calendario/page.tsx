@@ -219,8 +219,7 @@ export default function CalendarioPage() {
           )}
           {!canUseCalendar && (
             <p className="text-center text-sm text-amber-500 mt-4">FaÃ§a upgrade para o plano Student ou Advanced Pro para usar esta funcionalidade</p>
-   map((item) => (       )}
-        </div>
+          )}   
 
         {/* Embed Google Calendar for connected users */}
         {connected && canUseCalendar && (
