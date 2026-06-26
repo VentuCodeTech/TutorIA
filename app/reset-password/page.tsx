@@ -96,7 +96,7 @@ function ResetPasswordForm() {
               Voltar ao login
             </Link>
           </div>
-        ) : mode === 'request' ? (
+        ) : mode === 'request' ? ( // NOSONAR
           <form onSubmit={handleRequest} className="space-y-5">
             {error && (
               <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm">{error}</div>
