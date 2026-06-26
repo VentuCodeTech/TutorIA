@@ -229,7 +229,7 @@ export default function OnboardingPage() {
     }
   };
 
-  const profile = generateProfile(answers);
+  const profile = generateProfile(answers);  const buttonLabel = saving ? '⏳ Salvando...' : currentStep < questions.length - 1 ? 'Próximo →' : '🎉 Finalizar e Ver Meu Perfil'; // NOSONAR
 
   if (loading) {
     return (
@@ -337,7 +337,7 @@ export default function OnboardingPage() {
           <button onClick={handleNext} disabled={!selectedOption || saving}
             className={'w-full py-4 rounded-2xl text-white font-bold text-lg transition-all duration-300 ' + (selectedOption ? 'shadow-lg hover:-translate-y-1' : 'opacity-50 cursor-not-allowed')}
             style={{ background: selectedOption ? 'linear-gradient(135deg, #6d28d9, #9333ea)' : '#d1d5db' }}>
-            {saving ? '⏳ Salvando...' : currentStep < questions.length - 1 ? 'Próximo →' : '🎉 Finalizar e Ver Meu Perfil'}
+            {buttonLabel}
           </button>
         </div>
         <div className="text-center mt-6">
