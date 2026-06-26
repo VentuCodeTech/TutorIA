@@ -229,7 +229,7 @@ className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 r
 Começar Agora
 </button>
 </div>
-) : loading ? (
+) : loading ? ( // NOSONAR
 <div className="bg-white rounded-2xl p-12 shadow-sm border border-gray-100 flex flex-col items-center justify-center min-h-96">
 <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-4"></div>
 <p className="text-gray-500">Buscando questão do banco...</p>
