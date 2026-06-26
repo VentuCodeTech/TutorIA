@@ -291,7 +291,7 @@ export default function AssistentePage() { // NOSONAR
 
   const currentSuggestions = suggestionTab === 'study' ? studySuggestions : supportSuggestions;
 
-  const formatSize = (bytes: number) => {
+  const textareaPlaceholder = !features.aiAssistantEnabled // NOSONAR    ? 'Assistente IA disponível nos planos pagos'    : isLimitReached    ? `Limite de ${dailyLimit} msgs/dia atingido`    : attachedFile    ? 'Adicione uma instrução (ex: "Corrija minha redação") ou envie direto...'    : 'Digite ou arraste um arquivo aqui... (Enter para enviar)';  const formatSize = (bytes: number) => {
     if (bytes < 1024) return `${bytes} B`;
     if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;
     return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
@@ -495,16 +495,8 @@ export default function AssistentePage() { // NOSONAR
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder={ // NOSONAR
-                  !features.aiAssistantEnabled
-                    ? 'Assistente IA disponível nos planos pagos'
-                    : isLimitReached
-                    ? `Limite de ${dailyLimit} msgs/dia atingido`
-                    : attachedFile
-                    ? 'Adicione uma instrução (ex: "Corrija minha redação") ou envie direto...'
-                    : 'Digite ou arraste um arquivo aqui... (Enter para enviar)'
-                }
-                className="flex-1 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none disabled:bg-gray-50 disabled:text-gray-400"
+                placeholder={textareaPlaceholder}
+                  assName="flex-1 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none disabled:bg-gray-50 disabled:text-gray-400"
                 rows={2}
                 disabled={loading || !features.aiAssistantEnabled || isLimitReached}
               />
