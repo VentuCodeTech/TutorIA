@@ -105,7 +105,7 @@ export default function CalendarioPage() {
                 href="/dashboard/planos"
                 className="inline-block bg-amber-600 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-amber-700 transition-colors"
               >
-                Ver Planos â
+                Ver Planos →
               </a>
             </div>
           </div>
@@ -136,7 +136,7 @@ export default function CalendarioPage() {
                     onClick={openGoogleCalendar}
                     className="bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-blue-700 transition-colors"
                   >
-                    Abrir Google Calendar â
+                    Abrir Google Calendar →
                   </button>
                   <button
                     onClick={handleDisconnect}
@@ -198,7 +198,7 @@ export default function CalendarioPage() {
               { icon: '📚', label: 'Agendar Sessão de Estudo', desc: 'Criar evento de estudo', href: 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=Sess%C3%A3o+de+Estudos+-+Tirei10&details=Sess%C3%A3o+de+estudos+com+Tirei10' },
               { icon: '🎯', label: 'Agendar Simulado', desc: 'Marcar data de simulado', href: 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=Simulado+-+Tirei10&details=Realizar+simulado+na+plataforma+Tirei10' },
               { icon: '📅', label: 'Ver Minha Agenda', desc: 'Abrir Google Calendar', href: 'https://calendar.google.com' },
-              { icon: 'â°', label: 'Lembrete de Revisão', desc: 'Criar lembrete de revisão', href: 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=Revis%C3%A3o+-+Tirei10&details=Revis%C3%A3o+do+conte%C3%BAdo+estudado' },
+              { icon: '⏰', label: 'Lembrete de Revisão', desc: 'Criar lembrete de revisão', href: 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=Revis%C3%A3o+-+Tirei10&details=Revis%C3%A3o+do+conte%C3%BAdo+estudado' },
             ].map((action) => (
               <a
                 key={action.label}
@@ -219,21 +219,22 @@ export default function CalendarioPage() {
           )}
           {!canUseCalendar && (
             <p className="text-center text-sm text-amber-500 mt-4">Faça upgrade para o plano Student ou Advanced Pro para usar esta funcionalidade</p>
-          )}   
+          )}
+        </div>
 
         {/* Embed Google Calendar for connected users */}
         {connected && canUseCalendar && (
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
             <h2 className="font-bold text-gray-800 mb-4">Sua Agenda</h2>
             <p className="text-sm text-gray-500 mb-4">
-              Para visualizar seu Google Calendar aqui, clique em "Abrir Google Calendar" ou use as ações rápidas acima.
+              Para visualizar seu Google Calendar aqui, clique em &quot;Abrir Google Calendar&quot; ou use as ações rápidas acima.
               A incorporação direta requer configuração adicional no Google Calendar.
             </p>
             <button
               onClick={openGoogleCalendar}
               className="bg-indigo-600 text-white px-6 py-3 rounded-xl font-medium hover:bg-indigo-700 transition-colors"
             >
-              Abrir meu Google Calendar â
+              Abrir meu Google Calendar →
             </button>
           </div>
         )}
