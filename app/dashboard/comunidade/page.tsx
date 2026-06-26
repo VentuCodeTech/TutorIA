@@ -349,7 +349,40 @@ export default function ComunidadePage() {
                     type="text"
                     placeholder="Título (opcional)"
                     value={newPostTitle}
-                    onChange={(e) => setNewPostTitle(e.target.value) : (
+                    onChange={(e) => setNewPostTitle(e.target.value)}
+                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 mb-3 text-sm focus:outline-none focus:border-indigo-400"
+                  />
+                  <textarea
+                    placeholder="O que você quer compartilhar?"
+                    value={newPostContent}
+                    onChange={(e) => setNewPostContent(e.target.value)}
+                    rows={4}
+                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 mb-3 text-sm focus:outline-none focus:border-indigo-400 resize-none"
+                  />
+                  <div className="flex items-center justify-between">
+                    <select
+                      value={newCategory}
+                      onChange={(e) => setNewCategory(e.target.value)}
+                      className="border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-indigo-400"
+                    >
+                      {categories.filter((c) => c !== 'Todos').map((c) => (
+                        <option key={c} value={c}>{c}</option>
+                      ))}
+                    </select>
+                    <div className="flex gap-2">
+                      <button onClick={() => setShowNewPost(false)} className="px-4 py-2 text-sm text-gray-500 hover:text-gray-700">Cancelar</button>
+                      <button
+                        onClick={handleSubmitPost}
+                        disabled={submitting || !newPostContent.trim()}
+                        className="px-6 py-2 bg-indigo-600 text-white rounded-xl text-sm font-medium hover:bg-indigo-700 disabled:opacity-50 transition-colors"
+                      >
+                        {submitting ? 'Publicando...' : 'Publicar'}
+                      </button>
+                    </div>
+                  </div>
+                  {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+                </div>
+              ) : (
                 <button
                   onClick={() => setShowNewPost(true)}
                   className="w-full bg-white border-2 border-dashed border-gray-300 rounded-2xl p-4 text-gray-500 hover:border-indigo-400 hover:text-indigo-600 transition-colors text-left"
