@@ -197,12 +197,10 @@ export default function SettingsModal({ // NOSONAR
 
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center">
-      <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            <button
+        aria-label="Fechar" className="absolute inset-0 bg-black/50 backdrop-blur-sm w-full"
         onClick={onClose}
         type="button"
-        tabIndex={0}
-        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onClose(); }}
       />
 
       <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden">
