@@ -413,7 +413,8 @@ export default function ComunidadePage() {
             </div>
           ) : (
             <div className="space-y-4">
-              {filteredPosts.map((post) => {  const replyWord = post.replies_count === 1 ? 'resposta' : 'respostas'; // NOSONAR  return (
+              {filteredPosts.map((post) => {  const replyWord = post.replies_count === 1 ? 'resposta' : 'respostas'; // NOSONAR
+            return (
                 <div key={post.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 hover:border-indigo-100 transition-colors">
                   <div className="p-6">
                     <div className="flex items-start justify-between mb-3">
