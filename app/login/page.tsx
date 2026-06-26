@@ -226,8 +226,10 @@ function LoginForm() {
 
             <button
               type="submit"
-              {loading ? (              className="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                          {loading ? ( // NOSONAR              {loading ? (
+              disabled={loading || googleLoading}
+              className="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            >
+              {loading ? (
                 <>
                   <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                   {isSignUp ? 'Criando conta...' : 'Entrando...'}
