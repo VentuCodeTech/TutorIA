@@ -144,7 +144,7 @@ export default function Home() {
               <div>
                 <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold mb-8 border" style={{ background: 'rgba(109,40,217,0.06)', borderColor: 'rgba(109,40,217,0.2)', color: '#6D28D9' }}>
                   <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: '#6D28D9' }}></span>
-                  Powered by Claude AI
+                  <span>Powered by Claude AI</span>
                 </div>
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight" style={{ color: '#111827' }}>
                   Estude com{' '}
