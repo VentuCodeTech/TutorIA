@@ -191,7 +191,7 @@ export default function ComunidadePage() {
         event: 'INSERT',
         schema: 'public',
         table: 'forum_posts',
-      }, (payload: { new: Record<string, unknown> }) => { // NOSONAR
+      }, (payload: { new: Record<string, unknown> }) => {
         const newPost = payload.new;
         const rawTitle = newPost.title as string;
         const hasDelimiter = rawTitle.includes('||');
@@ -206,8 +206,8 @@ export default function ComunidadePage() {
           replies_count: newPost.replies_count as number,
           created_at: newPost.created_at as string,
         };
-        setPosts((prev) => { // NOSONAR
-          if (prev.some((p) => p.id === mapped.id)) return prev; // NOSONAR
+        setPosts((prev) => {
+          if (prev.some((p) => p.id === mapped.id)) return prev;
           return [mapped, ...prev];
         });
       })
@@ -215,9 +215,9 @@ export default function ComunidadePage() {
         event: 'UPDATE',
         schema: 'public',
         table: 'forum_posts',
-      }, (payload: { new: Record<string, unknown> }) => { // NOSONAR
+      }, (payload: { new: Record<string, unknown> }) => {
         const updated = payload.new;
-        setPosts((prev) => prev.map((p) => (p.id === updated.id ? { ...p, likes: updated.likes as number, replies_count: updated.replies_count as number } : p))); // NOSONAR
+        setPosts((prev) => prev.map((p) => (p.id === updated.id ? { ...p, likes: updated.likes as number, replies_count: updated.replies_count as number } : p)));
       })
       .subscribe();
 
@@ -401,11 +401,11 @@ export default function ComunidadePage() {
             ))}
           </div>
 
-          {loading ? ( // NOSONAR
+          {loading ? (
             <div className="flex justify-center py-16">
               <div className="w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
             </div>
-          ) : filteredPosts.length === 0 ? ( // NOSONAR
+          ) : filteredPosts.length === 0 ? (
             <div className="text-center py-16 text-gray-400">
               <p className="text-5xl mb-3">&#128172;</p>
               <p className="font-medium text-gray-500">Nenhum post nesta categoria ainda.</p>
@@ -413,7 +413,7 @@ export default function ComunidadePage() {
             </div>
           ) : (
             <div className="space-y-4">
-              {filteredPosts.map((post) => {  const replyWord = post.replies_count === 1 ? 'resposta' : 'respostas'; // NOSONAR
+              {filteredPosts.map((post) => {  const replyWord = post.replies_count === 1 ? 'resposta' : 'respostas';
             return (
                 <div key={post.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 hover:border-indigo-100 transition-colors">
                   <div className="p-6">
