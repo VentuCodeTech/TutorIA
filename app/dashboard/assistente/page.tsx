@@ -29,7 +29,7 @@ const studySuggestions = [
   'Como funciona a célula eucariota?',
   'Quais são as principais causas da 2ª Guerra Mundial?',
   'Como resolver equações do 2º grau?',
-  'Explique o processo de fotossíntese',
+  'Explique o processo de fotosíntese',
   'Dicas para redação do ENEM',
 ];
 
@@ -291,20 +291,20 @@ export default function AssistentePage() { // NOSONAR
 
   const currentSuggestions = suggestionTab === 'study' ? studySuggestions : supportSuggestions;
 
-const getTextareaPlaceholder = (): string => {
-      if (!features.aiAssistantEnabled) {
-            return 'Assistente IA disponível nos planos pagos';
-                }
-                    if (isLimitReached) {
-                          return `Limite de ${dailyLimit} msgs/dia atingido`;
-                              }
-                                  if (attachedFile) {
-                                        return 'Adicione uma instrução (ex: "Corrija minha redação") ou envie direto...';
-                                            }
-                                                return 'Digite ou arraste um arquivo aqui... (Enter para enviar)';
-                                                  };
-                                                    const textareaPlaceholder = getTextareaPlaceholder();
-}
+  const getTextareaPlaceholder = (): string => {
+    if (!features.aiAssistantEnabled) {
+      return 'Assistente IA disponível nos planos pagos';
+    }
+    if (isLimitReached) {
+      return `Limite de ${dailyLimit} msgs/dia atingido`;
+    }
+    if (attachedFile) {
+      return 'Adicione uma instrução (ex: "Corrija minha redação") ou envie direto...';
+    }
+    return 'Digite ou arraste um arquivo aqui... (Enter para enviar)';
+  };
+  const textareaPlaceholder = getTextareaPlaceholder();
+
   const formatSize = (bytes: number) => {
     if (bytes < 1024) return `${bytes} B`;
     if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;
@@ -510,7 +510,7 @@ const getTextareaPlaceholder = (): string => {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder={textareaPlaceholder}
-                  className="flex-1 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none disabled:bg-gray-50 disabled:text-gray-400"
+                className="flex-1 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none disabled:bg-gray-50 disabled:text-gray-400"
                 rows={2}
                 disabled={loading || !features.aiAssistantEnabled || isLimitReached}
               />
@@ -535,4 +535,4 @@ const getTextareaPlaceholder = (): string => {
       </div>
     </div>
   );
-    }
+}
