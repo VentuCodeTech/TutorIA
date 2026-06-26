@@ -528,7 +528,7 @@ const { features } = useUserPlan();
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {[{label:'Simulados Feitos',value:stats.done.toString(),icon:'📋'},{label:'Melhor Nota',value:stats.done>0?`${stats.bestNote}%`:'-',icon:'⭐'},{label:'Tempo Total',value:`${stats.totalTime}min`,icon:'⏱️'},{label:'Aprovações',value:stats.approved.toString(),icon:'✅'}].map((stat,i)=>(
-            <div key={item.label} className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex items-center gap-3">
+            <div key={stat.label} className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex items-center gap-3">
               <span className="text-2xl">{stat.icon}</span><div><p className="text-xl font-bold text-gray-800">{stat.value}</p><p className="text-xs text-gray-500">{stat.label}</p></div>
             </div>
           ))}
