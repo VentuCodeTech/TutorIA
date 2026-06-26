@@ -8,8 +8,8 @@ import Chatbot from '@/components/Chatbot'
 import { createClient } from '@/lib/supabase/client'
 
 const subMenuItems = [
-  { icon: 'ð', label: 'VisÃ£o Geral', href: '/dashboard/estudos' },
-  { icon: 'ðºï¸', label: 'Plano de Estudos', href: '/dashboard/estudos/plano' },
+  { icon: '📋', label: 'Visão Geral', href: '/dashboard/estudos' },
+  { icon: '🗺ï¸', label: 'Plano de Estudos', href: '/dashboard/estudos/plano' },
 ]
 
 export default function EstudosPage() {
@@ -45,14 +45,14 @@ export default function EstudosPage() {
   }
 
   const studyTopics = [
-    { subject: 'MatemÃ¡tica', emoji: 'ð§®' },
-    { subject: 'PortuguÃªs', emoji: 'ð' },
-    { subject: 'HistÃ³ria', emoji: 'ð' },
-    { subject: 'FÃ­sica', emoji: 'âï¸' },
-    { subject: 'QuÃ­mica', emoji: 'ð§ª' },
-    { subject: 'Biologia', emoji: 'ð§¬' },
+    { subject: 'Matemática', emoji: '🧮' },
+    { subject: 'Português', emoji: '📖' },
+    { subject: 'História', emoji: '🌍' },
+    { subject: 'Física', emoji: 'âï¸' },
+    { subject: 'Química', emoji: '🧪' },
+    { subject: 'Biologia', emoji: '🧬' },
     { subject: 'Direito Constitucional', emoji: 'âï¸' },
-    { subject: 'FinanÃ§as Pessoais', emoji: 'ð°' },
+    { subject: 'Finanças Pessoais', emoji: '💰' },
   ]
 
   return (
@@ -60,7 +60,7 @@ export default function EstudosPage() {
       <Sidebar />
       <main className="ml-64 p-8">
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-800">ð Meus Estudos</h1>
+          <h1 className="text-3xl font-bold text-gray-800">📚 Meus Estudos</h1>
           <p className="text-gray-500 mt-1">Gerencie seu plano de estudos personalizado</p>
         </div>
 
@@ -81,16 +81,16 @@ export default function EstudosPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
             <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-6">
-              <h2 className="text-xl font-bold text-gray-800 mb-4">ð Progresso por MatÃ©ria</h2>
+              <h2 className="text-xl font-bold text-gray-800 mb-4">📋 Progresso por Matéria</h2>
               {loading ? (
                 <div className="text-center py-8 text-gray-500">Carregando...</div>
               ) : stats.answered === 0 ? ( // NOSONAR
                 <div className="text-center py-8">
-                  <div className="text-5xl mb-3">ð</div>
-                  <p className="text-gray-500 mb-4">VocÃª ainda nÃ£o respondeu nenhuma questÃ£o.</p>
+                  <div className="text-5xl mb-3">📝</div>
+                  <p className="text-gray-500 mb-4">Você ainda não respondeu nenhuma questão.</p>
                   <button onClick={() => router.push('/dashboard/questoes')}
                     className="bg-indigo-600 text-white px-6 py-2.5 rounded-xl font-medium hover:bg-indigo-700 transition-colors">
-                    ComeÃ§ar a Estudar
+                    Começar a Estudar
                   </button>
                 </div>
               ) : (
@@ -115,8 +115,8 @@ export default function EstudosPage() {
               )}
             </div>
             <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-              <h2 className="text-xl font-bold text-gray-800 mb-4">ð¤ SessÃ£o de IA</h2>
-              <p className="text-gray-500 text-sm mb-4">Use a inteligÃªncia artificial para estudar de forma personalizada e adaptativa.</p>
+              <h2 className="text-xl font-bold text-gray-800 mb-4">🤖 Sessão de IA</h2>
+              <p className="text-gray-500 text-sm mb-4">Use a inteligência artificial para estudar de forma personalizada e adaptativa.</p>
               <div className="grid grid-cols-2 gap-3">
                 {studyTopics.map((topic) => (
                   <button key={topic.subject} onClick={() => router.push(`/dashboard/questoes?area=${encodeURIComponent(topic.subject)}`)}
@@ -131,16 +131,16 @@ export default function EstudosPage() {
 
           <div className="space-y-4">
             <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-              <h2 className="text-lg font-bold text-gray-800 mb-4">ð¯ Meta DiÃ¡ria</h2>
+              <h2 className="text-lg font-bold text-gray-800 mb-4">🎯 Meta Diária</h2>
               <p className="text-4xl font-bold text-indigo-600 mb-1">{stats.answered}</p>
-              <p className="text-sm text-gray-500 mb-4">questÃµes respondidas</p>
+              <p className="text-sm text-gray-500 mb-4">questões respondidas</p>
               <button onClick={() => router.push('/dashboard/questoes')}
                 className="w-full bg-indigo-600 text-white py-2.5 rounded-xl font-medium hover:bg-indigo-700 transition-colors">
                 Iniciar Estudo
               </button>
             </div>
             <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-              <h2 className="text-lg font-bold text-gray-800 mb-4">ð EstatÃ­sticas</h2>
+              <h2 className="text-lg font-bold text-gray-800 mb-4">📈 Estatísticas</h2>
               <div className="space-y-3">
                 <div className="flex justify-between">
                   <span className="text-sm text-gray-600">Total respondidas</span>
@@ -157,8 +157,8 @@ export default function EstudosPage() {
               </div>
             </div>
             <div className="bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl p-6 text-white">
-              <h2 className="text-lg font-bold mb-2">ðºï¸ Plano de Estudos</h2>
-              <p className="text-indigo-100 text-sm mb-4">FaÃ§a um diagnÃ³stico e receba um roteiro personalizado de estudos</p>
+              <h2 className="text-lg font-bold mb-2">🗺ï¸ Plano de Estudos</h2>
+              <p className="text-indigo-100 text-sm mb-4">Faça um diagnóstico e receba um roteiro personalizado de estudos</p>
               <button onClick={() => router.push('/dashboard/estudos/plano')}
                 className="w-full bg-white text-indigo-700 py-2.5 rounded-xl font-semibold hover:bg-indigo-50 transition-colors">
                 Criar Meu Plano
