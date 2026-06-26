@@ -171,7 +171,22 @@ export default function ComunidadePage() {
     setSubmittingReply(null);
   };
 
-  useEffect(() => {
+  const addNewPostIfMissing = (mapped: ForumPost) => {
+    setPosts((prev) => {
+      if (prev.some((p) => p.id === mapped.id)) return prev;
+      return [mapped, ...prev];
+    });
+  };
+
+  const updatePostStats = (updated: Record<string, unknown>) => {
+    setPosts((prev) => prev.map(
+      (p) => p.id === updated.id
+        ? { ...p, likes: updated.likes as number, replies_count: updated.replies_count as number }
+        : p
+    ));
+  };
+
+    useEffect(() => {
     const init = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
@@ -210,18 +225,14 @@ export default function ComunidadePage() {
           replies_count: newPost.replies_count as number,
           created_at: newPost.created_at as string,
         };
-        setPosts((prev) => {
-          if (prev.some((p) => p.id === mapped.id)) return prev;
-          return [mapped, ...prev];
-        });
+        addNewPostIfMissing(mapped);
       })
       .on('postgres_changes', {
         event: 'UPDATE',
         schema: 'public',
         table: 'forum_posts',
       }, (payload: { new: Record<string, unknown> }) => {
-        const updated = payload.new;
-        setPosts((prev) => prev.map((p) => (p.id === updated.id ? { ...p, likes: updated.likes as number, replies_count: updated.replies_count as number } : p)));
+        updatePostStats(payload.new);
       })
       .subscribe();
 
@@ -331,21 +342,21 @@ export default function ComunidadePage() {
           </div>
           {userId && (
             <div className="mb-6">
-              {!showNewPost ? (
-                <button
-                  onClick={() => setShowNewPost(true)}
-                  className="w-full bg-white border-2 border-dashed border-gray-300 rounded-2xl p-4 text-gray-500 hover:border-indigo-400 hover:text-indigo-600 transition-colors text-left"
-                >
-                  ✏️ Compartilhe algo com a comunidade...
-                </button>
-              ) : (
+              {showNewPost ? (
                 <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                   <h3 className="font-bold text-gray-800 mb-4">Nova Publicação</h3>
                   <input
                     type="text"
                     placeholder="Título (opcional)"
                     value={newPostTitle}
-                    onChange={(e) => setNewPostTitle(e.target.value)}
+                    onChange={(e) => setNewPostTitle(e.target.value) : (
+                <button
+                  onClick={() => setShowNewPost(true)}
+                  className="w-full bg-white border-2 border-dashed border-gray-300 rounded-2xl p-4 text-gray-500 hover:border-indigo-400 hover:text-indigo-600 transition-colors text-left"
+                >
+                  ✏️ Compartilhe algo com a comunidade...
+                </button>
+              )}
                     className="w-full border border-gray-200 rounded-xl px-4 py-2.5 mb-3 text-sm focus:outline-none focus:border-indigo-400"
                   />
                   <textarea
@@ -381,14 +392,16 @@ export default function ComunidadePage() {
               )}
             </div>
           )}
-          {loading ? (
+          {loading && (oading ? (
             <div className="text-center py-12 text-gray-400">Carregando posts...</div>
-          ) : filteredPosts.length === 0 ? (
+          )}
+          {!loading && filteredPosts.length === 0 && (
             <div className="text-center py-12 text-gray-400">
               <div className="text-5xl mb-3">💬</div>
               <p>Nenhum post encontrado. Seja o primeiro a compartilhar!</p>
             </div>
-          ) : (
+          )}
+          {!loading && filteredPosts.length > 0 && (
             <div className="space-y-4">
               {filteredPosts.map((post) => {
                 const isExpanded = expandedReplies.has(post.id);
@@ -468,7 +481,7 @@ export default function ComunidadePage() {
                 );
               })}
             </div>
-          )}
+)}
         </div>
       </div>
     </div>
