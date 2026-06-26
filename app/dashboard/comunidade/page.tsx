@@ -59,7 +59,7 @@ export default function ComunidadePage() {
   const [replyContent, setReplyContent] = useState<Record<string, string>>({});
   const [submittingReply, setSubmittingReply] = useState<string | null>(null);
   const [loadingReplies, setLoadingReplies] = useState<Set<string>>(new Set());
-  const channelRef = useRef<ReturnType<ReturnType<typeof createClient>['channel']> | null>(null);
+  const channelRef = useRef<any>(null);
   const supabase = createClient();
 
   const fetchPosts = async () => {
