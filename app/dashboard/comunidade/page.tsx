@@ -59,7 +59,7 @@ export default function ComunidadePage() {
   const [replyContent, setReplyContent] = useState<Record<string, string>>({});
   const [submittingReply, setSubmittingReply] = useState<string | null>(null);
   const [loadingReplies, setLoadingReplies] = useState<Set<string>>(new Set());
-  const channelRef = useRef<any>(null);
+  const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
   const supabase = createClient();
 
   const fetchPosts = async () => {
@@ -121,8 +121,12 @@ export default function ComunidadePage() {
         });
         setRepliesMap((prev) => ({ ...prev, [postId]: mapped }));
       }
-    } catch {}
-    setLoadingReplies((prev) => { const s = new Set(prev); s.delete(postId); return s; });
+    } catch { /* silently ignore */ }
+    setLoadingReplies((prev) => {
+      const s = new Set(prev);
+      s.delete(postId);
+      return s;
+    });
   };
 
   const toggleReplies = async (postId: string) => {
@@ -163,7 +167,7 @@ export default function ComunidadePage() {
           setPosts((prev) => prev.map((p) => p.id === postId ? { ...p, replies_count: newCount } : p));
         }
       }
-    } catch {}
+    } catch { /* silently ignore */ }
     setSubmittingReply(null);
   };
 
@@ -176,7 +180,7 @@ export default function ComunidadePage() {
         setUserName(name);
         const savedLikes = localStorage.getItem('liked_posts_' + user.id);
         if (savedLikes) {
-          try { setLikedPosts(new Set(JSON.parse(savedLikes))); } catch {}
+          try { setLikedPosts(new Set(JSON.parse(savedLikes))); } catch { /* silently ignore */ }
         }
       }
       setLoading(true);
@@ -191,7 +195,7 @@ export default function ComunidadePage() {
         event: 'INSERT',
         schema: 'public',
         table: 'forum_posts',
-      }, (payload: { new: any }) => {
+      }, (payload: { new: Record<string, unknown> }) => {
         const newPost = payload.new;
         const rawTitle = newPost.title as string;
         const hasDelimiter = rawTitle.includes('||');
@@ -215,7 +219,7 @@ export default function ComunidadePage() {
         event: 'UPDATE',
         schema: 'public',
         table: 'forum_posts',
-      }, (payload: { new: any }) => {
+      }, (payload: { new: Record<string, unknown> }) => {
         const updated = payload.new;
         setPosts((prev) => prev.map((p) => (p.id === updated.id ? { ...p, likes: updated.likes as number, replies_count: updated.replies_count as number } : p)));
       })
@@ -291,20 +295,182 @@ export default function ComunidadePage() {
     const url = globalThis.location.origin + '/dashboard/comunidade';
     const text = '"' + post.content.substring(0, 100) + '..." — Tirei10 Comunidade';
     if (navigator.share) {
-      try { await navigator.share({ title: 'Tirei10 Comunidade', text, url }); } catch {}
+      try { await navigator.share({ title: 'Tirei10 Comunidade', text, url }); } catch { /* silently ignore */ }
     } else {
       try {
         await navigator.clipboard.writeText(url);
         setShareMsg(post.id);
         setTimeout(() => setShareMsg(''), 2000);
-      } catch {}
+      } catch { /* silently ignore */ }
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Sidebar />
-      <div className="ml-64 p-8">Comunidade</div>
+      <div className="ml-64 p-8">
+        <div className="max-w-4xl mx-auto">
+          <div className="mb-6">
+            <h1 className="text-3xl font-bold text-gray-900">👥 Comunidade</h1>
+            <p className="text-gray-600 mt-1">Conecte-se com outros estudantes</p>
+          </div>
+          <div className="flex gap-2 flex-wrap mb-6">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                  selectedCategory === cat
+                    ? 'bg-indigo-600 text-white'
+                    : 'bg-white text-gray-600 border border-gray-200 hover:border-indigo-300'
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+          {userId && (
+            <div className="mb-6">
+              {!showNewPost ? (
+                <button
+                  onClick={() => setShowNewPost(true)}
+                  className="w-full bg-white border-2 border-dashed border-gray-300 rounded-2xl p-4 text-gray-500 hover:border-indigo-400 hover:text-indigo-600 transition-colors text-left"
+                >
+                  ✏️ Compartilhe algo com a comunidade...
+                </button>
+              ) : (
+                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                  <h3 className="font-bold text-gray-800 mb-4">Nova Publicação</h3>
+                  <input
+                    type="text"
+                    placeholder="Título (opcional)"
+                    value={newPostTitle}
+                    onChange={(e) => setNewPostTitle(e.target.value)}
+                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 mb-3 text-sm focus:outline-none focus:border-indigo-400"
+                  />
+                  <textarea
+                    placeholder="O que você quer compartilhar?"
+                    value={newPostContent}
+                    onChange={(e) => setNewPostContent(e.target.value)}
+                    rows={4}
+                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 mb-3 text-sm focus:outline-none focus:border-indigo-400 resize-none"
+                  />
+                  <div className="flex items-center justify-between">
+                    <select
+                      value={newCategory}
+                      onChange={(e) => setNewCategory(e.target.value)}
+                      className="border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-indigo-400"
+                    >
+                      {categories.filter((c) => c !== 'Todos').map((c) => (
+                        <option key={c} value={c}>{c}</option>
+                      ))}
+                    </select>
+                    <div className="flex gap-2">
+                      <button onClick={() => setShowNewPost(false)} className="px-4 py-2 text-sm text-gray-500 hover:text-gray-700">Cancelar</button>
+                      <button
+                        onClick={handleSubmitPost}
+                        disabled={submitting || !newPostContent.trim()}
+                        className="px-6 py-2 bg-indigo-600 text-white rounded-xl text-sm font-medium hover:bg-indigo-700 disabled:opacity-50 transition-colors"
+                      >
+                        {submitting ? 'Publicando...' : 'Publicar'}
+                      </button>
+                    </div>
+                  </div>
+                  {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+                </div>
+              )}
+            </div>
+          )}
+          {loading ? (
+            <div className="text-center py-12 text-gray-400">Carregando posts...</div>
+          ) : filteredPosts.length === 0 ? (
+            <div className="text-center py-12 text-gray-400">
+              <div className="text-5xl mb-3">💬</div>
+              <p>Nenhum post encontrado. Seja o primeiro a compartilhar!</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {filteredPosts.map((post) => {
+                const isExpanded = expandedReplies.has(post.id);
+                const replies = repliesMap[post.id] || [];
+                const isLoadingReplies = loadingReplies.has(post.id);
+                return (
+                  <div key={post.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-700 font-bold text-sm">
+                          {post.user_name.charAt(0).toUpperCase()}
+                        </div>
+                        <div>
+                          <p className="font-medium text-gray-800 text-sm">{post.user_name}</p>
+                          <p className="text-xs text-gray-400">{timeAgo(post.created_at)}</p>
+                        </div>
+                      </div>
+                      {post.exam_tag && (
+                        <span className="text-xs bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full">{post.exam_tag}</span>
+                      )}
+                    </div>
+                    {post.title && <h3 className="font-semibold text-gray-900 mb-2">{post.title}</h3>}
+                    <p className="text-gray-600 text-sm leading-relaxed mb-4">{post.content}</p>
+                    <div className="flex items-center gap-4 text-sm text-gray-500">
+                      <button onClick={() => handleLike(post.id)} className={`flex items-center gap-1.5 hover:text-indigo-600 transition-colors ${likedPosts.has(post.id) ? 'text-indigo-600' : ''}`}>
+                        {likedPosts.has(post.id) ? '❤️' : '🤍'} {post.likes}
+                      </button>
+                      <button onClick={() => toggleReplies(post.id)} className="flex items-center gap-1.5 hover:text-indigo-600 transition-colors">
+                        💬 {post.replies_count} {post.replies_count === 1 ? 'resposta' : 'respostas'}
+                      </button>
+                      <button onClick={() => handleShare(post)} className="flex items-center gap-1.5 hover:text-indigo-600 transition-colors">
+                        {shareMsg === post.id ? '✅ Copiado!' : '🔗 Compartilhar'}
+                      </button>
+                    </div>
+                    {isExpanded && (
+                      <div className="mt-4 pl-4 border-l-2 border-gray-100">
+                        {isLoadingReplies ? (
+                          <p className="text-sm text-gray-400">Carregando respostas...</p>
+                        ) : (
+                          <>
+                            {replies.map((reply) => (
+                              <div key={reply.id} className="mb-3">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <div className="w-7 h-7 bg-purple-100 rounded-full flex items-center justify-center text-purple-700 font-bold text-xs">
+                                    {reply.user_name.charAt(0).toUpperCase()}
+                                  </div>
+                                  <span className="text-sm font-medium text-gray-700">{reply.user_name}</span>
+                                  <span className="text-xs text-gray-400">{timeAgo(reply.created_at)}</span>
+                                </div>
+                                <p className="text-sm text-gray-600 ml-9">{reply.content}</p>
+                              </div>
+                            ))}
+                            {userId && (
+                              <div className="flex gap-2 mt-3">
+                                <input
+                                  type="text"
+                                  placeholder="Escreva uma resposta..."
+                                  value={replyContent[post.id] || ''}
+                                  onChange={(e) => setReplyContent((prev) => ({ ...prev, [post.id]: e.target.value }))}
+                                  onKeyDown={(e) => { if (e.key === 'Enter') handleSubmitReply(post.id); }}
+                                  className="flex-1 border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-indigo-400"
+                                />
+                                <button
+                                  onClick={() => handleSubmitReply(post.id)}
+                                  disabled={submittingReply === post.id || !replyContent[post.id]?.trim()}
+                                  className="px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm font-medium hover:bg-indigo-700 disabled:opacity-50 transition-colors"
+                                >
+                                  {submittingReply === post.id ? '...' : 'Responder'}
+                                </button>
+                              </div>
+                            )}
+                          </>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
