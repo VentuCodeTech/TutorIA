@@ -390,44 +390,10 @@ export default function ComunidadePage() {
                   ✏️ Compartilhe algo com a comunidade...
                 </button>
               )}
-                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 mb-3 text-sm focus:outline-none focus:border-indigo-400"
-                  />
-                  <textarea
-                    placeholder="O que você quer compartilhar?"
-                    value={newPostContent}
-                    onChange={(e) => setNewPostContent(e.target.value)}
-                    rows={4}
-                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 mb-3 text-sm focus:outline-none focus:border-indigo-400 resize-none"
-                  />
-                  <div className="flex items-center justify-between">
-                    <select
-                      value={newCategory}
-                      onChange={(e) => setNewCategory(e.target.value)}
-                      className="border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-indigo-400"
-                    >
-                      {categories.filter((c) => c !== 'Todos').map((c) => (
-                        <option key={c} value={c}>{c}</option>
-                      ))}
-                    </select>
-                    <div className="flex gap-2">
-                      <button onClick={() => setShowNewPost(false)} className="px-4 py-2 text-sm text-gray-500 hover:text-gray-700">Cancelar</button>
-                      <button
-                        onClick={handleSubmitPost}
-                        disabled={submitting || !newPostContent.trim()}
-                        className="px-6 py-2 bg-indigo-600 text-white rounded-xl text-sm font-medium hover:bg-indigo-700 disabled:opacity-50 transition-colors"
-                      >
-                        {submitting ? 'Publicando...' : 'Publicar'}
-                      </button>
-                    </div>
-                  </div>
-                  {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
-                </div>
-              )}
             </div>
           )}
-          {loading && (oading ? (
-            <div className="text-center py-12 text-gray-400">Carregando posts...</div>
-          )}
+          {loading && (
+            <div className="text-center py-12 text-gray-400">Carregando posts...</div>)}
           {!loading && filteredPosts.length === 0 && (
             <div className="text-center py-12 text-gray-400">
               <div className="text-5xl mb-3">💬</div>
@@ -514,7 +480,7 @@ export default function ComunidadePage() {
                 );
               })}
             </div>
-)}
+          )}
         </div>
       </div>
     </div>
