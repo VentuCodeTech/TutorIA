@@ -192,7 +192,7 @@ export default function DesempenhoPage() {
                         
                               {totalAnswered === 0 ? (
                                   <div className="bg-white rounded-2xl p-12 shadow-sm border border-gray-100 text-center">
-                                              <div className="text-6xl mb-4">ð</div>
+                                              <div className="text-6xl mb-4">📊</div>
                                               <h3 className="text-xl font-bold text-gray-800 mb-2">Nenhum dado ainda</h3>
                                               <p className="text-gray-500 mb-6">Comece a responder questões para ver seu desempenho aqui!</p>
                                               <a href="/dashboard/questoes" className="bg-indigo-600 text-white px-6 py-3 rounded-xl font-medium hover:bg-indigo-700 transition-colors">
