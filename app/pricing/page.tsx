@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { createClient } from '@/lib/supabase/client'
 
 const plans = [
   {
@@ -17,7 +18,6 @@ const plans = [
       'Comunidade de estudantes',
     ],
     notIncluded: [
-      
       'Assistente IA ilimitado',
       'Análise de desempenho avançada',
       'Plano de estudos personalizado',
@@ -42,6 +42,7 @@ const plans = [
       'Anotações sincronizadas',
     ],
     notIncluded: [
+      'Simulados ilimitados',
       'Plano de estudos personalizado',
     ],
     cta: 'Assinar Standard',
@@ -107,6 +108,22 @@ export default function PricingPage() {
   const router = useRouter()
   const [loading, setLoading] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+  useEffect(() => {
+    const supabase = createClient()
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) setIsLoggedIn(true)
+    })
+  }, [])
+
+  const handleBack = () => {
+    if (isLoggedIn) {
+      router.push('/dashboard/planos')
+    } else {
+      router.push('/')
+    }
+  }
 
   const handleSubscribe = async (plan: typeof plans[0]) => {
     if (plan.free) {
@@ -160,7 +177,11 @@ export default function PricingPage() {
             <img src="/tirei10-header-logo.png" alt="Tirei10" className="h-9 w-auto" />
           </Link>
           <div className="flex items-center gap-6">
-            <Link href="/login" className="font-medium transition-colors text-sm" style={{ color: '#6b7280' }}>Login</Link>
+            {isLoggedIn ? (
+              <Link href="/dashboard" className="font-medium transition-colors text-sm" style={{ color: '#6b7280' }}>Dashboard</Link>
+            ) : (
+              <Link href="/login" className="font-medium transition-colors text-sm" style={{ color: '#6b7280' }}>Login</Link>
+            )}
             <Link href="/login" className="text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 shadow-md" style={{ background: 'linear-gradient(135deg, #6d28d9, #9333ea)' }}>Começar Grátis</Link>
           </div>
         </div>
@@ -170,9 +191,13 @@ export default function PricingPage() {
         <div className="max-w-7xl mx-auto px-6 py-12">
           {/* Header */}
           <div className="text-center mb-14">
-            <Link href="/" className="text-sm font-medium mb-4 inline-block hover:underline" style={{ color: '#6d28d9' }}>
-              ← Voltar ao início
-            </Link>
+            <button
+              onClick={handleBack}
+              className="text-sm font-medium mb-4 inline-block hover:underline"
+              style={{ color: '#6d28d9', background: 'none', border: 'none', cursor: 'pointer' }}
+            >
+              ← Voltar
+            </button>
             <h1 className="text-4xl font-bold mb-4" style={{ color: '#1e1b4b' }}>Planos e Preços</h1>
             <p className="text-xl" style={{ color: '#6b7280' }}>Escolha o plano ideal para a sua preparação</p>
           </div>
@@ -301,4 +326,4 @@ export default function PricingPage() {
       </footer>
     </div>
   )
-    }
+}
