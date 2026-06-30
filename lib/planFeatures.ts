@@ -73,7 +73,7 @@ export const PLAN_FEATURES: Record<PlanId, PlanFeatures> = {
   standard: {
     dailyQuestionLimit: null,
     allSubjects: true,
-    unlimitedSimulados: true,
+    unlimitedSimulados: false,
     aiAssistantEnabled: true,
     aiDailyMessageLimit: 50,
     basicDashboard: true,
@@ -97,7 +97,7 @@ export const PLAN_FEATURES: Record<PlanId, PlanFeatures> = {
   student: {
     dailyQuestionLimit: null,
     allSubjects: true,
-    unlimitedSimulados: false,
+    unlimitedSimulados: true,
     aiAssistantEnabled: true,
     aiDailyMessageLimit: null,
     basicDashboard: true,
