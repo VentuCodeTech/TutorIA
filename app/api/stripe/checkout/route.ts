@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
     const origin = req.headers.get('origin') || 'https://www.tirei10.com.br';
     const planLabel = (body.planId || body.planName || '') as string;
     const successPath = '/dashboard/planos?success=true&plan=' + planLabel;
-    const successUrl = origin + '/auth/callback?next=' + encodeURIComponent(successPath);
+    const successUrl = origin + successPath;
     const cancelUrl = origin + '/pricing?canceled=true';
 
     const session = await stripe.checkout.sessions.create({
