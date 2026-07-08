@@ -1,7 +1,39 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
+const TOOL_SUBDOMAINS: Record<string, string> = {
+  diagnostico: '/diagnostico',
+  cronograma: '/cronograma',
+  simulado: '/simulado',
+}
+
+function rewriteToolSubdomain(request: NextRequest): NextResponse | null {
+  const host = request.headers.get('host') || ''
+  const subdomain = host.split('.')[0]
+  const basePath = TOOL_SUBDOMAINS[subdomain]
+
+  if (!basePath) {
+    return null
+  }
+  if (request.nextUrl.pathname.startsWith(basePath)) {
+    return null
+  }
+
+  const url = request.nextUrl.clone()
+  url.pathname = `${basePath}${request.nextUrl.pathname}`
+  return NextResponse.rewrite(url)
+}
+
 export async function middleware(request: NextRequest) {
+  // Free growth tools (diagnostico/cronograma/simulado.tirei10.com.br) are
+  // public, auth-free micro sites that live inside the same Next.js app.
+  // Requests coming from those subdomains are rewritten to /diagnostico,
+  // /cronograma or /simulado before any Supabase session handling runs.
+  const toolRewrite = rewriteToolSubdomain(request)
+  if (toolRewrite) {
+    return toolRewrite
+  }
+
   let supabaseResponse = NextResponse.next({
     request,
   })
