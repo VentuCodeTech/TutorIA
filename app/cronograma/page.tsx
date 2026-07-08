@@ -72,11 +72,12 @@ export default function CronogramaPage() {
         </div>
 
         <div className="bg-white rounded-3xl shadow-xl p-8 mb-8" style={{ border: '2px solid #ede9fe' }}>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">Qual prova voce esta estudando?</label>
+          <p className="block text-sm font-semibold text-gray-700 mb-2">Qual prova voce esta estudando?</p>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-6">
             {EXAMS.map((e) => (
               <button
                 key={e}
+                type="button"
                 onClick={() => { setExam(e); setWeakAreas([]); setWeeks(null); }}
                 className={'py-2 rounded-xl text-sm font-semibold border-2 transition-all ' + (exam === e ? 'border-purple-500 bg-purple-50 text-purple-700' : 'border-gray-100 text-gray-600')}
               >
@@ -85,16 +86,18 @@ export default function CronogramaPage() {
             ))}
           </div>
 
-          <label className="block text-sm font-semibold text-gray-700 mb-2">Data da prova</label>
+          <label htmlFor="examDate" className="block text-sm font-semibold text-gray-700 mb-2">Data da prova</label>
           <input
+            id="examDate"
             type="date"
             value={examDate}
             onChange={(e) => setExamDate(e.target.value)}
             className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm mb-6"
           />
 
-          <label className="block text-sm font-semibold text-gray-700 mb-2">Horas de estudo por dia: {hoursPerDay}h</label>
+          <label htmlFor="hoursPerDay" className="block text-sm font-semibold text-gray-700 mb-2">Horas de estudo por dia: {hoursPerDay}h</label>
           <input
+            id="hoursPerDay"
             type="range"
             min={1}
             max={8}
@@ -103,11 +106,12 @@ export default function CronogramaPage() {
             className="w-full mb-6"
           />
 
-          <label className="block text-sm font-semibold text-gray-700 mb-2">Materias que voce quer priorizar (pontos fracos)</label>
+          <p className="block text-sm font-semibold text-gray-700 mb-2">Materias que voce quer priorizar (pontos fracos)</p>
           <div className="flex flex-wrap gap-2 mb-6">
             {areas.map((area) => (
               <button
                 key={area.key}
+                type="button"
                 onClick={() => toggleWeak(area.shortLabel)}
                 className={'px-3 py-1.5 rounded-full text-xs font-medium border-2 transition-all ' + (weakAreas.includes(area.shortLabel) ? 'border-red-400 bg-red-50 text-red-600' : 'border-gray-100 text-gray-600')}
               >
@@ -116,11 +120,12 @@ export default function CronogramaPage() {
             ))}
           </div>
 
-          <label className="block text-sm font-semibold text-gray-700 mb-2">Dias da semana para estudar</label>
+          <p className="block text-sm font-semibold text-gray-700 mb-2">Dias da semana para estudar</p>
           <div className="flex flex-wrap gap-2 mb-8">
             {WEEKDAYS.map((day) => (
               <button
                 key={day.value}
+                type="button"
                 onClick={() => toggleDay(day.value)}
                 className={'w-12 py-2 rounded-xl text-xs font-semibold border-2 transition-all ' + (studyDays.includes(day.value) ? 'border-purple-500 bg-purple-50 text-purple-700' : 'border-gray-100 text-gray-500')}
               >
@@ -130,6 +135,7 @@ export default function CronogramaPage() {
           </div>
 
           <button
+            type="button"
             onClick={handleGenerate}
             className="w-full py-4 rounded-2xl text-white font-bold text-lg shadow-lg"
             style={{ background: 'linear-gradient(135deg, #6d28d9, #9333ea)' }}
@@ -158,6 +164,7 @@ export default function CronogramaPage() {
               ))}
             </div>
             <button
+              type="button"
               onClick={handleDownload}
               className="w-full py-3 rounded-xl font-semibold border-2 border-purple-500 text-purple-700 hover:bg-purple-50 transition-all"
             >
