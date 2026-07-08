@@ -9,7 +9,7 @@ interface LeadCaptureFormProps {
   onSuccess?: () => void;
 }
 
-export default function LeadCaptureForm({ exam, source, gapData, onSuccess }: LeadCaptureFormProps) {
+export default function LeadCaptureForm({ exam, source, gapData, onSuccess }: Readonly<LeadCaptureFormProps>) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'done' | 'error'>('idle');
