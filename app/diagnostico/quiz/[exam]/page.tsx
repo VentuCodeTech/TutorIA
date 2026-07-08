@@ -3,9 +3,8 @@
 import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { getQuestionsForExam } from '@/lib/growth/questions';
-import { calculateGaps, type QuizAnswer } from '@/lib/growth/scoring';
+import { calculateGaps, type QuizAnswer, type ExamKind } from '@/lib/growth/scoring';
 import { EXAM_LABELS } from '@/lib/growth/areas';
-import type { ExamKind } from '@/lib/growth/scoring';
 
 export default function DiagnosticoQuizPage() {
   const params = useParams<{ exam: string }>();
