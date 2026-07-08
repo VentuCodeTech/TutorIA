@@ -6,7 +6,7 @@ interface ShareButtonProps {
   url: string;
 }
 
-export default function ShareButton({ url }: ShareButtonProps) {
+export default function ShareButton({ url }: Readonly<ShareButtonProps>) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
