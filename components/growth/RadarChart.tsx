@@ -7,7 +7,7 @@ interface RadarChartProps {
   size?: number;
 }
 
-export default function RadarChart({ data, size = 280 }: RadarChartProps) {
+export default function RadarChart({ data, size = 280 }: Readonly<RadarChartProps>) {
   const center = size / 2;
   const radius = size / 2 - 40;
   const angleStep = (Math.PI * 2) / data.length;
@@ -35,9 +35,9 @@ export default function RadarChart({ data, size = 280 }: RadarChartProps) {
           strokeWidth={1}
         />
       ))}
-      {data.map((_, i) => {
+      {data.map((d, i) => {
         const [x, y] = pointFor(i, 100);
-        return <line key={i} x1={center} y1={center} x2={x} y2={y} stroke="#e5e7eb" strokeWidth={1} />;
+      return <line key={d.label} x1={center} y1={center} x2={x} y2={y} stroke="#e5e7eb" strokeWidth={1} />;
       })}
       <polygon points={polygonPoints} fill="rgba(109,40,217,0.25)" stroke="#6d28d9" strokeWidth={2} />
       {data.map((d, i) => {
