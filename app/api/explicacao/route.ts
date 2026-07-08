@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
     });
 
     const block = result.content[0];
-    const explanation = block && block.type === 'text' ? block.text : 'Nao foi possivel gerar a explicacao agora.';
+    const explanation = block?.type === 'text' ? block.text : 'Nao foi possivel gerar a explicacao agora.';
 
     return NextResponse.json({ explanation });
   } catch (error) {
