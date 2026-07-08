@@ -11,7 +11,7 @@ interface GapCardProps {
   result: AreaResult;
 }
 
-export default function GapCard({ areaLabel, result }: GapCardProps) {
+export default function GapCard({ areaLabel, result }: Readonly<GapCardProps>) {
   const style = PRIORITY_STYLE[result.priority];
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
