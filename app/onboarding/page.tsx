@@ -176,6 +176,23 @@ export default function OnboardingPage() {
           router.replace('/login');
           return;
         }
+
+        // Referral reward: if the user arrived via a /r/CODIGO link, a
+        // tirei10_ref cookie was set by app/r/[code]/route.ts. Apply the
+        // reward once (idempotent on the DB side) and clear the cookie.
+        try {
+          const refMatch = document.cookie.match(/(?:^|; )tirei10_ref=([^;]+)/);
+          if (refMatch) {
+            const referralCode = decodeURIComponent(refMatch[1]);
+            await supabase.rpc('apply_referral_reward', {
+              p_referral_code: referralCode,
+              p_referee_id: user.id,
+            });
+            document.cookie = 'tirei10_ref=; Max-Age=0; path=/;';
+          }
+        } catch (referralError) {
+          console.error('Error applying referral reward:', referralError);
+        }
         const { data: profile } = await supabase
           .from('profiles')
           .select('onboarding_completed')
