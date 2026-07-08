@@ -181,7 +181,7 @@ export default function OnboardingPage() {
         // tirei10_ref cookie was set by app/r/[code]/route.ts. Apply the
         // reward once (idempotent on the DB side) and clear the cookie.
         try {
-          const refMatch = document.cookie.match(/(?:^|; )tirei10_ref=([^;]+)/);
+        const refMatch = /(?:^|; )tirei10_ref=([^;]+)/.exec(document.cookie);
           if (refMatch) {
             const referralCode = decodeURIComponent(refMatch[1]);
             await supabase.rpc('apply_referral_reward', {
