@@ -9,6 +9,8 @@ const examLabels: Record<string, string> = {
   oab: 'OAB',
   cpa: 'CPA (ANBIMA)',
   concurso: 'Concurso Publico',
+  vestibular: 'Vestibular (Fuvest/Unicamp/Unesp)',
+  militar: 'Concurso Militar',
 };
 
 const examColors: Record<string, string> = {
@@ -16,6 +18,8 @@ const examColors: Record<string, string> = {
   oab: 'bg-purple-100 text-purple-700',
   cpa: 'bg-green-100 text-green-700',
   concurso: 'bg-yellow-100 text-yellow-700',
+  vestibular: 'bg-pink-100 text-pink-700',
+  militar: 'bg-slate-100 text-slate-700',
 };
 
 const eventTypeLabels: Record<string, string> = {
@@ -58,7 +62,7 @@ export default async function ConcursosPage() {
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-gray-900">Datas de Concursos e Editais</h1>
             <p className="text-gray-600 mt-1">
-              Calendario oficial de provas, inscricoes e editais para ENEM, OAB, certificacoes ANBIMA e concursos publicos.
+              Calendario oficial de provas, inscricoes e editais para ENEM, OAB, certificacoes ANBIMA, vestibulares (Fuvest, Unicamp, Unesp), concursos militares (EsPCEx, EFOMM, ESA) e concursos publicos.
             </p>
           </div>
 
@@ -106,7 +110,7 @@ export default async function ConcursosPage() {
           </div>
 
           <div className="mt-8 bg-indigo-50 rounded-2xl p-6 text-sm text-indigo-700">
-            As datas exibidas aqui vem diretamente das fontes oficiais de cada exame (INEP para o ENEM, Coordenacao Nacional do Exame de Ordem/FGV para a OAB e ANBIMA para as certificacoes). Concursos publicos gerais sao adicionados manualmente pela equipe Tirei10 conforme os editais sao publicados, ja que nao existe uma API unificada do governo para isso.
+            As datas exibidas aqui vem diretamente das fontes oficiais de cada exame (INEP para o ENEM, Coordenacao Nacional do Exame de Ordem/FGV para a OAB, ANBIMA para as certificacoes, Fuvest/Comvest-Unicamp/Vunesp-Unesp para os vestibulares e Exercito/Marinha/Aeronautica para os concursos militares). Concursos publicos gerais sao adicionados manualmente pela equipe Tirei10 conforme os editais sao publicados, ja que nao existe uma API unificada do governo para isso.
           </div>
         </div>
       </div>
