@@ -1,7 +1,8 @@
 import Sidebar from '@/components/Sidebar';
 import { createClient } from '@/lib/supabase/server';
 
-export const revalidate = 3600;
+export const dynamic = 'force-dynamic';
+export const fetchCache = 'force-no-store';
 
 const examLabels: Record<string, string> = {
   enem: 'ENEM',
