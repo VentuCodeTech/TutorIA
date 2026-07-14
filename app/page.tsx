@@ -155,7 +155,7 @@ export default function Home() {
                   <span style={{ color: '#6D28D9' }}>10</span>
                 </h1>
                 <p className="text-lg md:text-xl mb-8 leading-relaxed" style={{ color: '#6b7280' }}>
-                  Prepare-se para ENEM, OAB, Concursos Públicos e CPA-20 com IA que aprende com você, adapta o conteúdo e maximiza sua aprovação.
+                  Prepare-se para ENEM, OAB, Concursos Públicos e CPA ANBIMA com IA que aprende com você, adapta o conteúdo e maximiza sua aprovação.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 mb-10">
                   <Link href="/login" className="inline-flex items-center justify-center text-white px-8 py-4 rounded-2xl text-base font-bold transition-all duration-300 shadow-lg hover:-translate-y-1" style={{ background: 'linear-gradient(135deg, #6D28D9, #9333ea)' }}>
@@ -303,7 +303,7 @@ export default function Home() {
               <p className="text-sm" style={{ color: '#9ca3af' }}>Conteúdo 100% alinhado com as bancas mais exigentes do Brasil</p>
             </div>
             <div className="flex flex-wrap justify-center gap-3">
-              {['ENEM', 'FUVEST', 'UNICAMP', 'OAB', 'CPA-20', 'Concursos Federais', 'Carreiras Militares', 'Vestibular Medicina'].map((exam) => (
+              {['ENEM', 'FUVEST', 'UNICAMP', 'OAB', 'CPA ANBIMA', 'Concursos Federais', 'Carreiras Militares', 'Vestibular Medicina'].map((exam) => (
                 <span key={exam} className="font-semibold px-5 py-2.5 rounded-full text-sm transition-all cursor-default hover:-translate-y-0.5 duration-200 border" style={{ background: 'white', borderColor: '#DDD6FE', color: '#5B21B6', boxShadow: '0 2px 8px rgba(109,40,217,0.08)' }}>{exam}</span>
               ))}
             </div>
@@ -392,7 +392,7 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
             <div className="col-span-1 md:col-span-2">
               <img src="/tirei10-logo-white.png" alt="Tirei10" className="h-8 w-auto mb-3" />
-              <p className="text-sm max-w-xs" style={{ color: '#475569' }}>Plataforma de estudos com IA adaptativa para ENEM, OAB, Concursos Públicos e CPA-20.</p>
+              <p className="text-sm max-w-xs" style={{ color: '#475569' }}>Plataforma de estudos com IA adaptativa para ENEM, OAB, Concursos Públicos e CPA ANBIMA.</p>
             </div>
             <div>
               <h4 className="text-sm font-bold mb-4" style={{ color: '#a78bfa' }}>Plataforma</h4>
