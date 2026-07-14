@@ -70,7 +70,7 @@ export default async function ConcursosPage() {
 
           {!error && upcoming.length === 0 && (
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 text-gray-600">
-              Ainda nao ha datas cadastradas. A equipe Tirei10 atualiza este calendario assim que os editais oficiais sao publicados.
+              Ainda nao ha datas cadastradas. A equipe Tirei10 atualiza este calendario assim que os editais oficiais sao publicados. [DEBUG error={String(error)} count={data ? data.length : -1} today={today}]
             </div>
           )}
 
