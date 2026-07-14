@@ -15,6 +15,7 @@ const navItems = [
   { icon: '💎', label: 'Planos', href: '/dashboard/planos' },
   { icon: '🎓', label: 'Vestibular/Concurso', href: '/dashboard/vestibular' },
   { icon: '📅', label: 'Datas de Concursos', href: '/dashboard/concursos' },
+  { icon: '🎁', label: 'Indicações', href: '/dashboard/indicacoes' },
   { icon: '📈', label: 'Desempenho', href: '/dashboard/desempenho' },
   { icon: '📒', label: 'Anotações', href: '/dashboard/anotacoes' },
   { icon: '📅', label: 'Google Calendar', href: '/dashboard/calendario' },
