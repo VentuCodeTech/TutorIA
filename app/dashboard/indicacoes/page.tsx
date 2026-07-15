@@ -69,7 +69,7 @@ export default function IndicacoesPage() {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      // Clipboard pode nao estar disponivel; o usuario ainda pode selecionar e copiar o texto manualmente.
+      // Clipboard pode não estar disponível; o usuário ainda pode selecionar e copiar o texto manualmente.
     }
   };
 
@@ -92,13 +92,13 @@ export default function IndicacoesPage() {
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-gray-900">Indique e Ganhe</h1>
             <p className="text-gray-600 mt-1">
-              Compartilhe seu link e ganhe 30 dias do plano Estudante para cada amigo que se cadastrar atraves dele. Seu amigo tambem ganha 30 dias de bonus!
+              Compartilhe seu link e ganhe 30 dias do plano Estudante para cada amigo que se cadastrar através dele. Seu amigo também ganha 30 dias de bônus!
             </p>
           </div>
 
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
             <label htmlFor="referral-link-input" className="text-sm font-medium text-gray-700 mb-2 block">
-              Seu link de indicacao
+              Seu link de indicação
             </label>
             <div className="flex flex-col sm:flex-row gap-3">
               <input
@@ -120,7 +120,7 @@ export default function IndicacoesPage() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 text-center">
               <p className="text-2xl font-bold text-gray-900">{total}</p>
-              <p className="text-xs text-gray-500 mt-1">Indicacoes enviadas</p>
+              <p className="text-xs text-gray-500 mt-1">Indicações enviadas</p>
             </div>
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 text-center">
               <p className="text-2xl font-bold text-green-600">{converted}</p>
@@ -128,22 +128,22 @@ export default function IndicacoesPage() {
             </div>
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 text-center">
               <p className="text-2xl font-bold text-indigo-600">{bonusDays}</p>
-              <p className="text-xs text-gray-500 mt-1">Dias de bonus ganhos</p>
+              <p className="text-xs text-gray-500 mt-1">Dias de bônus ganhos</p>
             </div>
           </div>
 
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Suas indicacoes</h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Suas indicações</h2>
             {referrals.length === 0 ? (
               <p className="text-gray-500 text-sm">
-                Voce ainda nao indicou ninguem. Compartilhe seu link acima para comecar a ganhar dias de bonus!
+                Você ainda não indicou ninguém. Compartilhe seu link acima para começar a ganhar dias de bônus!
               </p>
             ) : (
               <div className="space-y-3">
                 {referrals.map((r, idx) => (
                   <div key={r.id} className="flex items-center justify-between border border-gray-100 rounded-xl p-4">
                     <div>
-                      <p className="text-sm font-medium text-gray-800">Indicacao #{referrals.length - idx}</p>
+                      <p className="text-sm font-medium text-gray-800">Indicação #{referrals.length - idx}</p>
                       <p className="text-xs text-gray-400">
                         {new Date(r.created_at).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}
                       </p>
@@ -158,7 +158,7 @@ export default function IndicacoesPage() {
           </div>
 
           <div className="mt-8 bg-indigo-50 rounded-2xl p-6 text-sm text-indigo-700">
-            Como funciona: compartilhe seu link unico com amigos. Quando alguem se cadastra e completa o onboarding atraves dele, voce ganha 30 dias do plano Estudante e seu amigo tambem recebe 30 dias de bonus automaticamente.
+            Como funciona: compartilhe seu link único com amigos. Quando alguém se cadastra e completa o onboarding através dele, você ganha 30 dias do plano Estudante e seu amigo também recebe 30 dias de bônus automaticamente.
           </div>
         </div>
       </div>
