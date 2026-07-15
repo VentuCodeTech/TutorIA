@@ -44,9 +44,9 @@ export const metadata: Metadata = {
     description: 'Prepare-se para ENEM, OAB, Concursos Públicos e CPA-20 com IA Adaptativa. Questões personalizadas, simulados cronometrados e assistente IA 24/7.',
     images: [
       {
-        url: '/og-image.png',
-        width: 1200,
-        height: 630,
+                url: '/tirei10-logo.png',
+                width: 430,
+                height: 180,
         alt: 'Tirei10 - Plataforma de Estudos com IA',
       },
     ],
@@ -55,7 +55,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Tirei10 - Estude com IA e tire 10!',
     description: 'Prepare-se para ENEM, OAB, Concursos Públicos e CPA-20 com IA Adaptativa. Comece grátis!',
-    images: ['/og-image.png'],
+          images: ['/tirei10-logo.png'],
     creator: '@tirei10',
   },
   alternates: {
