@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
+import { createClient } from '@/lib/supabase/server';
+import { getFeatures, getPlanIdFromDbPlan, getPlanName } from '@/lib/planFeatures';
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! });
 
@@ -227,17 +229,51 @@ function getBaseTokens(effectivePlan: string): number {
 
 export async function POST(request: NextRequest) {
   try {
-    const { messages, planId, attachment } = await request.json() as {
-      messages: { role: string; content: string }[];
-      planId?: string;
-      attachment?: AttachmentPayload;
-    };
-
+  const { messages, attachment } = await request.json() as {
+  messages: { role: string; content: string }[];
+  attachment?: AttachmentPayload;
+};
     if (!messages || !Array.isArray(messages)) {
       return NextResponse.json({ error: 'Messages array is required' }, { status: 400 });
     }
 
-    const effectivePlan = planId ?? 'free';
+const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      return NextResponse.json({ message: 'Faca login para usar o Assistente IA.' });
+    }
+    
+    const { data: subscription } = await supabase
+      .from('subscriptions')
+      .select('plan, status')
+      .eq('user_id', user.id)
+      .maybeSingle();
+    
+    const effectivePlan = getPlanIdFromDbPlan(subscription?.plan, subscription?.status);
+    const features = getFeatures(effectivePlan);
+    
+    if (!features.aiAssistantEnabled) {
+      return NextResponse.json({
+        message: 'O Assistente IA esta disponivel apenas nos planos pagos (Standard, Student ou Advanced Pro). Faca upgrade para desbloquear esse recurso!'
+      });
+    }
+    
+    if (features.aiDailyMessageLimit !== null) {
+      const todayStart = new Date();
+      todayStart.setHours(0, 0, 0, 0);
+      const { count } = await supabase
+        .from('chat_messages')
+        .select('id', { count: 'exact', head: true })
+        .eq('user_id', user.id)
+        .eq('role', 'user')
+        .gte('created_at', todayStart.toISOString());
+      if ((count ?? 0) >= features.aiDailyMessageLimit) {
+        return NextResponse.json({
+          message: 'Voce atingiu o limite de ' + features.aiDailyMessageLimit + ' mensagens por dia do plano ' + getPlanName(effectivePlan) + '. Faca upgrade para o plano Student ou Advanced Pro para mensagens ilimitadas!'
+        });
+      }
+    }
     const model = getModel(effectivePlan);
     const baseTokens = getBaseTokens(effectivePlan);
     const maxTokens = attachment ? Math.max(baseTokens, 1200) : baseTokens;
@@ -276,6 +312,16 @@ export async function POST(request: NextRequest) {
     });
 
     const text = response.content[0].type === 'text' ? response.content[0].text : '';
+try {
+  const lastUserText = attachment ? (attachment.userText || lastMessage?.content || '[anexo]') : (lastMessage?.content ?? '');
+  await supabase.from('chat_messages').insert([
+    { user_id: user.id, role: 'user', content: lastUserText },
+    { user_id: user.id, role: 'assistant', content: text },
+    ]);
+} catch (logError) {
+  console.error('Failed to persist chat messages:', logError);
+}
+    
     return NextResponse.json({ message: text });
 
   } catch (error: unknown) {
