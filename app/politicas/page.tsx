@@ -11,6 +11,7 @@ export const metadata: Metadata = {
     title: 'Políticas da Comunidade',
     description: 'Conheça as políticas de uso e privacidade da plataforma Tirei10.',
     url: 'https://www.tirei10.com.br/politicas',
+    images: ['/tirei10-logo.png'],
   },
 };
 
