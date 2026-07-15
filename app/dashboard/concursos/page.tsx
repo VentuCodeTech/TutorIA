@@ -8,7 +8,7 @@ const examLabels: Record<string, string> = {
   enem: 'ENEM',
   oab: 'OAB',
   cpa: 'CPA (ANBIMA)',
-  concurso: 'Concurso Publico',
+  concurso: 'Concurso Público',
   vestibular: 'Vestibular (Fuvest/Unicamp/Unesp)',
   militar: 'Concurso Militar',
 };
@@ -23,8 +23,8 @@ const examColors: Record<string, string> = {
 };
 
 const eventTypeLabels: Record<string, string> = {
-  inscricao_inicio: 'Inicio das inscricoes',
-  inscricao_fim: 'Fim das inscricoes',
+  inscricao_inicio: 'Início das inscrições',
+  inscricao_fim: 'Fim das inscrições',
   prova: 'Prova',
   edital: 'Edital',
   resultado: 'Resultado',
@@ -62,19 +62,19 @@ export default async function ConcursosPage() {
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-gray-900">Datas de Concursos e Editais</h1>
             <p className="text-gray-600 mt-1">
-              Calendario oficial de provas, inscricoes e editais para ENEM, OAB, certificacoes ANBIMA, vestibulares (Fuvest, Unicamp, Unesp), concursos militares (EsPCEx, EFOMM, ESA) e concursos publicos.
+              Calendário oficial de provas, inscrições e editais para ENEM, OAB, certificações ANBIMA, vestibulares (Fuvest, Unicamp, Unesp), concursos militares (EsPCEx, EFOMM, ESA) e concursos públicos.
             </p>
           </div>
 
           {error && (
             <div className="bg-red-50 text-red-700 rounded-2xl p-6 mb-8">
-              Nao foi possivel carregar as datas agora. Tente novamente em instantes.
+              Não foi possível carregar as datas agora. Tente novamente em instantes.
             </div>
           )}
 
           {!error && upcoming.length === 0 && (
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 text-gray-600">
-              Ainda nao ha datas cadastradas. A equipe Tirei10 atualiza este calendario assim que os editais oficiais sao publicados.
+              Ainda não há datas cadastradas. A equipe Tirei10 atualiza este calendário assim que os editais oficiais são publicados.
             </div>
           )}
 
@@ -110,7 +110,7 @@ export default async function ConcursosPage() {
           </div>
 
           <div className="mt-8 bg-indigo-50 rounded-2xl p-6 text-sm text-indigo-700">
-            As datas exibidas aqui vem diretamente das fontes oficiais de cada exame (INEP para o ENEM, Coordenacao Nacional do Exame de Ordem/FGV para a OAB, ANBIMA para as certificacoes, Fuvest/Comvest-Unicamp/Vunesp-Unesp para os vestibulares e Exercito/Marinha/Aeronautica para os concursos militares). Concursos publicos gerais sao adicionados manualmente pela equipe Tirei10 conforme os editais sao publicados, ja que nao existe uma API unificada do governo para isso.
+            As datas exibidas aqui vêm diretamente das fontes oficiais de cada exame (INEP para o ENEM, Coordenação Nacional do Exame de Ordem/FGV para a OAB, ANBIMA para as certificações, Fuvest/Comvest-Unicamp/Vunesp-Unesp para os vestibulares e Exército/Marinha/Aeronáutica para os concursos militares). Concursos públicos gerais são adicionados manualmente pela equipe Tirei10 conforme os editais são publicados, já que não existe uma API unificada do governo para isso.
           </div>
         </div>
       </div>
