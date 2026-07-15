@@ -10,6 +10,7 @@ export const metadata: Metadata = {
     title: 'Planos e Preços',
     description: 'Escolha o plano ideal para sua preparação. Plano gratuito disponível. ENEM, OAB, Concursos Públicos e CPA-20.',
     url: 'https://www.tirei10.com.br/pricing',
+    images: ['/tirei10-logo.png'],
   },
 };
 
