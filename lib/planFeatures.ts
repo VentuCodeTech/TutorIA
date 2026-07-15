@@ -204,3 +204,46 @@ export function getPlanName(planId: PlanId): string {
   };
   return names[planId];
 }
+
+
+export const BASIC_SUBJECTS: string[] = [
+  'Matemática',
+  'Português',
+  'História',
+  'Física',
+  'Química',
+  'Biologia',
+  'Geografia',
+  ];
+
+/**
+* Checks if a subject/area is allowed for a given plan.
+* Plans without allSubjects are restricted to BASIC_SUBJECTS.
+*/
+export function isSubjectAllowed(planId: PlanId, subject: string): boolean {
+  if (getFeatures(planId).allSubjects) return true;
+  return BASIC_SUBJECTS.includes(subject);
+}
+
+/**
+* Maps the plan/status fields stored in the subscriptions table to a PlanId.
+* Used by server-side code (API routes) to authoritatively resolve the user's
+* plan, instead of trusting a plan value sent by the client.
+*/
+export function getPlanIdFromDbPlan(
+  plan: string | null | undefined,
+  status: string | null | undefined
+  ): PlanId {
+  if (!plan || !status || !isSubscriptionActive(status)) {
+    return 'free';
+  }
+  const planMap: Record<string, PlanId> = {
+    gratuito: 'free',
+    free: 'free',
+    standard: 'standard',
+    student: 'student',
+    advanced_pro: 'advanced_pro',
+    'advanced pro': 'advanced_pro',
+  };
+  return planMap[plan.toLowerCase()] ?? 'free';
+}
