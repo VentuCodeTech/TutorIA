@@ -26,8 +26,9 @@ if (code) {
 const { error } = await supabase.auth.exchangeCodeForSession(code);
 if (error) {
 console.error('[auth/exchange] exchangeCodeForSession error:', error.message);
-router.replace('/login?error=auth_callback_failed');
-return;
+// Don't bail out immediately: the SDK's automatic PKCE/hash detection
+        // may have already completed this exchange in parallel. Fall through
+        // to the session check below before treating this as a failure.
 }
 }
 
