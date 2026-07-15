@@ -11,6 +11,7 @@ export const metadata: Metadata = {
     title: 'Central de Suporte',
     description: 'Tire suas dúvidas sobre a plataforma Tirei10. Acesse o FAQ, chat ao vivo e suporte por e-mail.',
     url: 'https://www.tirei10.com.br/suporte',
+    images: ['/tirei10-logo.png'],
   },
 };
 
