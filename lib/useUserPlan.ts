@@ -49,14 +49,23 @@ export function useUserPlan(): UserPlanState {
     const supabase = createClient();
 
     async function fetchPlan() {
-      try {
-        const { data: { user }, error: userError } = await supabase.auth.getUser();
+            try {
+                      // Retry a few times: right after a fresh OAuth login the session
+                      // may not be immediately available to getUser(), which previously
+                      // caused the plan to incorrectly fall back to 'free'.
+                      let user = null;
+                      for (let i = 0; i < 3; i++) {
+                                  const { data } = await supabase.auth.getUser();
+                                  user = data.user;
+                                  if (user) break;
+                                  await new Promise(resolve => setTimeout(resolve, 300));
+                      }
 
-        if (userError || !user) {
-          setState(prev => ({ ...prev, loading: false }));
-          return;
-        }
-
+                      if (!user) {
+                                  setState(prev => ({ ...prev, loading: false }));
+                                  return;
+                      }
+              
         const { data: subscription, error: subError } = await supabase
           .from('subscriptions')
           .select('plan, status')
