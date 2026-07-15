@@ -25,19 +25,19 @@ interface ForumReply {
   created_at: string;
 }
 
-const categories = ['Todos', 'ENEM', 'Vestibular', 'Concursos', 'Dicas', 'Conquistas', 'Duvidas', 'OAB', 'CPA-20'];
+const categories = ['Todos', 'ENEM', 'Vestibular', 'Concursos', 'Dicas', 'Conquistas', 'Dúvidas', 'OAB', 'CPA-20'];
 
 function timeAgo(dateStr: string): string {
   const now = new Date();
   const date = new Date(dateStr);
   const diff = Math.floor((now.getTime() - date.getTime()) / 1000);
   if (diff < 60) return 'agora mesmo';
-  if (diff < 3600) return Math.floor(diff / 60) + ' min atras';
-  if (diff < 86400) return Math.floor(diff / 3600) + 'h atras';
-  if (diff < 604800) return Math.floor(diff / 86400) + 'd atras';
-  if (diff < 2592000) return Math.floor(diff / 604800) + ' sem atras';
-  if (diff < 31536000) return Math.floor(diff / 2592000) + ' mes atras';
-  return Math.floor(diff / 31536000) + ' ano atras';
+  if (diff < 3600) return Math.floor(diff / 60) + ' min atrás';
+  if (diff < 86400) return Math.floor(diff / 3600) + 'h atrás';
+  if (diff < 604800) return Math.floor(diff / 86400) + 'd atrás';
+  if (diff < 2592000) return Math.floor(diff / 604800) + ' sem atrás';
+  if (diff < 31536000) return Math.floor(diff / 2592000) + ' mês atrás';
+  return Math.floor(diff / 31536000) + ' ano atrás';
 }
 
 export default function ComunidadePage() {
@@ -80,7 +80,7 @@ export default function ComunidadePage() {
           return {
             id: p.id as string,
             user_id: p.user_id as string,
-            user_name: hasDelimiter ? rawTitle.split('||')[0] : 'Usuario',
+            user_name: hasDelimiter ? rawTitle.split('||')[0] : 'Usuário',
             title: hasDelimiter ? rawTitle.split('||')[1] : rawTitle,
             content: p.content as string,
             exam_tag: p.exam_tag as string | null,
@@ -92,7 +92,7 @@ export default function ComunidadePage() {
         setPosts(mapped);
       }
     } catch {
-      setError('Erro de conexao. Tente novamente.');
+      setError('Erro de conexão. Tente novamente.');
     }
   };
 
@@ -113,7 +113,7 @@ export default function ComunidadePage() {
             id: r.id as string,
             post_id: r.post_id as string,
             user_id: r.user_id as string,
-            user_name: hasDelimiter ? rawContent.split('||')[0] : 'Usuario',
+            user_name: hasDelimiter ? rawContent.split('||')[0] : 'Usuário',
             content: hasDelimiter ? rawContent.split('||')[1] : rawContent,
             likes: r.likes as number,
             created_at: r.created_at as string,
@@ -191,7 +191,7 @@ export default function ComunidadePage() {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         setUserId(user.id);
-        const name = user.user_metadata?.full_name || user.email?.split('@')[0] || 'Usuario';
+        const name = user.user_metadata?.full_name || user.email?.split('@')[0] || 'Usuário';
         setUserName(name);
         const savedLikes = localStorage.getItem('liked_posts_' + user.id);
         if (savedLikes) {
@@ -217,7 +217,7 @@ export default function ComunidadePage() {
         const mapped: ForumPost = {
           id: newPost.id as string,
           user_id: newPost.user_id as string,
-          user_name: hasDelimiter ? rawTitle.split('||')[0] : 'Usuario',
+          user_name: hasDelimiter ? rawTitle.split('||')[0] : 'Usuário',
           title: hasDelimiter ? rawTitle.split('||')[1] : rawTitle,
           content: newPost.content as string,
           exam_tag: newPost.exam_tag as string | null,
