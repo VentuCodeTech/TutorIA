@@ -11,6 +11,7 @@ export const metadata: Metadata = {
     title: 'Meios de Pagamento',
     description: 'Saiba como funciona o pagamento no Tirei10. Stripe, cartões aceitos, política de reembolso e garantia de 7 dias.',
     url: 'https://www.tirei10.com.br/pagamentos',
+    images: ['/tirei10-logo.png'],
   },
 };
 
