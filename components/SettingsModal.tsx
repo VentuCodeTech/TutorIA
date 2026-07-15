@@ -108,7 +108,7 @@ export default function SettingsModal({ // NOSONAR
     setProfileMsg('');
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Nao autenticado');
+      if (!user) throw new Error('Não autenticado');
 
       await supabase.auth.updateUser({ data: { full_name: editName } });
 
@@ -174,7 +174,7 @@ export default function SettingsModal({ // NOSONAR
       student: 'Student',
       advanced_pro: 'Advanced Pro',
       'advanced pro': 'Advanced Pro',
-      basic: 'Basico',
+      basic: 'Básico',
       premium: 'Premium',
       enterprise: 'Empresarial',
     };
@@ -273,7 +273,7 @@ export default function SettingsModal({ // NOSONAR
                   className="hidden"
                   onChange={handleAvatarChange}
                 />
-                <p className="text-xs text-gray-400">Clique no icone para alterar sua foto</p>
+                <p className="text-xs text-gray-400">Clique no ícone para alterar sua foto</p>
               </div>
 
               <div>
@@ -375,7 +375,7 @@ export default function SettingsModal({ // NOSONAR
               {(!currentPlan || currentPlan === 'free') && (
                 <div className="bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-100 rounded-xl p-4">
                   <p className="text-sm font-semibold text-indigo-800 mb-1">Quer mais recursos?</p>
-                  <p className="text-xs text-indigo-600 mb-3">Faca upgrade para o plano Premium e desbloqueie questoes ilimitadas, simulados avancados e muito mais!</p>
+                  <p className="text-xs text-indigo-600 mb-3">Faça upgrade para o plano Premium e desbloqueie questões ilimitadas, simulados avançados e muito mais!</p>
                   <a
                     href="/dashboard/planos"
                     className="inline-flex items-center gap-1 bg-indigo-600 text-white text-xs font-semibold px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors"
