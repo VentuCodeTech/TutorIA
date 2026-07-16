@@ -25,7 +25,7 @@ interface ForumReply {
   created_at: string;
 }
 
-const categories = ['Todos', 'ENEM', 'Vestibular', 'Concursos', 'Dicas', 'Conquistas', 'Dúvidas', 'OAB', 'CPA-20'];
+const categories = ['Todos', 'ENEM', 'Vestibular', 'Concursos', 'Dicas', 'Conquistas', 'Dúvidas', 'OAB', 'CPA ANBIMA'];
 
 function timeAgo(dateStr: string): string {
   const now = new Date();
