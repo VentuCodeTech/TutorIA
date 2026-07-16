@@ -321,10 +321,23 @@ export default function ComunidadePage() {
       <Sidebar />
       <div className="ml-64 p-8">
         <div className="max-w-4xl mx-auto">
-          <div className="mb-6">
+    <div className="mb-6 flex items-center justify-between flex-wrap gap-4">
+      <div>
             <h1 className="text-3xl font-bold text-gray-900">👥 Comunidade</h1>
             <p className="text-gray-600 mt-1">Conecte-se com outros estudantes</p>
-          </div>
+      </div>
+      <a
+              href="https://t.me/tirei10"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-[#229ED9] text-white text-sm font-semibold px-4 py-2.5 rounded-xl hover:opacity-90 transition-opacity flex-shrink-0"
+            >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                    <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161c-.18 1.897-.962 6.502-1.359 8.627-.168.9-.5 1.201-.82 1.23-.697.064-1.226-.461-1.9-.903-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.329-.913.489-1.302.481-.428-.009-1.252-.242-1.865-.442-.751-.244-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.831-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.477-1.635.099-.002.321.023.465.14.121.098.155.23.171.323.016.093.036.306.02.472z" />
+            </svg>
+            Entrar no Telegram
+      </a>
+  </div>
           <div className="flex gap-2 flex-wrap mb-6">
             {categories.map((cat) => (
               <button
