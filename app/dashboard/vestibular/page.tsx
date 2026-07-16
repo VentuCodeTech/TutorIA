@@ -15,7 +15,7 @@ const vestibulares = [
   { id: 'concurso_estadual', nome: 'Concursos Estaduais', descricao: 'Polícia Civil, Militar, TJ, MP, etc.', icon: '🚔', numQuestoes: '100 questões', tempo: '4 horas', anos: 'Provas reais Vunesp/FCC' },
   { id: 'militares', nome: 'Carreiras Militares', descricao: 'EsMCEx, ESPCEX, AFA, EFOMM', icon: '⭐', numQuestoes: '120 questões', tempo: '5 horas', anos: '2010-2023' },
   { id: 'medicina', nome: 'Medicina', descricao: 'Vestibulares específicos de medicina', icon: '🏥', numQuestoes: '90 questões', tempo: '4 horas', anos: 'FAMERP/Santa Casa' },
-  { id: 'cpa20', nome: 'CPA-20', descricao: 'Certificação ANBIMA para mercado financeiro', icon: '💰', numQuestoes: '50 questões', tempo: '2h30', anos: 'ANBIMA' },
+  { id: 'cpa20', nome: 'CPA ANBIMA', descricao: 'Certificação ANBIMA para mercado financeiro', icon: '💰', numQuestoes: '50 questões', tempo: '2h30', anos: 'ANBIMA' },
 ]
 
 const materiasPorVestibular: Record<string, string[]> = {
