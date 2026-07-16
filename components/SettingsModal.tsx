@@ -12,7 +12,7 @@ interface SettingsModalProps {
   onNameChange: (name: string) => void;
 }
 
-type Tab = 'perfil' | 'pagamentos' | 'aparencia';
+type Tab = 'perfil' | 'pagamentos' | 'aparencia' | 'indicacoes';
 type Theme = 'light' | 'gray' | 'dark';
 
 export default function SettingsModal({ // NOSONAR
@@ -193,6 +193,7 @@ export default function SettingsModal({ // NOSONAR
     { id: 'perfil', label: 'Perfil', icon: '👤' },
     { id: 'pagamentos', label: 'Pagamentos', icon: '💳' },
     { id: 'aparencia', label: 'Aparência', icon: '🎨' },
+    { id: 'indicacoes', label: 'Indicações', icon: '🎁' },
   ];
 
   return (
@@ -461,8 +462,28 @@ export default function SettingsModal({ // NOSONAR
             </div>
           )}
 
+
+
+          {activeTab === 'indicacoes' && (
+        <div className="space-y-5">
+            <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-5 text-center">
+                  <div className="text-4xl mb-2">🎁</div>
+                  <h3 className="text-sm font-semibold text-gray-800 mb-1">Indique e Ganhe</h3>
+                  <p className="text-xs text-gray-600 mb-4">
+                          Compartilhe seu link e ganhe 30 dias do plano Estudante para cada amigo que se cadastrar. Seu amigo também ganha 30 dias de bônus!
+                  </p>
+                  <a
+                            href="/dashboard/indicacoes"
+                            className="inline-flex items-center gap-2 bg-indigo-600 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-indigo-700 transition-colors"
+                          >
+                          Ver minhas indicações
+                  </a>
+            </div>
+        </div>
+      )}
+        
         </div>
       </div>
     </div>
-  );
+      );
 }

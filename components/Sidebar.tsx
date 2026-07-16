@@ -8,20 +8,19 @@ import SettingsModal from './SettingsModal';
 
 const navItems = [
   { icon: '🏠', label: 'Dashboard', href: '/dashboard' },
-  { icon: '📚', label: 'Meus Estudos', href: '/dashboard/estudos' },
-  { icon: '📝', label: 'Questões', href: '/dashboard/questoes' },
-  { icon: '📊', label: 'Progresso', href: '/dashboard/progresso' },
-  { icon: '🎯', label: 'Simulados', href: '/dashboard/simulados' },
-  { icon: '💎', label: 'Planos', href: '/dashboard/planos' },
   { icon: '🎓', label: 'Vestibular/Concurso', href: '/dashboard/vestibular' },
-  { icon: '📅', label: 'Datas de Concursos', href: '/dashboard/concursos' },
-  { icon: '🎁', label: 'Indicações', href: '/dashboard/indicacoes' },
-  { icon: '📈', label: 'Desempenho', href: '/dashboard/desempenho' },
+  { icon: '📚', label: 'Meus Estudos', href: '/dashboard/estudos' },
   { icon: '📒', label: 'Anotações', href: '/dashboard/anotacoes' },
+  { icon: '📊', label: 'Progresso', href: '/dashboard/progresso' },
+  { icon: '📝', label: 'Questões', href: '/dashboard/questoes' },
+  { icon: '🎯', label: 'Simulados', href: '/dashboard/simulados' },
+  { icon: '🤖', label: 'Assistente IA', href: '/dashboard/assistente' },
+  { icon: '📈', label: 'Desempenho', href: '/dashboard/desempenho' },
   { icon: '📅', label: 'Google Calendar', href: '/dashboard/calendario' },
   { icon: '👥', label: 'Comunidade', href: '/dashboard/comunidade' },
+  { icon: '📅', label: 'Datas de Concursos', href: '/dashboard/concursos' },
   { icon: '🔔', label: 'Novidades', href: '/dashboard/novidades' },
-  { icon: '🤖', label: 'Assistente IA', href: '/dashboard/assistente' },
+  { icon: '💎', label: 'Planos', href: '/dashboard/planos' },
 ];
 
 export default function Sidebar() {
