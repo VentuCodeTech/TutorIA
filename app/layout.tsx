@@ -9,12 +9,12 @@ const APP_URL = 'https://www.tirei10.com.br';
 export const metadata: Metadata = {
   metadataBase: new URL(APP_URL),
   title: {
-    default: 'Tirei10 - Plataforma de Estudos com IA | ENEM, OAB, Concursos e CPA-20',
+    default: 'Tirei10 - Plataforma de Estudos com IA | ENEM, OAB, Concursos e CPA ANBIMA',
     template: '%s | Tirei10',
   },
-  description: 'Prepare-se para ENEM, OAB, Concursos Públicos e CPA-20 com IA Adaptativa. Questões personalizadas, simulados cronometrados, plano de estudos e assistente IA 24/7. Comece grátis!',
+  description: 'Prepare-se para ENEM, OAB, Concursos Públicos e CPA ANBIMA com IA Adaptativa. Questões personalizadas, simulados cronometrados, plano de estudos e assistente IA 24/7. Comece grátis!',
   keywords: [
-    'ENEM', 'OAB', 'Concursos Públicos', 'CPA-20', 'Vestibular', 'FUVEST', 'UNICAMP',
+    'ENEM', 'OAB', 'Concursos Públicos', 'CPA ANBIMA', 'Vestibular', 'FUVEST', 'UNICAMP',
     'Plataforma de Estudos', 'IA Educacional', 'Inteligência Artificial', 'Tirei10',
     'Preparatório ENEM', 'Questões ENEM', 'Simulado ENEM', 'Gabarito', 'Aprovação',
     'Estudo Online', 'Revisão', 'Plano de Estudos', 'Assistente de Estudos',
@@ -40,8 +40,8 @@ export const metadata: Metadata = {
     locale: 'pt_BR',
     url: APP_URL,
     siteName: 'Tirei10',
-    title: 'Tirei10 - Plataforma de Estudos com IA | ENEM, OAB, Concursos e CPA-20',
-    description: 'Prepare-se para ENEM, OAB, Concursos Públicos e CPA-20 com IA Adaptativa. Questões personalizadas, simulados cronometrados e assistente IA 24/7.',
+    title: 'Tirei10 - Plataforma de Estudos com IA | ENEM, OAB, Concursos e CPA ANBIMA',
+    description: 'Prepare-se para ENEM, OAB, Concursos Públicos e CPA ANBIMA com IA Adaptativa. Questões personalizadas, simulados cronometrados e assistente IA 24/7.',
     images: [
       {
                 url: '/tirei10-logo.png',
@@ -54,7 +54,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Tirei10 - Estude com IA e tire 10!',
-    description: 'Prepare-se para ENEM, OAB, Concursos Públicos e CPA-20 com IA Adaptativa. Comece grátis!',
+    description: 'Prepare-se para ENEM, OAB, Concursos Públicos e CPA ANBIMA com IA Adaptativa. Comece grátis!',
           images: ['/tirei10-logo.png'],
     creator: '@tirei10',
   },
@@ -102,7 +102,7 @@ export default function RootLayout({ // NOSONAR
               "name": "Tirei10",
               "url": APP_URL,
               "logo": `${APP_URL}/tirei10-icon.png`,
-              "description": "Plataforma de estudos com IA adaptativa para ENEM, OAB, Concursos Públicos e CPA-20.",
+              "description": "Plataforma de estudos com IA adaptativa para ENEM, OAB, Concursos Públicos e CPA ANBIMA.",
               "sameAs": [
                 "https://www.instagram.com/tirei10",
               ],
