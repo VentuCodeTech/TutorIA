@@ -43,7 +43,7 @@ const SUBJECT_DISPLAY_NAMES: Record<string, string> = {
   'Espanhol': 'Espanhol',
   'Financas Pessoais': 'Finanças Pessoais',
   'Matematica Financeira': 'Matemática Financeira',
-  'CPA-20': 'CPA-20',
+  'CPA-20': 'CPA ANBIMA',
   'Investimentos': 'Investimentos',
   'Direito Constitucional': 'Direito Constitucional',
   'Direito Civil': 'Direito Civil',
