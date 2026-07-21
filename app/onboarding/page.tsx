@@ -24,7 +24,7 @@ const questions = [
       { label: 'Passar em uma universidade (ENEM/Vestibular)', value: 'universidade', emoji: '🎓' },
       { label: 'Passar em um concurso público', value: 'concurso', emoji: '🏆' },
       { label: 'Aprovação na OAB', value: 'oab', emoji: '⚖️' },
-      { label: 'Certificação CPA-20', value: 'cpa20', emoji: '📊' },
+      { label: 'Certificação CPA ANBIMA', value: 'cpa20', emoji: '📊' },
       { label: 'Ampliar meus conhecimentos', value: 'conhecimentos', emoji: '📚' },
     ],
   },
@@ -120,10 +120,10 @@ function generateProfile(answers: Record<number, string>) {
     focusExam = 'OAB';
   } else if (goal === 'cpa20') {
     profileName = 'Especialista em Finanças';
-    profileDescription = 'Você está se preparando para a CPA-20. Vamos focar em finanças, investimentos e regulação do mercado financeiro.';
-    tips = ['Estude regulação do mercado financeiro', 'Pratique questões de produtos de investimento', 'Use simulados específicos para CPA-20', 'Revise análise de risco regularmente'];
-    studyAreas = ['CPA-20', 'Finanças Pessoais', 'Investimentos', 'Matemática'];
-    focusExam = 'CPA-20';
+    profileDescription = 'Você está se preparando para a CPA ANBIMA. Vamos focar em finanças, investimentos e regulação do mercado financeiro.';
+    tips = ['Estude regulação do mercado financeiro', 'Pratique questões de produtos de investimento', 'Use simulados específicos para CPA ANBIMA', 'Revise análise de risco regularmente'];
+    studyAreas = ['CPA ANBIMA', 'Finanças Pessoais', 'Investimentos', 'Matemática'];
+    focusExam = 'CPA ANBIMA';
   } else if (goal === 'conhecimentos') {
     profileName = 'Aprendiz Curioso';
     profileDescription = 'Você quer ampliar seus conhecimentos. A plataforma vai adaptar o conteúdo ao seu ritmo e interesses.';
