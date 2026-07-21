@@ -308,7 +308,7 @@ export default function OnboardingPage() {
                 </div>
               ))}
             </div>
-            <button onClick={() => router.push('/dashboard')} className="w-full py-4 rounded-2xl text-white font-bold text-lg transition-all duration-300 shadow-lg hover:-translate-y-1" style={{ background: 'linear-gradient(135deg, #6d28d9, #9333ea)' }}>
+            <button type="button" onClick={() => router.push('/dashboard')} className="w-full py-4 rounded-2xl text-white font-bold text-lg transition-all duration-300 shadow-lg hover:-translate-y-1" style={{ background: 'linear-gradient(135deg, #6d28d9, #9333ea)' }}>
               🚀 Começar Minha Jornada de Estudos
             </button>
           </div>
@@ -342,7 +342,7 @@ export default function OnboardingPage() {
           </div>
           <div className="grid grid-cols-1 gap-3 mb-8">
             {currentQuestion.options.map((option) => (
-              <button key={option.value} onClick={() => setSelectedOption(option.value)}
+              <button type="button" key={option.value} onClick={() => setSelectedOption(option.value)}
                 className={'flex items-center gap-4 p-4 rounded-2xl border-2 text-left transition-all duration-200 hover:-translate-y-0.5 ' + (selectedOption === option.value ? 'border-purple-500 shadow-md' : 'border-gray-100 hover:border-purple-200')}
                 style={{ background: selectedOption === option.value ? '#f5f3ff' : 'white' }}>
                 <span className="text-2xl flex-shrink-0">{option.emoji}</span>
@@ -351,14 +351,14 @@ export default function OnboardingPage() {
               </button>
             ))}
           </div>
-          <button onClick={handleNext} disabled={!selectedOption || saving}
+          <button type="button" onClick={handleNext} disabled={!selectedOption || saving}
             className={'w-full py-4 rounded-2xl text-white font-bold text-lg transition-all duration-300 ' + (selectedOption ? 'shadow-lg hover:-translate-y-1' : 'opacity-50 cursor-not-allowed')}
             style={{ background: selectedOption ? 'linear-gradient(135deg, #6d28d9, #9333ea)' : '#d1d5db' }}>
             {buttonLabel}
           </button>
         </div>
         <div className="text-center mt-6">
-          <button onClick={async () => {
+          <button type="button" onClick={async () => {
             try {
               const { data: { user } } = await supabase.auth.getUser();
               if (user) await supabase.from('profiles').upsert({ id: user.id, onboarding_completed: true, updated_at: new Date().toISOString() }, { onConflict: 'id' });
