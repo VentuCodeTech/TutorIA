@@ -227,125 +227,142 @@ function getBaseTokens(effectivePlan: string): number {
   return 300;
 }
 
+async function checkPlanAccess(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  userId: string,
+  ): Promise<NextResponse | { effectivePlan: string }> {
+  const { data: subscription } = await supabase
+  .from('subscriptions')
+  .select('plan, status')
+  .eq('user_id', userId)
+  .maybeSingle();
+
+const effectivePlan = getPlanIdFromDbPlan(subscription?.plan, subscription?.status);
+  const features = getFeatures(effectivePlan);
+
+if (!features.aiAssistantEnabled) {
+  return NextResponse.json({
+    message: 'O Assistente IA esta disponivel apenas nos planos pagos (Standard, Student ou Advanced Pro). Faca upgrade para desbloquear esse recurso!'
+  });
+}
+
+if (features.aiDailyMessageLimit !== null) {
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0);
+  const { count } = await supabase
+  .from('chat_messages')
+  .select('id', { count: 'exact', head: true })
+  .eq('user_id', userId)
+  .eq('role', 'user')
+  .gte('created_at', todayStart.toISOString());
+  if ((count ?? 0) >= features.aiDailyMessageLimit) {
+    return NextResponse.json({
+      message: 'Voce atingiu o limite de ' + features.aiDailyMessageLimit + ' mensagens por dia do plano ' + getPlanName(effectivePlan) + '. Faca upgrade para o plano Student ou Advanced Pro para mensagens ilimitadas!'
+    });
+  }
+}
+
+return { effectivePlan };
+}
+
+function buildClaudeMessages(
+  messages: { role: string; content: string }[],
+  attachment: AttachmentPayload | undefined,
+  ): Anthropic.MessageParam[] {
+  const previousMessages: Anthropic.MessageParam[] = messages.slice(0, -1).map((msg) => ({
+    role: msg.role as 'user' | 'assistant',
+    content: msg.content,
+  }));
+
+const lastMessage = messages.at(-1);
+  const currentUserContent: Anthropic.MessageParam['content'] = attachment
+  ? buildAttachmentUserContent(attachment, attachment.userText ?? lastMessage?.content ?? '')
+    : lastMessage?.content ?? '';
+
+return [...previousMessages, { role: 'user', content: currentUserContent }];
+}
+
+function getErrorResponse(error: unknown): NextResponse {
+  console.error('Chatbot API error:', error);
+  const errMsg = (error as Error).message ?? '';
+
+if (errMsg.includes('overloaded') || errMsg.includes('529')) {
+  return NextResponse.json({
+    message: 'O assistente está temporariamente sobrecarregado. Por favor, aguarde 1-2 minutos e tente novamente. 🙏',
+  });
+}
+  if (errMsg.includes('rate_limit') || errMsg.includes('429')) {
+    return NextResponse.json({
+      message: 'Limite de requisições atingido. Por favor, aguarde alguns instantes e tente novamente.',
+    });
+  }
+  if (errMsg.includes('invalid_request') || errMsg.includes('400')) {
+    return NextResponse.json({
+      message: 'Não foi possível processar este arquivo. Verifique se é uma imagem válida (JPG, PNG, WEBP, GIF) ou PDF. Para arquivos Word, copie o texto e cole diretamente na conversa.',
+    });
+  }
+
+return NextResponse.json({
+  message: 'Ocorreu um erro inesperado. Por favor, tente novamente.',
+});
+}
+
 export async function POST(request: NextRequest) {
   try {
-  const { messages, attachment } = await request.json() as {
-  messages: { role: string; content: string }[];
-  attachment?: AttachmentPayload;
-};
+    const { messages, attachment } = await request.json() as {
+      messages: { role: string; content: string }[];
+      attachment?: AttachmentPayload;
+    };
     if (!messages || !Array.isArray(messages)) {
       return NextResponse.json({ error: 'Messages array is required' }, { status: 400 });
     }
 
-const supabase = await createClient();
+  const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) {
-      return NextResponse.json({ message: 'Faca login para usar o Assistente IA.' });
+
+  if (!user) {
+    return NextResponse.json({ message: 'Faca login para usar o Assistente IA.' });
+  }
+
+  const accessResult = await checkPlanAccess(supabase, user.id);
+    if (accessResult instanceof NextResponse) {
+      return accessResult;
     }
-    
-    const { data: subscription } = await supabase
-      .from('subscriptions')
-      .select('plan, status')
-      .eq('user_id', user.id)
-      .maybeSingle();
-    
-    const effectivePlan = getPlanIdFromDbPlan(subscription?.plan, subscription?.status);
-    const features = getFeatures(effectivePlan);
-    
-    if (!features.aiAssistantEnabled) {
-      return NextResponse.json({
-        message: 'O Assistente IA esta disponivel apenas nos planos pagos (Standard, Student ou Advanced Pro). Faca upgrade para desbloquear esse recurso!'
-      });
-    }
-    
-    if (features.aiDailyMessageLimit !== null) {
-      const todayStart = new Date();
-      todayStart.setHours(0, 0, 0, 0);
-      const { count } = await supabase
-        .from('chat_messages')
-        .select('id', { count: 'exact', head: true })
-        .eq('user_id', user.id)
-        .eq('role', 'user')
-        .gte('created_at', todayStart.toISOString());
-      if ((count ?? 0) >= features.aiDailyMessageLimit) {
-        return NextResponse.json({
-          message: 'Voce atingiu o limite de ' + features.aiDailyMessageLimit + ' mensagens por dia do plano ' + getPlanName(effectivePlan) + '. Faca upgrade para o plano Student ou Advanced Pro para mensagens ilimitadas!'
-        });
-      }
-    }
-    const model = getModel(effectivePlan);
+    const { effectivePlan } = accessResult;
+
+  const model = getModel(effectivePlan);
     const baseTokens = getBaseTokens(effectivePlan);
     const maxTokens = attachment ? Math.max(baseTokens, 1200) : baseTokens;
     const useCaching = effectivePlan !== 'free';
 
-    const systemContent = useCaching
-      ? [{ type: 'text' as const, text: SYSTEM_PROMPT, cache_control: { type: 'ephemeral' as const } }]
-      : SYSTEM_PROMPT;
+  const systemContent = useCaching
+    ? [{ type: 'text' as const, text: SYSTEM_PROMPT, cache_control: { type: 'ephemeral' as const } }]
+    : SYSTEM_PROMPT;
 
-    // Build previous messages (text-only history)
-    const previousMessages: Anthropic.MessageParam[] = messages.slice(0, -1).map((msg) => ({
-      role: msg.role as 'user' | 'assistant',
-      content: msg.content,
-    }));
+  const claudeMessages = buildClaudeMessages(messages, attachment);
 
-    // Build the current (last) user message — potentially with attachment
-    const lastMessage = messages.at(-1);
-    let currentUserContent: Anthropic.MessageParam['content'];
+  const response = await client.messages.create({
+    model,
+    max_tokens: maxTokens,
+    system: systemContent as Parameters<typeof client.messages.create>[0]['system'],
+    messages: claudeMessages,
+  });
 
-    if (attachment) {
-      currentUserContent = buildAttachmentUserContent(attachment, attachment.userText ?? lastMessage?.content ?? '');
-    } else {
-      currentUserContent = lastMessage?.content ?? '';
+  const text = response.content[0].type === 'text' ? response.content[0].text : '';
+    try {
+      const lastMessage = messages.at(-1);
+      const lastUserText = attachment ? (attachment.userText || lastMessage?.content || '[anexo]') : (lastMessage?.content ?? '');
+      await supabase.from('chat_messages').insert([
+        { user_id: user.id, role: 'user', content: lastUserText },
+        { user_id: user.id, role: 'assistant', content: text },
+        ]);
+    } catch (logError) {
+      console.error('Failed to persist chat messages:', logError);
     }
 
-    const claudeMessages: Anthropic.MessageParam[] = [
-      ...previousMessages,
-      { role: 'user', content: currentUserContent },
-    ];
-
-    const response = await client.messages.create({
-      model,
-      max_tokens: maxTokens,
-      system: systemContent as Parameters<typeof client.messages.create>[0]['system'],
-      messages: claudeMessages,
-    });
-
-    const text = response.content[0].type === 'text' ? response.content[0].text : '';
-try {
-  const lastUserText = attachment ? (attachment.userText || lastMessage?.content || '[anexo]') : (lastMessage?.content ?? '');
-  await supabase.from('chat_messages').insert([
-    { user_id: user.id, role: 'user', content: lastUserText },
-    { user_id: user.id, role: 'assistant', content: text },
-    ]);
-} catch (logError) {
-  console.error('Failed to persist chat messages:', logError);
-}
-    
-    return NextResponse.json({ message: text });
+  return NextResponse.json({ message: text });
 
   } catch (error: unknown) {
-    console.error('Chatbot API error:', error);
-    const errMsg = (error as Error).message ?? '';
-
-    if (errMsg.includes('overloaded') || errMsg.includes('529')) {
-      return NextResponse.json({
-        message: 'O assistente está temporariamente sobrecarregado. Por favor, aguarde 1-2 minutos e tente novamente. 🙏',
-      });
-    }
-    if (errMsg.includes('rate_limit') || errMsg.includes('429')) {
-      return NextResponse.json({
-        message: 'Limite de requisições atingido. Por favor, aguarde alguns instantes e tente novamente.',
-      });
-    }
-    if (errMsg.includes('invalid_request') || errMsg.includes('400')) {
-      return NextResponse.json({
-        message: 'Não foi possível processar este arquivo. Verifique se é uma imagem válida (JPG, PNG, WEBP, GIF) ou PDF. Para arquivos Word, copie o texto e cole diretamente na conversa.',
-      });
-    }
-
-    return NextResponse.json({
-      message: 'Ocorreu um erro inesperado. Por favor, tente novamente.',
-    });
+    return getErrorResponse(error);
   }
 }
