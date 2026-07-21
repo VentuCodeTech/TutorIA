@@ -186,7 +186,7 @@ className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring
 {difficulties.map(d => <option key={d} value={d}>{d}</option>)}
 </select>
 </div>
-<button
+<button type="button"
 onClick={() => generateQuestion(selectedArea, selectedDifficulty, shownTexts)}
 disabled={loading}
 className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-2 rounded-xl font-medium hover:from-indigo-700 hover:to-purple-700 disabled:opacity-50 transition-all"
@@ -222,7 +222,7 @@ className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-2
 <div className="text-6xl mb-4">📋</div>
 <h3 className="text-xl font-bold text-gray-800 mb-2">Pronto para praticar?</h3>
 <p className="text-gray-500 mb-6">Selecione os filtros e clique em Gerar Questão para começar.</p>
-<button
+<button type="button"
 onClick={() => generateQuestion()}
 className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-xl font-medium hover:from-indigo-700 hover:to-purple-700 transition-all"
 >
@@ -267,7 +267,7 @@ cls += idx === selectedAnswer
 : 'border-gray-200 hover:border-indigo-300 hover:bg-indigo-50 text-gray-700';
 }
 return (
-<button
+<button type="button"
 key={opt}
 className={cls}
 onClick={() => !showResult && setSelectedAnswer(idx)}
@@ -287,7 +287,7 @@ disabled={showResult}
 )}
 
 {!showResult ? ( // NOSONAR
-<button
+<button type="button"
 onClick={handleAnswer}
 disabled={selectedAnswer === null}
 className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 rounded-xl font-medium hover:from-indigo-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
@@ -295,7 +295,7 @@ className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3
 Confirmar Resposta
 </button>
 ) : (
-<button
+<button type="button"
 onClick={handleNextQuestion}
 className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 rounded-xl font-medium hover:from-indigo-700 hover:to-purple-700 transition-all"
 >
