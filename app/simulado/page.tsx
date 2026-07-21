@@ -80,7 +80,7 @@ export default function SimuladoPage() {
           <h1 className="text-3xl font-extrabold mb-6" style={{ color: '#1e1b4b' }}>Simulado Rapido com IA</h1>
           <div className="grid gap-3">
             {EXAMS.map((e) => (
-              <button
+              <button type="button"
                 key={e}
                 onClick={() => startExam(e)}
                 className="bg-white rounded-2xl shadow-md p-4 font-semibold text-left px-6"
@@ -128,7 +128,7 @@ export default function SimuladoPage() {
                 else if (i === selected) stateClass = 'border-red-400 bg-red-50';
               }
               return (
-                <button
+                <button type="button"
                   key={option}
                   onClick={() => handleAnswer(i)}
                   disabled={selected !== null}
@@ -143,7 +143,7 @@ export default function SimuladoPage() {
           {selected !== null && selected !== question.correctOption && (
             <div className="mb-6">
               {!explanation && (
-                <button
+                <button type="button"
                   onClick={handleExplain}
                   disabled={loadingExplanation}
                   className="text-sm font-semibold underline"
@@ -158,7 +158,7 @@ export default function SimuladoPage() {
             </div>
           )}
 
-          <button
+          <button type="button"
             onClick={handleNext}
             disabled={selected === null}
             className={'w-full py-4 rounded-2xl text-white font-bold text-lg transition-all ' + (selected !== null ? 'shadow-lg' : 'opacity-50 cursor-not-allowed')}
