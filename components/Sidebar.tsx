@@ -69,7 +69,7 @@ export default function Sidebar() {
   return (
     <>
       {/* Toggle button */}
-      <button
+      <button type="button"
         onClick={toggleSidebar}
         aria-label={collapsed ? 'Expandir menu' : 'Retrair menu'}
         className="fixed top-4 z-50 bg-white border border-gray-200 rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-indigo-50 hover:border-indigo-300 transition-all duration-300"
@@ -127,7 +127,7 @@ export default function Sidebar() {
               <p className="text-xs text-gray-400 truncate">{userEmail}</p>
             </div>
             {/* Gear / Settings button */}
-            <button
+            <button type="button"
               onClick={() => setShowSettings(true)}
               title="Configurações"
               className="flex-shrink-0 w-7 h-7 flex items-center justify-center rounded-full text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 transition-all"
@@ -138,7 +138,7 @@ export default function Sidebar() {
               </svg>
             </button>
           </div>
-          <button
+          <button type="button"
             onClick={handleSignOut}
             className="w-full text-xs text-gray-500 hover:text-red-500 transition-colors py-1"
           >
