@@ -108,7 +108,7 @@ export default function IndicacoesPage() {
                 className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-700"
                 onFocus={(e) => e.target.select()}
               />
-              <button
+              <button type="button"
                 onClick={handleCopy}
                 className="bg-indigo-600 text-white px-6 py-3 rounded-xl font-medium hover:bg-indigo-700 transition-colors whitespace-nowrap"
               >
