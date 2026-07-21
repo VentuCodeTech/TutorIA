@@ -340,7 +340,7 @@ export default function ComunidadePage() {
   </div>
           <div className="flex gap-2 flex-wrap mb-6">
             {categories.map((cat) => (
-              <button
+              <button type="button"
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
                 className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
@@ -383,8 +383,8 @@ export default function ComunidadePage() {
                       ))}
                     </select>
                     <div className="flex gap-2">
-                      <button onClick={() => setShowNewPost(false)} className="px-4 py-2 text-sm text-gray-500 hover:text-gray-700">Cancelar</button>
-                      <button
+                      <button type="button" onClick={() => setShowNewPost(false)} className="px-4 py-2 text-sm text-gray-500 hover:text-gray-700">Cancelar</button>
+                      <button type="button"
                         onClick={handleSubmitPost}
                         disabled={submitting || !newPostContent.trim()}
                         className="px-6 py-2 bg-indigo-600 text-white rounded-xl text-sm font-medium hover:bg-indigo-700 disabled:opacity-50 transition-colors"
@@ -396,7 +396,7 @@ export default function ComunidadePage() {
                   {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
                 </div>
               ) : (
-                <button
+                <button type="button"
                   onClick={() => setShowNewPost(true)}
                   className="w-full bg-white border-2 border-dashed border-gray-300 rounded-2xl p-4 text-gray-500 hover:border-indigo-400 hover:text-indigo-600 transition-colors text-left"
                 >
@@ -438,13 +438,13 @@ export default function ComunidadePage() {
                     {post.title && <h3 className="font-semibold text-gray-900 mb-2">{post.title}</h3>}
                     <p className="text-gray-600 text-sm leading-relaxed mb-4">{post.content}</p>
                     <div className="flex items-center gap-4 text-sm text-gray-500">
-                      <button onClick={() => handleLike(post.id)} className={`flex items-center gap-1.5 hover:text-indigo-600 transition-colors ${likedPosts.has(post.id) ? 'text-indigo-600' : ''}`}>
+                      <button type="button" onClick={() => handleLike(post.id)} className={`flex items-center gap-1.5 hover:text-indigo-600 transition-colors ${likedPosts.has(post.id) ? 'text-indigo-600' : ''}`}>
                         {likedPosts.has(post.id) ? '❤️' : '🤍'} {post.likes}
                       </button>
-                      <button onClick={() => toggleReplies(post.id)} className="flex items-center gap-1.5 hover:text-indigo-600 transition-colors">
+                      <button type="button" onClick={() => toggleReplies(post.id)} className="flex items-center gap-1.5 hover:text-indigo-600 transition-colors">
                         💬 {post.replies_count} {post.replies_count === 1 ? 'resposta' : 'respostas'}
                       </button>
-                      <button onClick={() => handleShare(post)} className="flex items-center gap-1.5 hover:text-indigo-600 transition-colors">
+                      <button type="button" onClick={() => handleShare(post)} className="flex items-center gap-1.5 hover:text-indigo-600 transition-colors">
                         {shareMsg === post.id ? '✅ Copiado!' : '🔗 Compartilhar'}
                       </button>
                     </div>
@@ -476,7 +476,7 @@ export default function ComunidadePage() {
                                   onKeyDown={(e) => { if (e.key === 'Enter') handleSubmitReply(post.id); }}
                                   className="flex-1 border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-indigo-400"
                                 />
-                                <button
+                                <button type="button"
                                   onClick={() => handleSubmitReply(post.id)}
                                   disabled={submittingReply === post.id || !replyContent[post.id]?.trim()}
                                   className="px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm font-medium hover:bg-indigo-700 disabled:opacity-50 transition-colors"
