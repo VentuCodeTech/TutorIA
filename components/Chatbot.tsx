@@ -144,7 +144,7 @@ function parseBold(text: string) {    const parts = text.split(/\*\*(.*?)\*\*/);
                                                                       </div>
                                                       </div>
                                         </div>
-                                        <button
+                                        <button type="button"
                                                         onClick={() => setIsOpen(false)}
                                                         className="text-white/80 hover:text-white transition-colors w-8 h-8 rounded-full hover:bg-white/20 flex items-center justify-center"
                                                       >
@@ -210,7 +210,7 @@ function parseBold(text: string) {    const parts = text.split(/\*\*(.*?)\*\*/);
                                                                         disabled={isLoading}
                                                                         className="flex-1 bg-transparent text-sm text-gray-700 placeholder-gray-400 outline-none"
                                                                       />
-                                                      <button
+                                                      <button type="button"
                                                                         onClick={sendMessage}
                                                                         disabled={!inputMessage.trim() || isLoading}
                                                                         className="w-8 h-8 bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-300 rounded-lg flex items-center justify-center transition-colors flex-shrink-0"
@@ -225,7 +225,7 @@ function parseBold(text: string) {    const parts = text.split(/\*\*(.*?)\*\*/);
               )}
         
           {/* Toggle Button */}
-              <button
+              <button type="button"
                         onClick={() => setIsOpen(!isOpen)}
                         className="w-14 h-14 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95"
                       >
