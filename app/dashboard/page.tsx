@@ -174,7 +174,7 @@ export default function Dashboard() {
           <div className="lg:col-span-2 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-6 text-white">
             <h2 className="text-lg font-bold mb-2">🚀 Começar Sessão de Estudos</h2>
             <p className="text-indigo-200 text-sm mb-4">Use a IA para criar um plano de estudo personalizado para você.</p>
-            <button
+            <button type="button"
               onClick={() => router.push('/dashboard/questoes')}
               className="bg-white text-indigo-600 px-6 py-2.5 rounded-xl font-semibold hover:bg-indigo-50 transition-colors text-sm"
             >
@@ -229,7 +229,7 @@ export default function Dashboard() {
           <h2 className="text-xl font-bold text-gray-800 mb-5">📚 Áreas de Estudo</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
             {studyAreas.map((item) => (
-              <button
+              <button type="button"
                 key={item.path}
                 onClick={() => router.push(item.path)}
                 className="flex flex-col items-center p-4 rounded-xl bg-gray-50 hover:bg-indigo-50 hover:border-indigo-200 border border-transparent transition-all group cursor-pointer"
