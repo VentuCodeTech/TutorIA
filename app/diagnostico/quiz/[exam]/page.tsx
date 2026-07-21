@@ -73,7 +73,7 @@ export default function DiagnosticoQuizPage() {
           <h2 className="text-xl font-bold mb-6" style={{ color: '#1e1b4b' }}>{question.question}</h2>
           <div className="grid gap-3 mb-8">
             {question.options.map((option, i) => (
-              <button
+              <button type="button"
                 key={option}
                 onClick={() => setSelected(i)}
                 className={'text-left p-4 rounded-2xl border-2 transition-all duration-200 ' + (selected === i ? 'border-purple-500 shadow-md' : 'border-gray-100 hover:border-purple-200')}
@@ -83,7 +83,7 @@ export default function DiagnosticoQuizPage() {
               </button>
             ))}
           </div>
-          <button
+          <button type="button"
             onClick={handleNext}
             disabled={selected === null}
             className={'w-full py-4 rounded-2xl text-white font-bold text-lg transition-all ' + (selected !== null ? 'shadow-lg' : 'opacity-50 cursor-not-allowed')}
