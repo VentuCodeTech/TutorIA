@@ -286,7 +286,7 @@ if (!planLoading && !features.customStudyPlan) {
         <div className="max-w-2xl bg-white rounded-2xl p-10 shadow-sm border border-gray-100 text-center">
           <h2 className="text-xl font-bold text-gray-800 mb-2">Recurso exclusivo dos planos Student e Advanced Pro</h2>
           <p className="text-gray-500 mb-6">O Plano de Estudos Personalizado esta disponivel a partir do plano Student. Faca upgrade para desbloquear um roteiro de estudos feito sob medida para voce.</p>
-          <button onClick={() => router.push('/dashboard/planos')} className="bg-indigo-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-indigo-700 transition-colors">Ver Planos</button>
+          <button type="button" onClick={() => router.push('/dashboard/planos')} className="bg-indigo-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-indigo-700 transition-colors">Ver Planos</button>
         </div>
       </main>
       <Chatbot />
@@ -386,7 +386,7 @@ if (!planLoading && !features.customStudyPlan) {
       <main className="ml-64 p-8">
         <div className="mb-6">
           <div className="flex items-center gap-2 text-sm text-gray-500 mb-2">
-            <button onClick={() => router.push('/dashboard/estudos')} className="hover:text-indigo-600 transition-colors">📚 Meus Estudos</button>
+            <button type="button" onClick={() => router.push('/dashboard/estudos')} className="hover:text-indigo-600 transition-colors">📚 Meus Estudos</button>
             <span>›</span>
             <span className="text-indigo-700 font-medium">🗺️ Plano de Estudos</span>
           </div>
@@ -411,7 +411,7 @@ if (!planLoading && !features.customStudyPlan) {
               <p className="text-gray-500 text-sm mb-6">Selecione uma opção para personalizarmos as perguntas ao seu objetivo</p>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {VESTIBULARES.map(v => (
-                  <button key={v.id} onClick={() => handleSelecionarVestibular(v.id)}
+                  <button type="button" key={v.id} onClick={() => handleSelecionarVestibular(v.id)}
                     className="flex flex-col items-center gap-3 p-5 rounded-2xl border-2 border-gray-200 hover:border-indigo-400 hover:bg-indigo-50 transition-all text-center group">
                     <span className="text-4xl group-hover:scale-110 transition-transform">{v.emoji}</span>
                     <span className="text-sm font-semibold text-gray-700 group-hover:text-indigo-700">{v.label}</span>
@@ -439,7 +439,7 @@ if (!planLoading && !features.customStudyPlan) {
               <h2 className="text-xl font-bold text-gray-800 mb-6">{perguntas[perguntaAtual]?.pergunta}</h2>
               <div className="space-y-3">
                 {perguntas[perguntaAtual]?.opcoes.map((opcao, i) => (
-                  <button key={opcao} onClick={() => handleResponder(i)}
+                  <button type="button" key={opcao} onClick={() => handleResponder(i)}
                     className="w-full text-left p-4 rounded-xl border-2 border-gray-200 hover:border-indigo-400 hover:bg-indigo-50 transition-all group">
                     <div className="flex items-center gap-3">
                       {(() => {
@@ -452,7 +452,7 @@ if (!planLoading && !features.customStudyPlan) {
                   </button>
                 ))}
               </div>
-              <button onClick={handleReiniciar} className="mt-6 text-sm text-gray-400 hover:text-gray-600 transition-colors">← Voltar para seleção</button>
+              <button type="button" onClick={handleReiniciar} className="mt-6 text-sm text-gray-400 hover:text-gray-600 transition-colors">← Voltar para seleção</button>
             </div>
           </div>
         )}
@@ -482,7 +482,7 @@ if (!planLoading && !features.customStudyPlan) {
                     </p>
                   </div>
                 </div>
-                <button onClick={handleReiniciar} className="text-sm text-gray-500 hover:text-indigo-600 border border-gray-200 hover:border-indigo-300 px-3 py-1.5 rounded-lg transition-colors">
+                <button type="button" onClick={handleReiniciar} className="text-sm text-gray-500 hover:text-indigo-600 border border-gray-200 hover:border-indigo-300 px-3 py-1.5 rounded-lg transition-colors">
                   🔄 Refazer
                 </button>
               </div>
@@ -493,7 +493,7 @@ if (!planLoading && !features.customStudyPlan) {
                     <p className="font-semibold text-amber-800 text-sm">📊 Atualização disponível!</p>
                     <p className="text-amber-700 text-xs mt-0.5">Seu desempenho real nas questões sugere ajustes no seu plano.</p>
                   </div>
-                  <button onClick={applyPerformanceUpdates} disabled={savingPlan}
+                  <button type="button" onClick={applyPerformanceUpdates} disabled={savingPlan}
                     className="bg-amber-500 hover:bg-amber-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors disabled:opacity-50 whitespace-nowrap ml-4">
                     Aplicar
                   </button>
@@ -560,7 +560,7 @@ if (!planLoading && !features.customStudyPlan) {
                           <p className="text-xs text-gray-500">{isFraca?'🔥 Prioridade alta - foque nessa matéria primeiro':'✨ Mantenha e aprofunde seus conhecimentos'}</p>
                           {perf && <p className="text-xs text-blue-600 mt-0.5">📊 Taxa de acerto: {perf.taxa}% ({perf.corretas}/{perf.total} questões)</p>}
                         </div>
-                        <button onClick={() => router.push(`/dashboard/questoes?area=${encodeURIComponent(materia)}`)}
+                        <button type="button" onClick={() => router.push(`/dashboard/questoes?area=${encodeURIComponent(materia)}`)}
                           className={`text-sm font-medium px-4 py-2 rounded-lg ${isFraca?'bg-red-500 hover:bg-red-600':'bg-green-500 hover:bg-green-600'} text-white transition-colors`}>Estudar</button>
                       </div>
                     )
@@ -578,8 +578,8 @@ if (!planLoading && !features.customStudyPlan) {
               </div>
             </div>
             <div className="flex gap-4">
-              <button onClick={handleReiniciar} className="flex-1 py-3 rounded-xl border-2 border-gray-300 text-gray-600 font-semibold hover:bg-gray-50 transition-colors">🔄 Novo Diagnóstico</button>
-              <button onClick={() => router.push('/dashboard/questoes')} className="flex-1 py-3 rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition-colors">📝 Começar a Estudar</button>
+              <button type="button" onClick={handleReiniciar} className="flex-1 py-3 rounded-xl border-2 border-gray-300 text-gray-600 font-semibold hover:bg-gray-50 transition-colors">🔄 Novo Diagnóstico</button>
+              <button type="button" onClick={() => router.push('/dashboard/questoes')} className="flex-1 py-3 rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition-colors">📝 Começar a Estudar</button>
             </div>
           </div>
         )}
