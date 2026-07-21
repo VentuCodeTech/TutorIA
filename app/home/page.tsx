@@ -22,7 +22,7 @@ export default function HomePage() {
               Bem-vindo ao <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">Tirei10</span>
             </h1>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              A plataforma de estudos com IA adaptativa mais completa do Brasil para ENEM, OAB, Concursos Públicos e CPA-20.
+              A plataforma de estudos com IA adaptativa mais completa do Brasil para ENEM, OAB, Concursos Públicos e CPA ANBIMA.
             </p>
           </div>
 
@@ -40,7 +40,7 @@ export default function HomePage() {
               <h2 className="text-2xl font-bold text-gray-800 mb-3">Para quem é?</h2>
               <p className="text-gray-600 leading-relaxed">
                 Nossa plataforma é ideal para estudantes que se preparam para o ENEM, candidatos ao exame da OAB, 
-                concurseiros de concursos federais e estaduais, e profissionais que buscam a certificação CPA-20 da ANBIMA.
+                concurseiros de concursos federais e estaduais, e profissionais que buscam a certificação CPA ANBIMA da ANBIMA.
               </p>
             </div>
           </div>
