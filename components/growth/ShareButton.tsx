@@ -20,7 +20,7 @@ export default function ShareButton({ url }: Readonly<ShareButtonProps>) {
   };
 
   return (
-    <button
+    <button type="button"
       onClick={handleCopy}
       className="inline-flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-xl border border-purple-200 text-purple-700 hover:bg-purple-50 transition-all"
     >
