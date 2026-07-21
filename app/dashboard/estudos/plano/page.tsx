@@ -206,23 +206,7 @@ export default function PlanoEstudosPage() {
 
 const { features, loading: planLoading } = useUserPlan()
 
-if (!planLoading && !features.customStudyPlan) {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50 to-purple-50">
-      <Sidebar />
-      <main className="ml-64 p-8">
-        <div className="max-w-2xl bg-white rounded-2xl p-10 shadow-sm border border-gray-100 text-center">
-          <h2 className="text-xl font-bold text-gray-800 mb-2">Recurso exclusivo dos planos Student e Advanced Pro</h2>
-          <p className="text-gray-500 mb-6">O Plano de Estudos Personalizado esta disponivel a partir do plano Student. Faca upgrade para desbloquear um roteiro de estudos feito sob medida para voce.</p>
-          <button onClick={() => router.push('/dashboard/planos')} className="bg-indigo-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-indigo-700 transition-colors">Ver Planos</button>
-        </div>
-      </main>
-      <Chatbot />
-    </div>
-  )
-}
-  
-  const loadPlanAndPerformance = useCallback(async () => {
+const loadPlanAndPerformance = useCallback(async () => {
     const { data: { session } } = await supabase.auth.getSession()
 if (!session) {
   globalThis.location.href = '/login'
@@ -294,7 +278,23 @@ if (!session) {
   useEffect(() => {
     loadPlanAndPerformance()
   }, [loadPlanAndPerformance])
-
+if (!planLoading && !features.customStudyPlan) {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50 to-purple-50">
+      <Sidebar />
+      <main className="ml-64 p-8">
+        <div className="max-w-2xl bg-white rounded-2xl p-10 shadow-sm border border-gray-100 text-center">
+          <h2 className="text-xl font-bold text-gray-800 mb-2">Recurso exclusivo dos planos Student e Advanced Pro</h2>
+          <p className="text-gray-500 mb-6">O Plano de Estudos Personalizado esta disponivel a partir do plano Student. Faca upgrade para desbloquear um roteiro de estudos feito sob medida para voce.</p>
+          <button onClick={() => router.push('/dashboard/planos')} className="bg-indigo-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-indigo-700 transition-colors">Ver Planos</button>
+        </div>
+      </main>
+      <Chatbot />
+    </div>
+  )
+}
+  
+  
   const savePlan = async (
     vestibular: string,
     resps: number[],
