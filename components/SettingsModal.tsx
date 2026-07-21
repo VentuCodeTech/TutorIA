@@ -213,7 +213,7 @@ export default function SettingsModal({ // NOSONAR
             </svg>
             Configurações
           </h2>
-          <button
+          <button type="button"
             onClick={onClose} // NOSONAR
             className="text-gray-400 hover:text-gray-600 transition-colors text-xl leading-none"
           >
@@ -223,7 +223,7 @@ export default function SettingsModal({ // NOSONAR
 
         <div className="flex border-b border-gray-100">
           {tabs.map((tab) => (
-            <button
+            <button type="button"
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={'flex-1 flex items-center justify-center gap-2 py-3 text-sm font-medium transition-all border-b-2 ' + (
@@ -257,7 +257,7 @@ export default function SettingsModal({ // NOSONAR
                       </span>
                     </div>
                   )}
-                  <button
+                  <button type="button"
                     onClick={() => fileRef.current?.click()}
                     className="absolute bottom-0 right-0 w-7 h-7 bg-indigo-600 text-white rounded-full flex items-center justify-center hover:bg-indigo-700 transition-colors shadow"
                     title="Alterar foto"
@@ -317,7 +317,7 @@ export default function SettingsModal({ // NOSONAR
                   {profileMsg}
                 </div>
               )}
-              <button
+              <button type="button"
                 onClick={handleSaveProfile}
                 disabled={savingProfile}
                 className="w-full bg-indigo-600 text-white py-2.5 rounded-xl text-sm font-semibold hover:bg-indigo-700 transition-colors disabled:opacity-60"
@@ -360,7 +360,7 @@ export default function SettingsModal({ // NOSONAR
                     </p>
                   </div>
                 </div>
-                <button
+                <button type="button"
                   onClick={handleManagePayment}
                   disabled={portalLoading}
                   className="w-full flex items-center justify-center gap-2 bg-indigo-600 text-white py-2.5 rounded-xl text-sm font-semibold hover:bg-indigo-700 transition-colors disabled:opacity-60"
@@ -393,7 +393,7 @@ export default function SettingsModal({ // NOSONAR
               <p className="text-sm text-gray-500">Escolha o tema visual da plataforma:</p>
 
               <div className="grid grid-cols-3 gap-3">
-                <button
+                <button type="button"
                   onClick={() => handleThemeChange('light')}
                   className={'group flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all ' + (
                     theme === 'light'
@@ -413,7 +413,7 @@ export default function SettingsModal({ // NOSONAR
                   )}
                 </button>
 
-                <button
+                <button type="button"
                   onClick={() => handleThemeChange('gray')}
                   className={'group flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all ' + (
                     theme === 'gray'
@@ -433,7 +433,7 @@ export default function SettingsModal({ // NOSONAR
                   )}
                 </button>
 
-                <button
+                <button type="button"
                   onClick={() => handleThemeChange('dark')}
                   className={'group flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all ' + (
                     theme === 'dark'
