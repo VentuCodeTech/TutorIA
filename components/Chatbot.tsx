@@ -15,7 +15,7 @@ function parseBold(text: string) {    const parts = text.split(/\*\*(.*?)\*\*/);
       {
               id: '1',
               role: 'assistant',
-              content: 'Olá! Sou o Tirei10, seu assistente de estudos inteligente! 🎓\n\nPosso te ajudar com:\n• ENEM, OAB, Concursos Públicos e CPA-20\n• Dúvidas de qualquer matéria\n• Dicas de estudo e revisão\n\nComo posso te ajudar hoje?',
+              content: 'Olá! Sou o Tirei10, seu assistente de estudos inteligente! 🎓\n\nPosso te ajudar com:\n• ENEM, OAB, Concursos Públicos e CPA ANBIMA\n• Dúvidas de qualquer matéria\n• Dicas de estudo e revisão\n\nComo posso te ajudar hoje?',
               timestamp: new Date(),
       }
         ]);
