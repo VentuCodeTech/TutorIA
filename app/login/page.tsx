@@ -139,7 +139,7 @@ function LoginForm() {
           )}
 
           {/* Google Button */}
-          <button
+          <button type="button"
             onClick={handleGoogleLogin}
             disabled={googleLoading || loading}
             className="w-full flex items-center justify-center gap-3 px-4 py-3 border-2 border-gray-200 rounded-xl text-gray-700 font-medium hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 mb-4 disabled:opacity-60 disabled:cursor-not-allowed"
@@ -242,7 +242,7 @@ function LoginForm() {
 
           {/* Toggle Sign Up/In */}
           <div className="mt-6 text-center">
-            <button
+            <button type="button"
               onClick={() => {
                 setIsSignUp(!isSignUp);
                 setError('');
