@@ -191,7 +191,7 @@ export default function PricingPage() {
         <div className="max-w-7xl mx-auto px-6 py-12">
           {/* Header */}
           <div className="text-center mb-14">
-            <button
+            <button type="button"
               onClick={handleBack}
               className="text-sm font-medium mb-4 inline-block hover:underline"
               style={{ color: '#6d28d9', background: 'none', border: 'none', cursor: 'pointer' }}
@@ -261,7 +261,7 @@ export default function PricingPage() {
                   ))}
                 </ul>
 
-                <button
+                <button type="button"
                   onClick={() => handleSubscribe(plan)}
                   disabled={loading === plan.name}
                   className="w-full py-3 px-4 rounded-xl font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
