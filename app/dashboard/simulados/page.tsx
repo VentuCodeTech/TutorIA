@@ -441,8 +441,8 @@ const { features } = useUserPlan();
               <div className={`${approved ? 'bg-green-50' : 'bg-red-50'} rounded-xl p-4`}><div className={`text-xl font-bold ${approved ? 'text-green-600' : 'text-red-500'}`}>{approved ? '✅ Aprovado' : '❌ Reprovado'}</div><div className="text-xs text-gray-500">Resultado</div></div>
             </div>
             <div className="flex gap-4 justify-center flex-wrap">
-              <button onClick={() => { setActiveSimulado(null); setSimFinished(false); }} className="bg-gray-100 text-gray-700 px-6 py-3 rounded-xl font-medium hover:bg-gray-200 transition-colors">← Voltar</button>
-              <button onClick={() => startSimulado(activeSimulado)} className="bg-indigo-600 text-white px-6 py-3 rounded-xl font-medium hover:bg-indigo-700 transition-colors">🔄 Novo Simulado</button>
+              <button type="button" onClick={() => { setActiveSimulado(null); setSimFinished(false); }} className="bg-gray-100 text-gray-700 px-6 py-3 rounded-xl font-medium hover:bg-gray-200 transition-colors">← Voltar</button>
+              <button type="button" onClick={() => startSimulado(activeSimulado)} className="bg-indigo-600 text-white px-6 py-3 rounded-xl font-medium hover:bg-indigo-700 transition-colors">🔄 Novo Simulado</button>
             </div>
           </div>
         </main>
@@ -465,7 +465,7 @@ const { features } = useUserPlan();
               </div>
               <div className="flex items-center gap-4">
                 <div className={`text-xl font-bold font-mono ${timeLeft < 120 ? 'text-red-500 animate-pulse' : 'text-gray-700'}`}>⏱ {formatTime(timeLeft)}</div>
-                <button onClick={() => { if (timerRef.current) { clearInterval(timerRef.current); } finishSimulado(simQuestions, answers); }} className="text-sm text-red-500 hover:text-red-700 border border-red-200 px-3 py-1 rounded-lg">Encerrar</button>
+                <button type="button" onClick={() => { if (timerRef.current) { clearInterval(timerRef.current); } finishSimulado(simQuestions, answers); }} className="text-sm text-red-500 hover:text-red-700 border border-red-200 px-3 py-1 rounded-lg">Encerrar</button>
               </div>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2 mb-4"><div className="bg-indigo-500 h-2 rounded-full transition-all" style={{width: `${progress}%`}}></div></div>
@@ -486,7 +486,7 @@ const { features } = useUserPlan();
                   } else {
                     cls += idx === selectedAnswer ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-gray-200 hover:border-indigo-300 hover:bg-indigo-50 text-gray-700';
                   }
-                  return <button key={opt} className={cls} onClick={() => !showResult && setSelectedAnswer(idx)}><span className="font-semibold mr-2">{String.fromCodePoint(65+idx)}.</span>{opt}</button>;
+                  return <button type="button" key={opt} className={cls} onClick={() => !showResult && setSelectedAnswer(idx)}><span className="font-semibold mr-2">{String.fromCodePoint(65+idx)}.</span>{opt}</button>;
                 })}
               </div>
               {showResult && (
@@ -496,9 +496,9 @@ const { features } = useUserPlan();
                 </div>
               )}
               {!showResult ? ( // NOSONAR
-                <button onClick={handleAnswer} disabled={selectedAnswer === null} className="w-full bg-indigo-600 text-white py-3 rounded-xl font-medium hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">Confirmar Resposta</button>
+                <button type="button" onClick={handleAnswer} disabled={selectedAnswer === null} className="w-full bg-indigo-600 text-white py-3 rounded-xl font-medium hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">Confirmar Resposta</button>
               ) : currentQIndex + 1 < simQuestions.length ? ( // NOSONAR
-                <button onClick={nextQuestion} className="w-full bg-indigo-600 text-white py-3 rounded-xl font-medium hover:bg-indigo-700 transition-colors">Próxima Questão →</button>
+                <button type="button" onClick={nextQuestion} className="w-full bg-indigo-600 text-white py-3 rounded-xl font-medium hover:bg-indigo-700 transition-colors">Próxima Questão →</button>
               ) : null}
             </div>
           </div>
@@ -516,12 +516,12 @@ const { features } = useUserPlan();
             <h1 className="text-3xl font-bold text-gray-800">🎯 Simulados</h1>
             <p className="text-gray-500 mt-1">Provas completas com questões na ordem real de cada vestibular e concurso</p>
             {vestibularPref && filterActive && (
-              <p className="text-indigo-600 text-sm mt-1">📌 Filtrando por: <strong>{vestibularPref}</strong><button onClick={() => { setFilteredSimulados(vestibularSimulados); setFilterActive(false); }} className="ml-2 text-gray-400 hover:text-gray-600 text-xs underline">Ver todos</button></p>
+              <p className="text-indigo-600 text-sm mt-1">📌 Filtrando por: <strong>{vestibularPref}</strong><button type="button" onClick={() => { setFilteredSimulados(vestibularSimulados); setFilterActive(false); }} className="ml-2 text-gray-400 hover:text-gray-600 text-xs underline">Ver todos</button></p>
             )}
           </div>
           <div className="flex gap-2 flex-wrap">
             {!filterActive && vestibularPref && (
-              <button onClick={() => { const f = vestibularSimulados.filter(s => s.vestibular.toLowerCase().includes(vestibularPref.toLowerCase())); if(f.length>0){setFilteredSimulados(f);setFilterActive(true);} }} className="text-sm bg-indigo-50 text-indigo-600 border border-indigo-200 px-4 py-2 rounded-xl hover:bg-indigo-100 transition">🎯 Filtrar por {vestibularPref}</button>
+              <button type="button" onClick={() => { const f = vestibularSimulados.filter(s => s.vestibular.toLowerCase().includes(vestibularPref.toLowerCase())); if(f.length>0){setFilteredSimulados(f);setFilterActive(true);} }} className="text-sm bg-indigo-50 text-indigo-600 border border-indigo-200 px-4 py-2 rounded-xl hover:bg-indigo-100 transition">🎯 Filtrar por {vestibularPref}</button>
             )}
           </div>
         </div>
@@ -550,7 +550,7 @@ const { features } = useUserPlan();
                   <div className="flex items-center gap-2 text-sm text-gray-500"><span>⏱️</span><span>{sim.timeMinutes} min</span></div>
                   <div className="flex items-center gap-2 text-sm text-gray-500"><span>📚</span><span className="truncate">{sim.areaOrder.slice(0,2).map(a=>a.area).join(', ')}{sim.areaOrder.length>2?'...':''}</span></div>
                 </div>
-                <button onClick={()=>{if(!features.unlimitedSimulados){router.push('/dashboard/planos');return;}startSimulado(sim);}} className="w-full bg-indigo-600 text-white py-2.5 rounded-xl font-medium hover:bg-indigo-700 transition-colors text-sm">Iniciar Simulado →</button>
+                <button type="button" onClick={()=>{if(!features.unlimitedSimulados){router.push('/dashboard/planos');return;}startSimulado(sim);}} className="w-full bg-indigo-600 text-white py-2.5 rounded-xl font-medium hover:bg-indigo-700 transition-colors text-sm">Iniciar Simulado →</button>
               </div>
             );
           })}
@@ -559,7 +559,7 @@ const { features } = useUserPlan();
         <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-6 text-white">
           <h2 className="text-xl font-bold mb-2">🤖 Simulado Adaptativo com IA</h2>
           <p className="text-indigo-100 mb-4">Nossa IA cria um simulado 100% personalizado baseado no seu histórico e vestibular escolhido.</p>
-          <button onClick={()=>{if(!features.aiPersonalizedSimulados){router.push('/dashboard/planos');return;}const pref=vestibularPref||'ENEM';const match=vestibularSimulados.find(s=>s.vestibular.toLowerCase().includes(pref.toLowerCase()))||vestibularSimulados[0];startSimulado({...match,id:`adaptativo_${Date.now()}`,title:`Simulado Adaptativo IA - ${pref}`,tag:'IA Adaptativo'});}} className="bg-white text-indigo-600 px-5 py-2 rounded-xl font-semibold hover:bg-indigo-50 transition-colors">Criar Simulado Adaptativo</button>
+          <button type="button" onClick={()=>{if(!features.aiPersonalizedSimulados){router.push('/dashboard/planos');return;}const pref=vestibularPref||'ENEM';const match=vestibularSimulados.find(s=>s.vestibular.toLowerCase().includes(pref.toLowerCase()))||vestibularSimulados[0];startSimulado({...match,id:`adaptativo_${Date.now()}`,title:`Simulado Adaptativo IA - ${pref}`,tag:'IA Adaptativo'});}} className="bg-white text-indigo-600 px-5 py-2 rounded-xl font-semibold hover:bg-indigo-50 transition-colors">Criar Simulado Adaptativo</button>
         </div>
         <Chatbot />
       </main>
