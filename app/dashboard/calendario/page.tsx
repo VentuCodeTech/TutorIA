@@ -132,13 +132,13 @@ export default function CalendarioPage() {
                   {googleEmail && <span className="text-xs text-gray-400">({googleEmail})</span>}
                 </div>
                 <div className="flex gap-3 flex-wrap">
-                  <button
+                  <button type="button"
                     onClick={openGoogleCalendar}
                     className="bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-blue-700 transition-colors"
                   >
                     Abrir Google Calendar →
                   </button>
-                  <button
+                  <button type="button"
                     onClick={handleDisconnect}
                     className="border border-red-200 text-red-500 px-4 py-2 rounded-xl text-sm font-medium hover:bg-red-50 transition-colors"
                   >
@@ -151,7 +151,7 @@ export default function CalendarioPage() {
                 <p className="text-sm text-gray-500 mb-4">
                   Conecte sua conta Google para sincronizar automaticamente suas sessões de estudo, simulados e metas diárias com o Google Calendar.
                 </p>
-                <button
+                <button type="button"
                   onClick={canUseCalendar ? handleConnectGoogle : undefined}
                   disabled={!canUseCalendar}
                   className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-colors ${canUseCalendar ? 'bg-white border-2 border-gray-200 text-gray-700 hover:border-blue-400 hover:bg-blue-50 cursor-pointer' : 'bg-gray-100 text-gray-400 cursor-not-allowed'}`}
@@ -230,7 +230,7 @@ export default function CalendarioPage() {
               Para visualizar seu Google Calendar aqui, clique em &quot;Abrir Google Calendar&quot; ou use as ações rápidas acima.
               A incorporação direta requer configuração adicional no Google Calendar.
             </p>
-            <button
+            <button type="button"
               onClick={openGoogleCalendar}
               className="bg-indigo-600 text-white px-6 py-3 rounded-xl font-medium hover:bg-indigo-700 transition-colors"
             >
