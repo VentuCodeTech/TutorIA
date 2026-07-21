@@ -14,7 +14,7 @@ const VESTIBULARES = [
   { id: 'oab', label: 'OAB', emoji: '⚖️' },
   { id: 'concurso_federal', label: 'Concurso Federal', emoji: '🏛️' },
   { id: 'concurso_estadual', label: 'Concurso Estadual', emoji: '📋' },
-  { id: 'cpa20', label: 'CPA-20', emoji: '💰' },
+  { id: 'cpa20', label: 'CPA ANBIMA', emoji: '💰' },
   { id: 'militar', label: 'Concurso Militar', emoji: '🎖️' },
   { id: 'medicina', label: 'Medicina (Revalida)', emoji: '🏥' },
 ]
