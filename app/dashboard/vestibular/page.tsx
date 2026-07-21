@@ -119,7 +119,7 @@ export default function VestibularPage() {
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 mb-8">
           {vestibulares.map((v) => (
-            <button
+            <button type="button"
               key={v.id}
               onClick={() => handleSelecionar(v.id)}
               className={`p-4 rounded-2xl border-2 text-left transition-all hover:shadow-md ${
@@ -176,19 +176,19 @@ export default function VestibularPage() {
             </div>
 
             <div className="flex items-center gap-3 flex-wrap">
-              <button
+              <button type="button"
                 onClick={handleSalvar}
                 className="px-6 py-2.5 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 transition-all"
               >
                 💾 Salvar Preferência
               </button>
-              <button
+              <button type="button"
                 onClick={() => router.push('/dashboard/simulados')}
                 className="px-6 py-2.5 bg-green-600 text-white rounded-xl font-medium hover:bg-green-700 transition-all"
               >
                 🎯 Ir para Simulados
               </button>
-              <button
+              <button type="button"
                 onClick={() => router.push(`/dashboard/questoes?vestibular=${selecionado}`)}
                 className="px-6 py-2.5 bg-purple-600 text-white rounded-xl font-medium hover:bg-purple-700 transition-all"
               >
