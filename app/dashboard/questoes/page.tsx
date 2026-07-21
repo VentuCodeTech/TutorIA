@@ -157,7 +157,7 @@ return (
 <main className="ml-64 p-8">
 <div className="mb-8">
 <h1 className="text-3xl font-bold text-gray-800">Questões</h1>
-<p className="text-gray-500 mt-1">Questões de ENEM, FUVEST, UNESP, UNICAMP, VUNESP, OAB, CPA-20 e concursos militares (2005-2025)</p>
+<p className="text-gray-500 mt-1">Questões de ENEM, FUVEST, UNESP, UNICAMP, VUNESP, OAB, CPA ANBIMA e concursos militares (2005-2025)</p>
 </div>
 
 <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
@@ -172,7 +172,7 @@ value={selectedArea}
 onChange={(e) => { setSelectedArea(e.target.value); setShownTexts([]); }}
 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500"
 >
-{areas.map(a => <option key={a} value={a}>{a}</option>)}
+{areas.map(a => <option key={a} value={a}>{a === 'CPA-20' ? 'CPA ANBIMA' : a}</option>)}
 </select>
 </div>
 <div className="mb-4">
