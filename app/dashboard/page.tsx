@@ -46,57 +46,73 @@ export default function Dashboard() {
     })
   }, [])
 
-  const loadStats = async (uid: string) => {
-    const today = new Date().toISOString().split('T')[0]
-
-    const { data: allAnswers } = await supabase
-      .from('question_answers')
-      .select('is_correct, created_at')
-      .eq('user_id', uid)
-      .order('created_at', { ascending: false })
-
-    if (allAnswers && allAnswers.length > 0) {
-      const todayAnswers = allAnswers.filter(a =>
-        a.created_at?.startsWith(today)
-      )
-      const correct = allAnswers.filter(a => a.is_correct).length
-      const accuracy = Math.round((correct / allAnswers.length) * 100)
-
-      // Calculate streak days (consecutive days with at least 1 question answered)
-      const seen: string[] = []
-      const uniqueDays = allAnswers
-        .filter(a => a.created_at)
-        .map(a => a.created_at.split('T')[0])
-        .filter(d => {
-          if (seen.includes(d)) return false
-          seen.push(d)
-          return true
-        })
-        .sort((a, b) => a.localeCompare(b))
-        .reverse()
-      let streak = 0
-      const nowDate = new Date()
-      for (let i = 0; i < uniqueDays.length; i++) {
-        const expectedDate = new Date(nowDate)
-        expectedDate.setDate(nowDate.getDate() - i)
-        const expectedStr = expectedDate.toISOString().split('T')[0]
-        if (uniqueDays[i] === expectedStr) {
-          streak++
-        } else {
-          break
-        }
+const loadStats = async (uid: string) => {
+      const today = new Date().toISOString().split('T')[0]
+        
+      const { data: allAnswers } = await supabase
+              .from('question_answers')
+              .select('is_correct, created_at')
+              .eq('user_id', uid)
+              .order('created_at', { ascending: false })
+        
+      const { data: rankingRow } = await supabase
+              .from('user_rankings')
+              .select('position')
+              .eq('user_id', uid)
+              .maybeSingle()
+        
+      const rankingDisplay = rankingRow?.position
+              ? `${rankingRow.position.toLocaleString('pt-BR')}º`
+              : '-'
+        
+      if (allAnswers && allAnswers.length > 0) {
+              const todayAnswers = allAnswers.filter(a =>
+                        a.created_at?.startsWith(today)
+                                                           )
+                      const correct = allAnswers.filter(a => a.is_correct).length
+                              const accuracy = Math.round((correct / allAnswers.length) * 100)
+                                
+              // Calculate streak days (consecutive days with at least 1 question answered)
+              const seen: string[] = []
+                      const uniqueDays = allAnswers
+                                .filter(a => a.created_at)
+                                .map(a => a.created_at.split('T')[0])
+                                .filter(d => {
+                                            if (seen.includes(d)) return false
+                                                        seen.push(d)
+                                                                    return true
+                                })
+                                .sort((a, b) => a.localeCompare(b))
+                                .reverse()
+                              let streak = 0
+                                      const nowDate = new Date()
+                                              for (let i = 0; i < uniqueDays.length; i++) {
+                                                        const expectedDate = new Date(nowDate)
+                                                                  expectedDate.setDate(nowDate.getDate() - i)
+                                                                            const expectedStr = expectedDate.toISOString().split('T')[0]
+                                                                                      if (uniqueDays[i] === expectedStr) {
+                                                                                                  streak++
+                                                                                        } else {
+                                                                                                  break
+                                                                                        }
+                                              }
+        
+              setStats(prev => ({
+                        ...prev,
+                        streakDays: streak,
+                        questionsToday: todayAnswers.length,
+                        accuracy,
+                        ranking: rankingDisplay
+              }))
+                      setDailyProgress(Math.min((todayAnswers.length / 20) * 100, 100))
+      } else {
+              setStats(prev => ({
+                        ...prev,
+                        ranking: rankingDisplay
+              }))
       }
-
-      setStats(prev => ({
-        ...prev,
-        streakDays: streak,
-        questionsToday: todayAnswers.length,
-        accuracy
-      }))
-      setDailyProgress(Math.min((todayAnswers.length / 20) * 100, 100))
-    }
-  }
-
+}
+  
   const studyAreas = [
     { emoji: '🧮', subject: 'Matemática', path: '/dashboard/questoes?area=Matemática', color: 'blue' },
     { emoji: '📖', subject: 'Português', path: '/dashboard/questoes?area=Português', color: 'green' },
