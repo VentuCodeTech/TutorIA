@@ -133,7 +133,7 @@ Bem-vindo ao plano {planLabels[successPlan || ''] || successPlan}.
 <li key={f} className="flex items-center gap-2 text-sm text-gray-400"><span className="text-red-400">❌</span> {f}</li>
 ))}
 </ul>
-<button className={`mt-6 w-full py-3 rounded-xl font-semibold transition-colors ${isCurrentPlan('gratuito') ? 'bg-green-100 border-2 border-green-500 text-green-700 cursor-default' : 'border border-gray-300 text-gray-600 hover:bg-gray-50'}`}>
+<button type="button" className={`mt-6 w-full py-3 rounded-xl font-semibold transition-colors ${isCurrentPlan('gratuito') ? 'bg-green-100 border-2 border-green-500 text-green-700 cursor-default' : 'border border-gray-300 text-gray-600 hover:bg-gray-50'}`}>
 {isCurrentPlan('gratuito') ? '✓ Plano Atual' : 'Plano Gratuito'}
 </button>
 </div>
@@ -153,9 +153,9 @@ Bem-vindo ao plano {planLabels[successPlan || ''] || successPlan}.
 ))}
 </ul>
 {isCurrentPlan('standard') ? (
-<button className="mt-6 w-full py-3 rounded-xl bg-green-100 border-2 border-green-500 text-green-700 font-semibold cursor-default">✓ Plano Atual</button>
+<button type="button" className="mt-6 w-full py-3 rounded-xl bg-green-100 border-2 border-green-500 text-green-700 font-semibold cursor-default">✓ Plano Atual</button>
 ) : (
-<button onClick={() => handleCheckout('standard')} disabled={loading === 'standard'} className="mt-6 w-full py-3 rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
+<button type="button" onClick={() => handleCheckout('standard')} disabled={loading === 'standard'} className="mt-6 w-full py-3 rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
 {loading === 'standard' ? 'Aguarde...' : 'Assinar Standard'}
 </button>
 )}
@@ -174,9 +174,9 @@ Bem-vindo ao plano {planLabels[successPlan || ''] || successPlan}.
 ))}
 </ul>
 {isCurrentPlan('student') ? (
-<button className="mt-6 w-full py-3 rounded-xl bg-green-100 border-2 border-green-500 text-green-700 font-semibold cursor-default">✓ Plano Atual</button>
+<button type="button" className="mt-6 w-full py-3 rounded-xl bg-green-100 border-2 border-green-500 text-green-700 font-semibold cursor-default">✓ Plano Atual</button>
 ) : (
-<button onClick={() => handleCheckout('student')} disabled={loading === 'student'} className="mt-6 w-full py-3 rounded-xl bg-purple-600 text-white font-semibold hover:bg-purple-700 transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
+<button type="button" onClick={() => handleCheckout('student')} disabled={loading === 'student'} className="mt-6 w-full py-3 rounded-xl bg-purple-600 text-white font-semibold hover:bg-purple-700 transition-colors disabled:opacity-60 flex items-center justify-center gap-2">
 {loading === 'student' ? 'Aguarde...' : 'Assinar Student'}
 </button>
 )}
@@ -195,9 +195,9 @@ Bem-vindo ao plano {planLabels[successPlan || ''] || successPlan}.
 ))}
 </ul>
 {isCurrentPlan('advanced_pro') ? (
-<button className="mt-6 w-full py-3 rounded-xl bg-green-100 border-2 border-green-500 text-green-700 font-semibold cursor-default">✓ Plano Atual</button>
+<button type="button" className="mt-6 w-full py-3 rounded-xl bg-green-100 border-2 border-green-500 text-green-700 font-semibold cursor-default">✓ Plano Atual</button>
 ) : (
-<button onClick={() => handleCheckout('advanced_pro')} disabled={loading === 'advanced_pro'} className="mt-6 w-full py-3 rounded-xl bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-bold hover:from-yellow-500 hover:to-orange-600 transition-all shadow-md disabled:opacity-60 flex items-center justify-center gap-2">
+<button type="button" onClick={() => handleCheckout('advanced_pro')} disabled={loading === 'advanced_pro'} className="mt-6 w-full py-3 rounded-xl bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-bold hover:from-yellow-500 hover:to-orange-600 transition-all shadow-md disabled:opacity-60 flex items-center justify-center gap-2">
 {loading === 'advanced_pro' ? 'Aguarde...' : '🚀 Assinar Advanced Pro'}
 </button>
 )}
