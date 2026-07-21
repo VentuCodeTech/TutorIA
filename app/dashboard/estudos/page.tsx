@@ -88,7 +88,7 @@ export default function EstudosPage() {
                 <div className="text-center py-8">
                   <div className="text-5xl mb-3">📝</div>
                   <p className="text-gray-500 mb-4">Você ainda não respondeu nenhuma questão.</p>
-                  <button onClick={() => router.push('/dashboard/questoes')}
+                  <button type="button" onClick={() => router.push('/dashboard/questoes')}
                     className="bg-indigo-600 text-white px-6 py-2.5 rounded-xl font-medium hover:bg-indigo-700 transition-colors">
                     Começar a Estudar
                   </button>
@@ -119,7 +119,7 @@ export default function EstudosPage() {
               <p className="text-gray-500 text-sm mb-4">Use a inteligência artificial para estudar de forma personalizada e adaptativa.</p>
               <div className="grid grid-cols-2 gap-3">
                 {studyTopics.map((topic) => (
-                  <button key={topic.subject} onClick={() => router.push(`/dashboard/questoes?area=${encodeURIComponent(topic.subject)}`)}
+                  <button type="button" key={topic.subject} onClick={() => router.push(`/dashboard/questoes?area=${encodeURIComponent(topic.subject)}`)}
                     className="flex items-center gap-3 p-3 rounded-xl border border-gray-200 hover:border-indigo-300 hover:bg-indigo-50 transition-all text-left">
                     <span className="text-2xl">{topic.emoji}</span>
                     <span className="text-sm font-medium text-gray-700">{topic.subject}</span>
@@ -134,7 +134,7 @@ export default function EstudosPage() {
               <h2 className="text-lg font-bold text-gray-800 mb-4">🎯 Meta Diária</h2>
               <p className="text-4xl font-bold text-indigo-600 mb-1">{stats.answered}</p>
               <p className="text-sm text-gray-500 mb-4">questões respondidas</p>
-              <button onClick={() => router.push('/dashboard/questoes')}
+              <button type="button" onClick={() => router.push('/dashboard/questoes')}
                 className="w-full bg-indigo-600 text-white py-2.5 rounded-xl font-medium hover:bg-indigo-700 transition-colors">
                 Iniciar Estudo
               </button>
@@ -159,7 +159,7 @@ export default function EstudosPage() {
             <div className="bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl p-6 text-white">
               <h2 className="text-lg font-bold mb-2">🗺️ Plano de Estudos</h2>
               <p className="text-indigo-100 text-sm mb-4">Faça um diagnóstico e receba um roteiro personalizado de estudos</p>
-              <button onClick={() => router.push('/dashboard/estudos/plano')}
+              <button type="button" onClick={() => router.push('/dashboard/estudos/plano')}
                 className="w-full bg-white text-indigo-700 py-2.5 rounded-xl font-semibold hover:bg-indigo-50 transition-colors">
                 Criar Meu Plano
               </button>
