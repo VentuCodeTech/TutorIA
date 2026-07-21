@@ -419,16 +419,16 @@ export default function AssistentePage() { // NOSONAR
           {messages.length === 1 && features.aiAssistantEnabled && (
             <div className="mt-4">
               <div className="flex gap-2 mb-3">
-                <button onClick={() => setSuggestionTab('study')} className={`text-xs px-3 py-1.5 rounded-full font-medium transition-colors ${
+                <button type="button" onClick={() => setSuggestionTab('study')} className={`text-xs px-3 py-1.5 rounded-full font-medium transition-colors ${
                   suggestionTab === 'study' ? 'bg-indigo-600 text-white' : 'bg-white border border-gray-200 text-gray-500 hover:border-indigo-300 hover:text-indigo-600'
                 }`}>📚 Estudos</button>
-                <button onClick={() => setSuggestionTab('support')} className={`text-xs px-3 py-1.5 rounded-full font-medium transition-colors ${
+                <button type="button" onClick={() => setSuggestionTab('support')} className={`text-xs px-3 py-1.5 rounded-full font-medium transition-colors ${
                   suggestionTab === 'support' ? 'bg-indigo-600 text-white' : 'bg-white border border-gray-200 text-gray-500 hover:border-indigo-300 hover:text-indigo-600'
                 }`}>❓ Suporte</button>
               </div>
               <div className="flex flex-wrap gap-2">
                 {currentSuggestions.map((s) => (
-                  <button key={s} onClick={() => handleSend(s)}
+                  <button type="button" key={s} onClick={() => handleSend(s)}
                     className="text-xs bg-white border border-gray-200 text-gray-600 px-3 py-2 rounded-full hover:border-indigo-300 hover:text-indigo-600 transition-colors">
                     {s}
                   </button>
@@ -447,7 +447,7 @@ export default function AssistentePage() { // NOSONAR
           {attachError && (
             <div className="mx-4 mt-3 px-3 py-2 bg-red-50 border border-red-200 rounded-lg flex items-center justify-between">
               <span className="text-xs text-red-600">⚠️ {attachError}</span>
-              <button onClick={() => setAttachError(null)} className="text-red-400 hover:text-red-600 ml-2 text-sm font-bold">✕</button>
+              <button type="button" onClick={() => setAttachError(null)} className="text-red-400 hover:text-red-600 ml-2 text-sm font-bold">✕</button>
             </div>
           )}
 
@@ -465,7 +465,7 @@ export default function AssistentePage() { // NOSONAR
                 <p className="text-xs font-medium text-indigo-800 truncate">{attachedFile.name}</p>
                 <p className="text-xs text-indigo-500 mt-0.5">{formatSize(attachedFile.size)} · {attachedFile.type === 'image' ? 'Imagem' : 'Documento'}</p>
               </div>
-              <button
+              <button type="button"
                 onClick={removeAttachment}
                 className="w-6 h-6 rounded-full bg-indigo-200 hover:bg-indigo-300 text-indigo-700 flex items-center justify-center text-xs font-bold flex-shrink-0 transition-colors"
                 title="Remover anexo"
@@ -489,7 +489,7 @@ export default function AssistentePage() { // NOSONAR
                 onChange={handleFileInputChange}
                 className="hidden"
               />
-              <button
+              <button type="button"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={loading || !features.aiAssistantEnabled || isLimitReached}
                 title="Anexar arquivo (imagem, PDF ou Word)"
@@ -516,7 +516,7 @@ export default function AssistentePage() { // NOSONAR
               />
 
               {/* Send button */}
-              <button
+              <button type="button"
                 onClick={() => handleSend()}
                 disabled={!canSend}
                 className="flex-shrink-0 w-11 h-11 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
