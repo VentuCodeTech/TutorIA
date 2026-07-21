@@ -112,7 +112,7 @@ export default function Dashboard() {
     { emoji: '👔', subject: 'Direito Trabalhista', path: '/dashboard/questoes?area=Direito Trabalhista', color: 'indigo' },
     { emoji: '💰', subject: 'Finanças Pessoais', path: '/dashboard/questoes?area=Finanças Pessoais', color: 'yellow' },
     { emoji: '📈', subject: 'Investimentos', path: '/dashboard/questoes?area=Investimentos', color: 'yellow' },
-    { emoji: '🏦', subject: 'CPA-20', path: '/dashboard/questoes?area=CPA-20', color: 'yellow' },
+    { emoji: '🏦', subject: 'CPA ANBIMA', path: '/dashboard/questoes?area=CPA-20', color: 'yellow' },
     { emoji: '🗺️', subject: 'Geografia', path: '/dashboard/questoes?area=Geografia', color: 'cyan' },
     { emoji: '📚', subject: 'Inglês', path: '/dashboard/questoes?area=Inglês', color: 'blue' },
     { emoji: '🗣️', subject: 'Espanhol', path: '/dashboard/questoes?area=Espanhol', color: 'red' },
