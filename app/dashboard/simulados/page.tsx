@@ -164,7 +164,7 @@ const vestibularSimulados: SimuladoConfig[] = [
   },
   {
     id: 'cpa20',
-    title: 'CPA-20 - Certificação ANBIMA',
+    title: 'CPA ANBIMA - Certificação ANBIMA',
     vestibular: 'CPA-20',
     questions: 30,
     timeMinutes: 120,
@@ -177,7 +177,7 @@ const vestibularSimulados: SimuladoConfig[] = [
     ],
     color: 'yellow',
     tag: 'Finanças',
-    description: 'Simulado baseado na certificação CPA-20 ANBIMA',
+    description: 'Simulado baseado na certificação CPA ANBIMA',
     icon: '💰',
     institution: 'ANBIMA'
   },
