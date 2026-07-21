@@ -87,7 +87,7 @@ export default function ProgressoPage() {
             <div className="text-6xl mb-4">📈</div>
             <h3 className="text-xl font-semibold text-gray-800 mb-2">Nenhum dado ainda</h3>
             <p className="text-gray-500 mb-6">Responda questões para ver seu progresso real aqui.</p>
-            <button
+            <button type="button"
               onClick={() => router.push('/dashboard/questoes')}
               className="bg-indigo-600 text-white px-8 py-3 rounded-xl font-medium hover:bg-indigo-700 transition-colors"
             >
@@ -160,7 +160,7 @@ export default function ProgressoPage() {
             </div>
 
             <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-center">
-              <button
+              <button type="button"
                 onClick={() => router.push('/dashboard/questoes')}
                 className="bg-indigo-600 text-white px-8 py-3 rounded-xl font-medium hover:bg-indigo-700 transition-colors"
               >
