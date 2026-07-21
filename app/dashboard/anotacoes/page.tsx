@@ -140,7 +140,7 @@ export default function AnotacoesPage() {
               <h1 className="text-3xl font-bold text-gray-900">📒 Anotações</h1>
               <p className="text-gray-600 mt-1">Suas anotações de estudo, sempre sincronizadas</p>
             </div>
-            <button
+            <button type="button"
               onClick={() => { resetForm(); setShowNew(true); }}
               className="bg-indigo-600 text-white px-4 py-2 rounded-xl font-medium hover:bg-indigo-700 transition-colors"
             >
@@ -180,7 +180,7 @@ export default function AnotacoesPage() {
                 <div className="flex gap-2">
                   <span className="text-sm text-gray-600 mr-2">Cor:</span>
                   {COLORS.map(c => (
-                    <button
+                    <button type="button"
                       key={c}
                       onClick={() => setColor(c)}
                       className={`w-7 h-7 rounded-full ${c} border-2 ${color === c ? 'border-indigo-600' : 'border-transparent'} transition-all`}
@@ -188,10 +188,10 @@ export default function AnotacoesPage() {
                   ))}
                 </div>
                 <div className="flex gap-2">
-                  <button onClick={resetForm} className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800">
+                  <button type="button" onClick={resetForm} className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800">
                     Cancelar
                   </button>
-                  <button
+                  <button type="button"
                     onClick={handleSave}
                     className="bg-indigo-600 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-indigo-700 transition-colors"
                   >
@@ -232,7 +232,7 @@ export default function AnotacoesPage() {
                 {notes.length === 0 ? 'Crie sua primeira anotação de estudo!' : 'Tente buscar com outras palavras.'}
               </p>
               {notes.length === 0 && (
-                <button
+                <button type="button"
                   onClick={() => { resetForm(); setShowNew(true); }}
                   className="bg-indigo-600 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-indigo-700 transition-colors"
                 >
@@ -247,13 +247,13 @@ export default function AnotacoesPage() {
                   <div className="flex items-start justify-between mb-2">
                     <h3 className="font-semibold text-gray-900 text-sm flex-1 pr-2">{note.title}</h3>
                     <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button
+                      <button type="button"
                         onClick={() => handleEdit(note)}
                         className="text-gray-500 hover:text-indigo-600 text-xs p-1"
                       >
                         ✏️
                       </button>
-                      <button
+                      <button type="button"
                         onClick={() => handleDelete(note.id)}
                         className="text-gray-500 hover:text-red-600 text-xs p-1"
                       >
