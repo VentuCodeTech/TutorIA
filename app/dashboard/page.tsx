@@ -78,7 +78,9 @@ const loadStats = async (uid: string) => {
                                 .filter(a => a.created_at)
                                 .map(a => a.created_at.split('T')[0])
                                 .filter(d => {
-                                            if (seen.includes(d)) return false
+                                            if (seen.includes(d)) {
+                                                return false
+                                            }
                                                         seen.push(d)
                                                                     return true
                                 })
