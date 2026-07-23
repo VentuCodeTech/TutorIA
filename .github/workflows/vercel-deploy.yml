@@ -13,9 +13,11 @@ jobs:
         with:
           node-version: '20'
       - name: Install dependencies
-        run: npm install --legacy-peer-deps
+        run: npm install --legacy-peer-deps --ignore-scripts
+      - name: Install Vercel CLI
+        run: npm install --no-save --ignore-scripts vercel@56.4.1
       - name: Deploy to Vercel
-        run: npx vercel@56.4.1 --prod --yes --token "$VERCEL_TOKEN"
+        run: npx --no-install vercel --prod --yes --token "$VERCEL_TOKEN"
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
