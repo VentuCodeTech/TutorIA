@@ -393,7 +393,7 @@ export default function AssistentePage() { // NOSONAR
                   {msg.content && (
                     <p className="text-sm leading-relaxed whitespace-pre-line">{msg.content}</p>
                   )}
-                  <p className={`text-xs mt-1 ${msg.role === 'user' ? 'text-indigo-200' : 'text-gray-400'}`}>
+                  <p suppressHydrationWarning className={`text-xs mt-1 ${msg.role === 'user' ? 'text-indigo-200' : 'text-gray-400'}`}>
                     {msg.timestamp.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                   </p>
                 </div>
